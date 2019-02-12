@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
    <head>
@@ -6,22 +5,18 @@
       <link rel="stylesheet" href="css/style.css">
    </head>
 
-   <!--<body ng-app="filmApp" ng-controller="MoviesController">-->
    <body>
-   <br><br>
+   <br>
       <div class="container-fluid">
          <div class="input-group" id="searchBar">
-            <!-- 
-               Implement a way to filter through listings using the search bar 
-               
-               -->
+
             <input type="text" class="form-control" placeholder="Search Movies by keyword, genre, or year" ng-model="movieSearchText" ng-change="searchMovies(movieSearchText)">  
             <p class="space"> or browse by:</p>
             <button type="button" class="btn btn-success space" ng-click="updateMovieDisplay(1)">Now playing in theaters</button>
             <button type="button" class="btn btn-danger space" ng-click="updateMovieDisplay(2)">Top Rated Movies</button>
             <button type="button" class="btn btn-info space" ng-click="updateMovieDisplay(3)">Most Popular Movies Today</button>
          </div>
-         <h2>Search Results</h2>
+         <h2 style="text-align: center;">Search Results</h2>
       </div>
       <div class="container">
          <div class="row">
