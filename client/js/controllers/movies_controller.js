@@ -1,4 +1,4 @@
-angular.module('movies').controller('MoviesController',
+angular.module('filmApp').controller('MoviesController',
 	function ($scope, $http) {
 
 		var today = new Date();
