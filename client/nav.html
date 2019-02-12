@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<style>
+    @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+    .navbar {
+        background-image: -moz-linear-gradient(top, #324359 0%, #132e3f 55%, #000000 100%);
+        background-image: -webkit-linear-gradient(top, #324359 0%,#132e3f 55%,#000000 100%);
+        background-image: linear-gradient(to bottom, #324359 0%,#132e3f 55%,#000000 100%);
+        background-repeat: repeat-x;
+        progid: DXImageTransform.Microsoft.gradient( startColorstr='#324359', endColorstr='#000000',GradientType=0 );
+        font-family: 'Open Sans', sans-serif;
+    }
+    .navbar .navbar-nav .dropdown-menu {
+        background-color: #1D3A54;
+        border-color: #000000;
+    }
+    .navbar .navbar-nav .dropdown-menu .dropdown-item {
+        color: #ffffff;
+    }
+
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-fill w-100">
+    <a class="navbar-brand" href="#/home"><strong>Filmbook</strong></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" ui-sref="home">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ui-sref="movies">Movies</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" >Reviews</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Discussions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ui-sref="login">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" ui-sref="register">Register</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Currently logged in as: <strong>username</strong>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="#">Profile</a>
+                    <a class="dropdown-item" href="#">Watchlist</a>
+                    <a class="dropdown-item" href="#">Friends</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Log out</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

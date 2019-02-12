@@ -1,0 +1,35 @@
+{
+  "name": "filmApp",
+  "version": "1.0.0",
+  "description": "Film-focused social network",
+  "main": "server.js",
+  "author": "Andres Inguanzo; Jeffrey Weng",
+  "dependencies": {
+    "@uirouter/angularjs": "^1.0.22",
+    "angular": "^1.7.7",
+    "angular-route": "^1.7.7",
+    "bcrypt-nodejs": "latest",
+    "body-parser": "*",
+    "bower": "^1.8.4",
+    "connect-flash": "*",
+    "cookie-parser": "^1.4.1",
+    "express": "*",
+    "express-handlebars": "*",
+    "express-messages": "*",
+    "express-session": "*",
+    "express-validator": "*",
+    "method-override": "~2.3.6",
+    "mongodb": "*",
+    "mongoose": "^5.4.10",
+    "morgan": "^1.6.1",
+    "passport": "^0.3.2",
+    "passport-http": "*",
+    "passport-local": "^1.0.0",
+    "request": "^2.67.0"
+  },
+  "devDependencies": {
+    "should": "^1.3.0",
+    "supertest": "^1.2.0",
+    "mocha": "latest"
+  }
+}
