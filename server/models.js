@@ -26,11 +26,13 @@ var mongoose = require('mongoose'),
         avatar: String, //image url
         reviews:[{
             type: Schema.Types.ObjectId,
-            ref:'ReviewPost'
+            ref:'ReviewPost',
+            autopopulate: true
         }],
         discussions:[{
             type: Schema.Types.ObjectId,
-            ref:'DiscussionPost'
+            ref:'DiscussionPost',
+            autopopulate: true
         }],
     
         admin: {
@@ -39,6 +41,7 @@ var mongoose = require('mongoose'),
         }
     
     }, {collection: 'User'});
+
     
     userSchema.methods.generateHash = function(password) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
@@ -47,7 +50,9 @@ var mongoose = require('mongoose'),
     userSchema.methods.validPassword = function(password){
         return bcrypt.compareSync(password, this.password);
     };
-    
+
+    userSchema.plugin(require('mongoose-autopopulate'));
+
     var User = mongoose.model('User', userSchema);
 
 //------------------------------------------------------------------------
@@ -55,7 +60,7 @@ var mongoose = require('mongoose'),
 
 var discussionPostSchema = new Schema({
 
-    user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, required: true, ref: 'User', autopopulate: true },
     title: {
         type: String,
         required:true
@@ -79,10 +84,7 @@ discussionPostSchema.pre('save',function(next) {
   });
       
       discussionPostSchema.plugin(StreamMongoose.activity);
-
-      discussionPostSchema.statics.pathsToPopulate = function() {
-          return ['user'];
-      };
+      discussionPostSchema.plugin(require('mongoose-autopopulate'));
 
       var DiscussionPost = mongoose.model('DiscussionPost',discussionPostSchema);
 
@@ -90,7 +92,7 @@ discussionPostSchema.pre('save',function(next) {
 
 var reviewPostSchema = new Schema({
 
-        user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
+        user: { type: Schema.Types.ObjectId, required: true, ref: 'User', autopopulate: true },
         movie: {
             type: String,
             required:true
@@ -104,17 +106,8 @@ var reviewPostSchema = new Schema({
     }, {collection: 'ReviewPost'});
           
           reviewPostSchema.plugin(StreamMongoose.activity);
-    
-          reviewPostSchema.statics.pathsToPopulate = function() {
-              return ['user'];
-          };
-
-      reviewPostSchema.plugin(StreamMongoose.activity);
-
-      reviewPostSchema.statics.pathsToPopulate = function() {
-        return ['user'];
-    };
-    
+          reviewPostSchema.plugin(require('mongoose-autopopulate'));
+       
     reviewPostSchema.pre('save',function(next) {
         var currentDate=new Date();
         this.updated_at=currentDate;
@@ -135,7 +128,8 @@ var reviewPostSchema = new Schema({
         user: {
             type: Schema.Types.ObjectId,
             required:true,
-            ref:'User'
+            ref:'User',
+            autopopulate: true
         },
         target: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         
@@ -143,6 +137,7 @@ var reviewPostSchema = new Schema({
     }, {collection: 'Follow'});
 
     followSchema.plugin(StreamMongoose.activity);
+    followSchema.plugin(require('mongoose-autopopulate'));
 
     followSchema.methods.activityNotify = function() {
         target_feed = FeedManager.getNotificationFeed(this.target._id);
@@ -153,10 +148,7 @@ var reviewPostSchema = new Schema({
         return this.user._id + ':' + this.target._id;
     };
     
-    followSchema.statics.pathsToPopulate = function() {
-        return ['user', 'target'];
-    };
-    
+
     followSchema.post('save', function(doc) {
         if (doc.wasNew) {
             var userId = doc.user._id || doc.user;
@@ -171,11 +163,33 @@ var reviewPostSchema = new Schema({
     
     var Follow = mongoose.model('Follow', followSchema);
 
+    //---------------------------------------------------
+    var watchSchema = new Schema({
+
+        user: {
+            type: Schema.Types.ObjectId,
+            required:true,
+            ref:'User',
+            autopopulate:true
+        },
+        movie: String
+        
+    
+    }, {collection: 'Watch'});
+
+    watchSchema.plugin(StreamMongoose.activity);
+    watchSchema.plugin(require('mongoose-autopopulate'));
+
+    
+    var Watch = mongoose.model('Watch', watchSchema);
+
+
     StreamMongoose.setupMongoose(mongoose);
 
     module.exports = {
         User: User,
         DiscussionPost: DiscussionPost,
         ReviewPost: ReviewPost,
-        Follow: Follow
+        Follow: Follow,
+        Watch: Watch
     };

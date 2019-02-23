@@ -38,7 +38,7 @@ exports.update = function(req, res) {
   ReviewPost.findById(review._id,function(err,review){
 	  if(err) throw err;
 	  
-	  review.description=req.body.description;
+	    review.description=req.body.description;
       review.rating=req.body.rating;
       review.upVotes=req.body.upvotes;
 	  
@@ -58,7 +58,7 @@ exports.delete = function(req, res) {
 
   /* Remove the article */
   
-  ReviewPost.findOneAndRemove({author:review.author,movie:review.movie},function(err){
+  ReviewPost.findOneAndRemove({user:review.user,movie:review.movie},function(err){
 	  if(err){
 		  throw err;
 	  }	  
@@ -85,7 +85,7 @@ exports.list = function(req, res) {
 /* 
   Middleware: find a Review by its ID, then pass it to the next request handler. 
   Find the Review using a mongoose query, 
-        bind it to the request object as the property 'Review', 
+        bind it to the request object as the property 'review', 
         then finally call next
  */
 exports.ReviewByID = function(req, res, next, id) {

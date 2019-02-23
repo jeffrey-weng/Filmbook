@@ -37,10 +37,10 @@ exports.update = function(req, res) {
   DiscussionPost.findById(discussion._id,function(err,discussion){
 	  if(err) throw err;
 	  
-	  discussion.title=req.body.title;
+	    discussion.title=req.body.title;
       discussion.description=req.body.description;
       discussion.upVotes=req.body.upvotes;
-      discussion.comments.push(req.body.comment);
+      discussion.comments=req.body.comments;
 	  
 	  discussion.save(function(err){
 		  if(err)throw err;
@@ -58,7 +58,7 @@ exports.delete = function(req, res) {
 
   /* Remove the article */
   
-  DiscussionPost.findOneAndRemove({name:discussion.title},function(err){
+  DiscussionPost.findOneAndRemove({title:discussion.title},function(err){
 	  if(err){
 		  throw err;
 	  }	  
@@ -85,7 +85,7 @@ exports.list = function(req, res) {
 /* 
   Middleware: find a Discussion by its ID, then pass it to the next request handler. 
   Find the Discussion using a mongoose query, 
-        bind it to the request object as the property 'Discussion', 
+        bind it to the request object as the property 'discussion', 
         then finally call next
  */
 exports.DiscussionByID = function(req, res, next, id) {

@@ -8,12 +8,18 @@ var config = require('./config/config'),
 	fs = require('fs'),
 	bodyParser = require('body-parser'),
 
+	discussions = require('./controllers/discussion.server.controller.js'),
+	reviews = require('./controllers/review.server.controller.js'),
+	users = require('./controllers/users.server.controller.js');
+	follows = require('./controllers/follow.server.controller.js');
+	watches = require('./controllers/watch.server.controller.js');
 
 var router = express.Router(),
-	User = models.User,
+	  User = models.User,
     DiscussionPost = models.DiscussionPost,
     ReviewPost=models.ReviewPost,
-    Follow = models.Follow;
+		Follow = models.Follow,
+		Watch = models.Watch;
 
 var FeedManager = stream_node.FeedManager;
 var StreamMongoose = stream_node.mongoose;
@@ -125,63 +131,65 @@ router.get('/', ensureAuthenticated, function(req, res, next) {
 	});
 
 		
-	//Getting a single user's reviews and discussions by username
-	var getUserByUserName = function(username) {User.findOne({username:username}).populate('discussions').populate('reviews').lean().exec(function(err, user) {
-		if (err) return next(err);
-
-			return {
-				user: user
-			};
-		
-		
-	})}; 
-
-	var getUserFollowing = function(id){
-
-		Follow.find({user: id}).exec(function(err,follows){
-			if(err) return next(err);
-			return{
-				following:follows //access following by .target
-			}
-		})
-
-
-	}
-
-	var getUserFollowers = function(id){
-		Follow.find({target: id}).exec(function(err,follows){
-			if(err) return next(err);
-			return{
-				followers:follows //access followers by .user
-			}
-		})
-
-	}
 
 /******************
-  User Profile
+  User Profile (this is a mess)
 ******************/
 
 router.get('/profile', ensureAuthenticated, function(req, res, next) {
 	var userFeed = FeedManager.getUserFeed(req.user.id);
-
+	var enrichment,userData,Followers,Following;
 	userFeed
 		.get({})
 		.then(enrichActivities)
 		.then(function(enrichedActivities) {
+			enrichment=enrichedActivities;
+		});
+
+	User.findOne({username:req.user.username}).lean().exec(function(err, user) {
+				if (err) return err;
+			
+					 userData = user;
+				
+			}
+		);
+
+	Follow.find({target:req.user.id}).lean().exec(function(err,followers){
+			if(err){
+				console.log(err);
+				res.status(400).send(err);
+			}
+			else{
+				Followers=followers;
+			}
+			
+			});
+		
+		Follow.find({user:req.user.id}).lean().exec(function(err,following){
+				if(err){
+					console.log(err);
+					res.status(400).send(err);
+				}
+				else{
+					Following=following;
+				}
+				
+				});
+		
 			res.json({
 				location: 'profile',
-				activities: enrichedActivities,
-				userData: getUserByUserName(req.user.username),
-				Following: getUserFollowing(req.user.id),
-				followedBy: getUserFollowers(req.user.id),
+				activities: enrichment,
+				user: userData,
+				followers: Followers, //access followers by foreach x in followers: x.user
+				following: Following, //access followers by foreach x in following: x.target
 				path: req.url,
 				show_feed: true,
 			});
-		})
-		.catch(next);
+		next();
 });
 
+
+/*used when viewing other people's profiles*/
 router.get('/profile/:user', ensureAuthenticated, function(req, res, next) {
 	User.findOne({ username: req.params.user }, function(err, foundUser) {
 		if (err) return next(err);
@@ -190,24 +198,56 @@ router.get('/profile/:user', ensureAuthenticated, function(req, res, next) {
 			return res.send('User ' + req.params.user + ' not found.');
 
 		var flatFeed = FeedManager.getNewsFeeds(foundUser._id)['flat'];
+		var enrichment,userData,Followers,Following;
 
 		flatFeed
-			.get({})
-			.then(enrichActivities)
-			.then(function(enrichedActivities) {
-				res.json({
-					location: 'profile',
-					activities: enrichedActivities,
-					userData: getUserByUserName(req.user.username),
-					Following: getUserFollowing(req.user.id),
-					followedBy: getUserFollowers(req.user.id),
-					path: req.url,
-					show_feed: true,
+		.get({})
+		.then(enrichActivities)
+		.then(function(enrichedActivities) {
+			enrichment=enrichedActivities;
+		});
+
+	User.findOne({username:foundUser.username}).lean().exec(function(err, user) {
+				if (err) return err;
+			
+					 userData = user;
+				
+			}
+		);
+
+	Follow.find({target:foundUser._id}).lean().exec(function(err,followers){
+			if(err){
+				console.log(err);
+				res.status(400).send(err);
+			}
+			else{
+				Followers=followers;
+			}
+			
+			});
+		
+		Follow.find({user:foundUser._id}).lean().exec(function(err,following){
+				if(err){
+					console.log(err);
+					res.status(400).send(err);
+				}
+				else{
+					Following=following;
+				}
+				
 				});
-			})
-			.catch(next);
-	});
-});
+		
+			res.json({
+				location: 'profile',
+				activities: enrichment,
+				user: userData,
+				followers: Followers,  //access followers by foreach x in followers: x.user
+				following: Following, //access followers by foreach x in following: x.target
+				path: req.url,
+				show_feed: true,
+			});
+		next();
+})});
 
 /******************
   Follow
@@ -245,5 +285,44 @@ router.delete('/follow', ensureAuthenticated, function(req, res) {
 		}
 	});
 });
+
+//Discussion API
+router.route('/discussions').get(discussions.list).post(discussions.create);
+
+router.route('/discussions/:discussionId')
+.get(discussions.read)
+.put(discussions.update)
+.delete(discussions.delete);
+
+router.param('discussionId',discussions.DiscussionByID);
+
+//Review API
+router.route('/reviews').get(reviews.list).post(reviews.create);
+
+router.route('/reviews/:reviewId')
+.get(reviews.read)
+.put(reviews.update)
+.delete(reviews.delete);
+
+router.param('reviewId',reviews.ReviewByID);
+
+
+//User API
+router.route('/users').get(users.list).post(users.create);
+
+router.route('/users/:userId')
+.get(users.read)
+.put(users.update)
+.delete(users.delete);
+
+//Watch API
+router.route('/watch/:user').get(watches.getAllWatched);
+router.route('/watch').post(watches.create);
+
+
+
+router.param('userId',users.UserByID); //creates req.profile property with user object
+router.param(':user',users.UserByUserName); //creates req.profile property with user object
+
 
 module.exports = router;
