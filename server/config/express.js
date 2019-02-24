@@ -1,5 +1,4 @@
 var express = require('express'),
-    expressLayouts = require('express-ejs-layouts'),
     expressSession = require('express-session'),
     morgan = require('morgan'),
     mongoose = require('mongoose'),
@@ -12,7 +11,7 @@ var express = require('express'),
 
 module.exports.init = function() {
 
-    mongoose.connect(config.db.uri);
+    mongoose.connect("mongodb://dev:passw0rd@ds127015.mlab.com:27015/filmapp");
 
     var app = express();
 
@@ -34,9 +33,10 @@ module.exports.init = function() {
     app.use('/api',routes);
 
     /*Go to homepage for all routes not specified */ 
-    app.use('/*',function(req,res,next){
-	 res.redirect('/');
-  });
+   /* app.use('/*',function(req,res,next){
+     
+     res.send("OKAY");
+  });*/
 
 
     return app;

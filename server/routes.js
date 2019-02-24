@@ -7,29 +7,35 @@ var config = require('./config/config'),
 	stream_node = require('getstream-node'),
 	fs = require('fs'),
 	bodyParser = require('body-parser'),
+	methodOverride = require('method-override');
 
+	/*server crud controllers*/
 	discussions = require('./controllers/discussion.server.controller.js'),
 	reviews = require('./controllers/review.server.controller.js'),
 	users = require('./controllers/users.server.controller.js');
 	follows = require('./controllers/follow.server.controller.js');
 	watches = require('./controllers/watch.server.controller.js');
 
+	/*router and models*/
 var router = express.Router(),
-	  User = models.User,
+	User = models.User,
     DiscussionPost = models.DiscussionPost,
     ReviewPost=models.ReviewPost,
-		Follow = models.Follow,
-		Watch = models.Watch;
+	Follow = models.Follow,
+	Watch = models.Watch;
 
+/*stream api stuff*/
 var FeedManager = stream_node.FeedManager;
 var StreamMongoose = stream_node.mongoose;
 var StreamBackend = new StreamMongoose.Backend();
+
 
 var enrichActivities = function(body) {
 	var activities = body.results;
 	return StreamBackend.enrichActivities(activities);
 };
 
+/*passport stuff*/
 var ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
@@ -38,7 +44,7 @@ var ensureAuthenticated = function(req, res, next) {
 };
 
 
-
+/*helper function that might be helpful*/
 var did_i_follow = function(users, followers) {
 	var followed_users_ids = _.map(followers, function(item) {
 		return item.target.toHexString();
@@ -50,6 +56,7 @@ var did_i_follow = function(users, followers) {
 	});
 };
 
+/*some more stream configuration*/
 router.use(function(req, res, next) {
 	if (req.isAuthenticated()) {
 		res.locals = {
@@ -62,6 +69,7 @@ router.use(function(req, res, next) {
 	next();
 });
 
+/*error-checking middleware*/
 router.use(function(error, req, res, next) {
 	if (!error) {
 		next();
@@ -71,6 +79,7 @@ router.use(function(error, req, res, next) {
 	}
 });
 
+/*populating authenticated user's 'req.user' property with useful fields..and something with notifications*/
 router.use(function(req, res, next) {
 	if (!req.isAuthenticated()) {
 		return next();
@@ -98,9 +107,10 @@ router.use(function(req, res, next) {
 	}
 });
 
-
+/*to parse POST request url-encoded bodies*/
 router.use(bodyParser.urlencoded({ extended: true }));
 
+/*To allow deletion in a url encoded form*/
 router.use(
 	methodOverride(function(req, res) {
 		if (req.body && typeof req.body === 'object' && '_method' in req.body) {
@@ -112,6 +122,7 @@ router.use(
 	})
 );
 
+/*fetches feed data for logged-in user (View: home.html)*/
 router.get('/', ensureAuthenticated, function(req, res, next) {
 
 	var flatFeed = FeedManager.getNewsFeeds(req.user.id)['timeline'];
@@ -133,7 +144,7 @@ router.get('/', ensureAuthenticated, function(req, res, next) {
 		
 
 /******************
-  User Profile (this is a mess)
+  Logged-In User Profile (View: profile.html)
 ******************/
 
 router.get('/profile', ensureAuthenticated, function(req, res, next) {
@@ -253,6 +264,7 @@ router.get('/profile/:user', ensureAuthenticated, function(req, res, next) {
   Follow
 ******************/
 
+/*should trigger when logged in user follows another user*/
 router.post('/follow', ensureAuthenticated, function(req, res, next) {
 	User.findOne({ _id: req.body.target }, function(err, target) {
 		if (target) {
@@ -269,6 +281,7 @@ router.post('/follow', ensureAuthenticated, function(req, res, next) {
 	});
 });
 
+/*should trigger when logged in user unfollows another user*/
 router.delete('/follow', ensureAuthenticated, function(req, res) {
 	Follow.findOne({ user: req.user.id, target: req.body.target }, function(
 		err,
@@ -285,6 +298,9 @@ router.delete('/follow', ensureAuthenticated, function(req, res) {
 		}
 	});
 });
+
+
+//Local APIs with standard CRUD operations (similar to bootcamp assignment)
 
 //Discussion API
 router.route('/discussions').get(discussions.list).post(discussions.create);
@@ -322,7 +338,7 @@ router.route('/watch').post(watches.create);
 
 
 router.param('userId',users.UserByID); //creates req.profile property with user object
-router.param(':user',users.UserByUserName); //creates req.profile property with user object
+router.param('user',users.UserByUserName); //creates req.profile property with user object
 
 
 module.exports = router;

@@ -5,7 +5,7 @@ var mongoose = require('mongoose'),
 
     mongoose.Promise = global.Promise;
 
-    var connection = mongoose.connect(config.db.URI);
+    var connection = mongoose.connect('mongodb://dev:passw0rd@ds127015.mlab.com:27015/filmapp');
 
     var FeedManager = stream_node.FeedManager;
     var StreamMongoose = stream_node.mongoose;

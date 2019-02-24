@@ -21,7 +21,7 @@
     "express-session": "*",
     "express-validator": "*",
     "getstream-node": "^1.5.0",
-    "method-override": "~2.3.6",
+    "method-override": "^2.3.10",
     "mongodb": "*",
     "mongoose": "^5.4.10",
     "mongoose-autopopulate": "^0.9.1",
