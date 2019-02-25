@@ -7,6 +7,71 @@ angular.module('filmApp').controller('MoviesController',
 		$scope.movieType = 'movie in popular';
 		$scope.displayType = 2; //set default display to top rated movies
 
+		$scope.genres = ["ACTION","ADVENTURE","ANIMATION","COMEDY","CRIME","DOCUMENTARY",
+			"DRAMA","FAMILY","FANTASY","HISTORY","HORROR","MUSIC","MYSTERY",
+			"ROMANCE","SCIENCE FICTION","TV MOVIE","THRILLER","WAR","WESTERN"];
+
+		//Initial index values for each movie list
+		$scope.popularIndex = 4;
+		$scope.theaterIndex = 4;
+		$scope.topRatedIndex = 4;
+		$scope.searchIndex = 3;
+
+		//"Load more" function for popular movies
+		$scope.getMorePopular = function() {
+			for(var i=$scope.popularIndex; i<$scope.popularIndex+3; i++){
+				$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page="+i)
+					.then(function (response) {
+						$scope.popular = $scope.popular.concat(response.data.results);
+					});
+			}
+
+			$scope.popularIndex = i;
+
+		};
+
+		//"Load more" function for movies in theaters
+		$scope.getMoreTheater = function() {
+			for(var i=$scope.theaterIndex; i<$scope.theaterIndex+3; i++){
+				$http.get("https://api.themoviedb.org/3/movie/now_playing?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page="+i)
+					.then(function (response) {
+						$scope.theater = $scope.theater.concat(response.data.results);
+					});
+			}
+
+			$scope.theaterIndex = i;
+
+		};
+
+		//"Load more" function for top rated movies
+		$scope.getMoreTopRated = function() {
+			for(var i=$scope.topRatedIndex; i<$scope.topRatedIndex+3; i++){
+				$http.get("https://api.themoviedb.org/3/discover/movie?api_key=c62258e5fcc86f114d95f2bd79b40c28&sort_by=vote_count.desc&page="+i)
+					.then(function (response) {
+						$scope.rated = $scope.rated.concat(response.data.results);
+					});
+			}
+
+			$scope.topRatedIndex = i;
+
+		};
+
+		//"Load more" function for searched movies
+		$scope.getMoreSearch = function(movieSearchText) {
+
+			//If movie search text is not a genre name
+			if(!($scope.genres.indexOf(movieSearchText.toUpperCase()) > -1))
+			{
+				for (var i = $scope.searchIndex; i < $scope.searchIndex + 2; i++) {
+					$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=" + i)
+						.then(function (response) {
+							$scope.popular = $scope.popular.concat(response.data.results);
+						});
+				}
+			}
+			$scope.searchIndex = i;
+
+		};
 
 		//popular movies
 		$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")

@@ -1,7 +1,10 @@
 var mongoose = require('mongoose'),
     config = require('./config/config'),
     Schema = mongoose.Schema,
-    stream_node=require('getstream-node');
+    stream_node=require('getstream-node'),
+    uniqueValidator = require('mongoose-unique-validator'),
+    crypto = require('crypto'),
+    jwt = require('jsonwebtoken');
 
     mongoose.Promise = global.Promise;
 
@@ -15,43 +18,78 @@ var mongoose = require('mongoose'),
 
         username: {
             type: String,
-            unique:true
+            unique:true,
+            required: true
         },
-        password: String,
         email: String,
+
+        salt: String, //password salt
+        hash: String, //password hash
+
         favoriteMovies: [String],
         favoriteGenres: [String],
+
         watchlist: [String],
         watched: [String],
-        avatar: String, //image url
+
+        avatar: {
+            type: String,
+            default: 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_1280.png'
+        }, //image url
+
         reviews:[{
             type: Schema.Types.ObjectId,
             ref:'ReviewPost',
             autopopulate: true
         }],
+
         discussions:[{
             type: Schema.Types.ObjectId,
             ref:'DiscussionPost',
             autopopulate: true
         }],
     
-        admin: {
-            type: Boolean,
-            default: false
+        role: {
+            type: String,
+            default: 'editor'
         }
     
     }, {collection: 'User'});
 
-    
-    userSchema.methods.generateHash = function(password) {
-        return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-    };
-    
-    userSchema.methods.validPassword = function(password){
-        return bcrypt.compareSync(password, this.password);
+    userSchema.plugin(require('mongoose-autopopulate'));
+    userSchema.plugin(uniqueValidator, {message: "is already taken."});
+
+    userSchema.methods.setPassword = function(password){
+        this.salt = crypto.randomBytes(16).toString('hex');
+        this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
     };
 
-    userSchema.plugin(require('mongoose-autopopulate'));
+    userSchema.methods.validPassword = function(password){
+        var hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
+        return this.hash === hash;
+    };
+
+    userSchema.methods.generateJWT = function(){
+        var today = new Date();
+        var exp = new Date(today);
+        exp.setDate(today.getDate()+60);
+
+        return jwt.sign({
+            id: this._id,
+            username: this.username,
+            exp: parseInt(exp.getTime()/1000)
+        }, config.secret)
+    };
+
+    userSchema.methods.toAuthJSON = function(){
+        return {
+            username: this.username,
+            email: this.email,
+            role: this.role,
+            avatar: this.avatar,
+            token: this.generateJWT()
+        };
+    };
 
     var User = mongoose.model('User', userSchema);
 

@@ -12,13 +12,16 @@
     <script src="https://code.angularjs.org/1.7.7/angular.js"></script>
     <script src="https://unpkg.com/@uirouter/angularjs@1.0.22/release/angular-ui-router.min.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/controllers/appController.js"></script>
     <script src="js/controllers/movies_controller.js"></script>
+    <script src="js/controllers/AuthServices.js"></script>
+
 
 </head>
 
 <body ng-app="filmApp">
 
-<div class="container-fullwidth">
+<div class="container-fullwidth" ng-controller="AppController">
 
     <header ng-include="'nav.html'"></header>
 

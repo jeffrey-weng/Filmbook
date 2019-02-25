@@ -7,7 +7,8 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     config = require('./config'),
     passport = require('passport'),
-    routes = require('../routes');
+    StreamRouter = require('../routes/StreamRouter'),
+    AuthRouter = require('../routes/AuthRouter.js');
 
 module.exports.init = function() {
 
@@ -19,18 +20,15 @@ module.exports.init = function() {
     app.use(bodyParser.json());
     app.use(express.static('static'));
 
-    app.use(
-        expressSession({
-            secret: 'keyboard cat',
-            resave: false,
-            saveUninitialized: false,
-        }),
-    );
-    
+    require('./passport.js');
+
     app.use(passport.initialize());
     app.use(passport.session());
 
-    app.use('/api',routes);
+
+
+    app.use('/api', StreamRouter);
+    app.use('/auth', AuthRouter);
 
     /*Go to homepage for all routes not specified */ 
    /* app.use('/*',function(req,res,next){

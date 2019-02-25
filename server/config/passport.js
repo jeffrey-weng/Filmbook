@@ -1,25 +1,16 @@
-var LocalStrategy = require('passport-local').Strategy,
-    User = require('../models/users.server.model.js');
+var passport = require('passport'),
+    LocalStrategy = require('passport-local'),
+    mongoose = require('mongoose'),
+    User = mongoose.model('User');
 
-module.exports = function(passport) {
-
-    passport.serializeUser(function(user, done){
-        done(null, user.id);
-    });
-
-    passport.deserializeUser(function(id, done){
-        User.findById(id, function(err, user){
-            done(err, user);
-        });
-    });
-
-    passport.use('local-signup', new LocalStrategy({
-        usernameField: 'username',
-        passwordField: 'password',
-        passReqToCallback: true
-    },
-        function(req, username, password, done){
-        User.findOne({''})
-    }))
-
-}
+passport.use(new LocalStrategy({
+    usernameField: 'username',
+    passwordField: 'password'
+}, function(username, password, done){
+    User.findOne({username: username}).then(function(user){
+        if(!user || !user.validPassword(password)){
+            return done(null, false, {errors: {"username or password":"is invalid."}})
+        }
+        return done(null, user);
+    }).catch(done);
+}));
