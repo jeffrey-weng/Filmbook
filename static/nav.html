@@ -41,24 +41,45 @@
             </li>
         </ul>
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
+            <li class="nav-item" ng-if="!currentUser">
                 <a class="nav-link" ui-sref="login">Login</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" ng-if="!currentUser">
                 <a class="nav-link" ui-sref="register">Register</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" ng-if="currentUser">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Currently logged in as: <strong>username</strong>
+                    Currently logged in as: <strong>{{currentUser.username}}</strong>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="">Profile</a>
                     <a class="dropdown-item" href="">Watchlist</a>
                     <a class="dropdown-item" href="">Friends</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="">Log out</a>
+                    <a class="dropdown-item" ng-click="logout()">Log out</a>
                 </div>
             </li>
         </ul>
     </div>
 </nav>
+
+<div class="alert alert-success alert-dismissible fade show" role="alert" ng-if="successMessage">
+    <strong>Notice:</strong> {{successMessage}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert" ng-if="warningMessage">
+    <strong>Notice:</strong> {{warningMessage}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert" ng-if="errorMessage">
+    <strong>Notice:</strong> {{failureMessage}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>

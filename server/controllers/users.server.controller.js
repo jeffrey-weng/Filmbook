@@ -38,7 +38,7 @@ exports.update = function(req, res) {
   User.findById(user._id,function(err,user){
 	  if(err) throw err;
   
-      user.password=req.body.password;
+      user.setPassword(req.body.password);
       user.email=req.body.email;
       user.favoriteMovies=req.body.favoriteMovies;
       user.favoriteGenres=req.body.favoriteGenres;
