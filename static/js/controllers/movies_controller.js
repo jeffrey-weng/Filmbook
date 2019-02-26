@@ -340,12 +340,111 @@ angular.module('filmApp').controller('MoviesController',
 			$scope.displayType = type;
 		};
 
+		const monthNames = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
+
+  const genres = [ {
+	"id": 28,
+	"name": "Action"
+  },
+  {
+	"id": 12,
+	"name": "Adventure"
+  },
+  {
+	"id": 16,
+	"name": "Animation"
+  },
+  {
+	"id": 35,
+	"name": "Comedy"
+  },
+  {
+	"id": 80,
+	"name": "Crime"
+  },
+  {
+	"id": 99,
+	"name": "Documentary"
+  },
+  {
+	"id": 18,
+	"name": "Drama"
+  },
+  {
+	"id": 10751,
+	"name": "Family"
+  },
+  {
+	"id": 14,
+	"name": "Fantasy"
+  },
+  {
+	"id": 36,
+	"name": "History"
+  },
+  {
+	"id": 27,
+	"name": "Horror"
+  },
+  {
+	"id": 10402,
+	"name": "Music"
+  },
+  {
+	"id": 9648,
+	"name": "Mystery"
+  },
+  {
+	"id": 10749,
+	"name": "Romance"
+  },
+  {
+	"id": 878,
+	"name": "Science Fiction"
+  },
+  {
+	"id": 10770,
+	"name": "TV Movie"
+  },
+  {
+	"id": 53,
+	"name": "Thriller"
+  },
+  {
+	"id": 10752,
+	"name": "War"
+  },
+  {
+	"id": 37,
+	"name": "Western"
+  }];
 
 		$scope.showMovieDetails = function (movie) {
+			var d = new Date(movie.release_date);
+
 			$scope.movieTitle = movie.title;
 			$scope.movieDescription = movie.overview;
 			$scope.moviePosterPath = movie.poster_path;
+			$scope.movieReleaseDate = movie.release_date;
+			$scope.movieRating = movie.vote_average;
+			$scope.movieGenres=movie.genre_ids;
+
+			$scope.movieDisplayDate=monthNames[d.getMonth()]+" "+d.getUTCDate()+", "+d.getFullYear();
+			$scope.movieDisplayGenres = "";
+
+			for(var i=0;i<movie.genre_ids.length;i++)
+			for(var j=0;j<genres.length;j++)
+			if(movie.genre_ids[i]===genres[j].id)
+				if(i===movie.genre_ids.length-1)
+					$scope.movieDisplayGenres+=genres[j].name;
+				else
+					$scope.movieDisplayGenres+=genres[j].name+", ";
+			
+
+			
 		};
+
 
 		$scope.addToWatchList = function () {
 
@@ -357,10 +456,23 @@ angular.module('filmApp').controller('MoviesController',
 				return;
 			}
 
+			if($scope.currentUser.watched.length!=0)
+			if(!$scope.currentUser.watched.every(function(value){
+				return $scope.movieTitle!==value.title
+			})) {
+				alert("You've already seen this movie!");
+				return;
+			}
+
+			
+
 			$scope.currentUser.watchlist.push({
 				title:$scope.movieTitle,
 				overview:$scope.movieDescription,
-				poster_path:$scope.moviePosterPath
+				poster_path:$scope.moviePosterPath,
+				release_date:$scope.movieReleaseDate,
+				genre_ids:$scope.movieGenres,
+				vote_average:$scope.movieRating
 			});
 
 			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist});
@@ -373,15 +485,43 @@ angular.module('filmApp').controller('MoviesController',
 		$scope.removeFromWatchList = function () {
 
 
-			$scope.currentUser.watchlist.push({
-				title:$scope.movieTitle,
-				overview:$scope.movieDescription,
-				poster_path:$scope.moviePosterPath
-			});
+			for(var i=0;i<$scope.currentUser.watchlist.length;i++){
+				if($scope.currentUser.watchlist[i].title===$scope.movieTitle){
+				$scope.currentUser.watchlist.splice(i,1);
+				break;
+				}
+			}
 
 			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist});
 
 			alert("Movie removed from watchlist.");
+			//console.log($scope.currentUser);
+		
+		};
+
+		$scope.addToWatched = function () {
+
+
+			for(var i=0;i<$scope.currentUser.watchlist.length;i++){
+				if($scope.currentUser.watchlist[i].title===$scope.movieTitle){
+				$scope.currentUser.watchlist.splice(i,1);
+				break;
+				}
+			}
+
+			$scope.currentUser.watched.unshift({
+				title:$scope.movieTitle,
+				overview:$scope.movieDescription,
+				poster_path:$scope.moviePosterPath,
+				release_date:$scope.movieReleaseDate,
+				genre_ids:$scope.movieGenres,
+				vote_average:$scope.movieRating
+			});
+
+			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist,
+			watched:$scope.currentUser.watched});
+
+			alert("Movie added to Recently Seen.");
 			//console.log($scope.currentUser);
 		
 		};

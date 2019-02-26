@@ -1,0 +1,48 @@
+<body>
+    <br><br>
+    
+    <h3>Recently Seen:</h3>
+    <br>
+    <div class="container">
+    <div class="row">
+    <div class="card space" ng-repeat="movie in currentUser.watched" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)" >
+            <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found">
+    </div>
+    </div>
+    </div>
+    </body>
+
+    <div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+           <div class="modal-content">
+              <div class="modal-header">
+                 <h5 class="modal-title">{{movieTitle}}</h5>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                 </button>
+              </div>
+              <div class="modal-body">
+                 <div class="container-fluid">
+                    <div class="row">
+                       <div class="col-md-6">
+                          <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive" alt="Movie Poster Not Found">
+                       </div>
+                       <div class="col-md-6">
+                        <strong>Overview:</strong>  {{movieDescription}}
+                        <br><br>
+                        <strong>Genre(s):</strong>  {{movieDisplayGenres}}
+                        <br><br>
+                        <strong>Average Rating:</strong>  {{movieRating}}/10
+                        <br><br>
+                       <strong>Release Date:</strong> {{movieDisplayDate}}
+                       </div>
+                    </div>
+                 </div>
+              </div>
+              <div class="modal-footer">
+                 <button type="button" class="btn btn-primary" ng-click="">Write a Review for this movie</button>
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+           </div>
+        </div>
+     </div>

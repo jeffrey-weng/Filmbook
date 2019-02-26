@@ -41,13 +41,20 @@
                       <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive" alt="Movie Poster Not Found">
                    </div>
                    <div class="col-md-6">
-                      {{movieDescription}}
+                     <strong>Overview:</strong>  {{movieDescription}}
+                     <br><br>
+                     <strong>Genre(s):</strong>  {{movieDisplayGenres}}
+                     <br><br>
+                     <strong>Average Rating:</strong>  {{movieRating}}/10
+                     <br><br>
+                    <strong>Release Date:</strong> {{movieDisplayDate}}
                    </div>
                 </div>
              </div>
           </div>
           <div class="modal-footer">
-             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()">Remove from Watchlist</button>
+             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" data-dismiss="modal">Remove from Watchlist</button>
+             <button type="button" class="btn btn-success" ng-click="addToWatched()" data-dismiss="modal">Add to Watched</button>
              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
        </div>

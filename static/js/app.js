@@ -99,6 +99,14 @@ angular.module('filmApp', [
                 .state('404', {
                     url: '/404',
                     templateUrl: '404.html',
+                })
+                .state('profile',{
+                    url: '/profile',
+                    templateUrl: 'profile.html',
+                    controller: 'MoviesController',
+                    data:{
+                        authorizedRoles: [USER_ROLES.all]
+                    }
                 });
 
             $urlRouterProvider.otherwise('/');
