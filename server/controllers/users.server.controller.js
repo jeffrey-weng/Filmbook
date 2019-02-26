@@ -38,12 +38,27 @@ exports.update = function(req, res) {
   User.findById(user._id,function(err,user){
 	  if(err) throw err;
   
+    if(req.body.password)
       user.setPassword(req.body.password);
+
+    if(req.body.email)
       user.email=req.body.email;
+
+    if(req.body.favoriteMovies)
       user.favoriteMovies=req.body.favoriteMovies;
+
+    if(req.body.favoriteGenres)  
       user.favoriteGenres=req.body.favoriteGenres;
+
+    if(req.body.watchlist) {
       user.watchlist=req.body.watchlist;
+      user.markModified('watchlist');
+    }
+
+    if(req.body.watched)  
       user.watched=req.body.watched;
+
+    if(req.body.avatar)    
       user.avatar=req.body.avatar;
 	  
 	  user.save(function(err){

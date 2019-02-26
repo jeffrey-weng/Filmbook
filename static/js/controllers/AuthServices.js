@@ -8,7 +8,7 @@ angular.module('filmApp')
             AuthService.login(credentials).then(function (user) {
                 console.log('Back in AuthService.login.then()');
                 $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
-                $scope.setCurrentUser(user);
+                $scope.setCurrentUser(user); //{user: user.toAuthJSON()}
                 console.log('CurrentUser variable set.');
                 $state.go('landing');
             }, function () {

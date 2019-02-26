@@ -347,5 +347,33 @@ angular.module('filmApp').controller('MoviesController',
 			$scope.moviePosterPath = movie.poster_path;
 		};
 
+		$scope.addToWatchList = function () {
+
+			var posterUrl = 'https://image.tmdb.org/t/p/original'+$scope.moviePosterPath;
+
+
+			if($scope.currentUser.watchlist.includes({
+				title:$scope.movieTitle,
+				desc:$scope.movieDescription,
+				poster:posterUrl
+			})){
+				alert("Movie already in watchlist.");
+				 return;
+			}
+
+			$scope.currentUser.watchlist.push({
+				title:$scope.movieTitle,
+				desc:$scope.movieDescription,
+				poster:posterUrl
+			});
+
+			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist});
+
+			alert("Movie added to watchlist.");
+			//console.log($scope.currentUser);
+		
+		};
+
+
 
 	});
