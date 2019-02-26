@@ -349,27 +349,39 @@ angular.module('filmApp').controller('MoviesController',
 
 		$scope.addToWatchList = function () {
 
-			var posterUrl = 'https://image.tmdb.org/t/p/original'+$scope.moviePosterPath;
-
-
-			if($scope.currentUser.watchlist.includes({
-				title:$scope.movieTitle,
-				desc:$scope.movieDescription,
-				poster:posterUrl
-			})){
+			if($scope.currentUser.watchlist.length!=0)
+			if(!$scope.currentUser.watchlist.every(function(value){
+				return $scope.movieTitle!==value.title
+			})) {
 				alert("Movie already in watchlist.");
-				 return;
+				return;
 			}
 
 			$scope.currentUser.watchlist.push({
 				title:$scope.movieTitle,
-				desc:$scope.movieDescription,
-				poster:posterUrl
+				overview:$scope.movieDescription,
+				poster_path:$scope.moviePosterPath
 			});
 
 			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist});
 
 			alert("Movie added to watchlist.");
+			//console.log($scope.currentUser);
+		
+		};
+
+		$scope.removeFromWatchList = function () {
+
+
+			$scope.currentUser.watchlist.push({
+				title:$scope.movieTitle,
+				overview:$scope.movieDescription,
+				poster_path:$scope.moviePosterPath
+			});
+
+			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist});
+
+			alert("Movie removed from watchlist.");
 			//console.log($scope.currentUser);
 		
 		};
