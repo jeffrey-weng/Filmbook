@@ -26,11 +26,11 @@ var mongoose = require('mongoose'),
         salt: String, //password salt
         hash: String, //password hash
 
-        favoriteMovies: [String],
+        favoriteMovies:[Schema.Types.Mixed],
         favoriteGenres: [String],
 
-        watchlist: [String],
-        watched: [String],
+        watchlist: [Schema.Types.Mixed],
+        watched: [Schema.Types.Mixed],
 
         avatar: {
             type: String,
@@ -83,6 +83,7 @@ var mongoose = require('mongoose'),
 
     userSchema.methods.toAuthJSON = function(){
         return {
+            id: this._id,
             username: this.username,
             email: this.email,
             role: this.role,

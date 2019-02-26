@@ -8,6 +8,9 @@ var config = require('../config/config'),
 	bodyParser = require('body-parser'),
 	methodOverride = require('method-override'),
 	auth = require('./auth.js'),
+	AuthRouter = require('./AuthRouter');
+
+	var currentUser = AuthRouter.currentUser;
 
 /*server crud controllers*/
 	discussions = require('../controllers/discussion.server.controller.js'),
@@ -35,13 +38,13 @@ var enrichActivities = function(body) {
 	return StreamBackend.enrichActivities(activities);
 };
 
-/*passport stuff*/
-var ensureAuthenticated = function(req, res, next) {
+/*passport stuff (NOT USED)*/
+/*var ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
 	}
-	res.redirect('/login');
-};
+	res.redirect('/#!/login');
+}; */
 
 
 /*helper function that might be helpful*/
@@ -79,13 +82,13 @@ StreamRouter.use(function(error, req, res, next) {
 	}
 });
 
-/*populating authenticated user's 'req.user' property with useful fields..and something with notifications*/
+/*populating 'req.user' property with useful fields..and something with notifications*/
 StreamRouter.use(function(req, res, next) {
 	if (!req.isAuthenticated()) {
 		return next();
 	} else if (!req.user.id) {
 		User.findOne({ username: req.user.username })
-			.lean()
+			
 			.exec(function(err, user) {
 				if (err) return next(err);
 
@@ -122,18 +125,18 @@ StreamRouter.use(
 	})
 );
 
-/*fetches feed data for logged-in user (View: home.html)*/
-StreamRouter.get('/', ensureAuthenticated, function(req, res, next) {
+/*fetches feed data for user by ID */
+StreamRouter.get('/home/:userId', function(req, res, next) {
 
-	var flatFeed = FeedManager.getNewsFeeds(req.user.id)['timeline'];
-
+	var flatFeed = FeedManager.getNewsFeeds(req.profile._id)['timeline'];
+//console.log(flatFeed);
 	flatFeed
 		.get({})
 		.then(enrichActivities)
 		.then(function(enrichedActivities) {
 			res.json(
 				{location: 'home',
-					user: req.user,
+					user: req.profile,
 					activities: enrichedActivities, //feed data
 					path: req.url,
 				});
@@ -143,12 +146,9 @@ StreamRouter.get('/', ensureAuthenticated, function(req, res, next) {
 
 
 
-/******************
- Logged-In User Profile (View: profile.html)
- ******************/
-
-StreamRouter.get('/profile', ensureAuthenticated, function(req, res, next) {
-	var userFeed = FeedManager.getUserFeed(req.user.id);
+/*get user profile data by username*/
+StreamRouter.get('/profile/:userId', function(req, res, next) {
+	var userFeed = FeedManager.getUserFeed(req.profile._id);
 	var enrichment,userData,Followers,Following;
 	userFeed
 		.get({})
@@ -157,15 +157,16 @@ StreamRouter.get('/profile', ensureAuthenticated, function(req, res, next) {
 			enrichment=enrichedActivities;
 		});
 
-	User.findOne({username:req.user.username}).lean().exec(function(err, user) {
+	//console.log("PROFILE = " +req.profile);
+	User.findOne({username:req.profile.username}).exec(function(err, user) {
 			if (err) return err;
-
+		
 			userData = user;
 
 		}
 	);
 
-	Follow.find({target:req.user.id}).lean().exec(function(err,followers){
+	Follow.find({target:req.profile._id}).exec(function(err,followers){
 		if(err){
 			console.log(err);
 			res.status(400).send(err);
@@ -176,7 +177,7 @@ StreamRouter.get('/profile', ensureAuthenticated, function(req, res, next) {
 
 	});
 
-	Follow.find({user:req.user.id}).lean().exec(function(err,following){
+	Follow.find({user:req.profile._id}).exec(function(err,following){
 		if(err){
 			console.log(err);
 			res.status(400).send(err);
@@ -186,7 +187,7 @@ StreamRouter.get('/profile', ensureAuthenticated, function(req, res, next) {
 		}
 
 	});
-
+	//console.log(userFeed);
 	res.json({
 		location: 'profile',
 		activities: enrichment,
@@ -200,8 +201,8 @@ StreamRouter.get('/profile', ensureAuthenticated, function(req, res, next) {
 });
 
 
-/*used when viewing other people's profiles*/
-StreamRouter.get('/profile/:user', ensureAuthenticated, function(req, res, next) {
+/*get user profile data by username*/
+StreamRouter.get('/profile/:user', function(req, res, next) {
 	User.findOne({ username: req.params.user }, function(err, foundUser) {
 		if (err) return next(err);
 
@@ -218,7 +219,7 @@ StreamRouter.get('/profile/:user', ensureAuthenticated, function(req, res, next)
 				enrichment=enrichedActivities;
 			});
 
-		User.findOne({username:foundUser.username}).lean().exec(function(err, user) {
+		User.findOne({username:foundUser.username}).exec(function(err, user) {
 				if (err) return err;
 
 				userData = user;
@@ -226,7 +227,7 @@ StreamRouter.get('/profile/:user', ensureAuthenticated, function(req, res, next)
 			}
 		);
 
-		Follow.find({target:foundUser._id}).lean().exec(function(err,followers){
+		Follow.find({target:foundUser._id}).exec(function(err,followers){
 			if(err){
 				console.log(err);
 				res.status(400).send(err);
@@ -237,7 +238,7 @@ StreamRouter.get('/profile/:user', ensureAuthenticated, function(req, res, next)
 
 		});
 
-		Follow.find({user:foundUser._id}).lean().exec(function(err,following){
+		Follow.find({user:foundUser._id}).exec(function(err,following){
 			if(err){
 				console.log(err);
 				res.status(400).send(err);
@@ -265,10 +266,10 @@ StreamRouter.get('/profile/:user', ensureAuthenticated, function(req, res, next)
  ******************/
 
 /*should trigger when logged in user follows another user*/
-StreamRouter.post('/follow', ensureAuthenticated, function(req, res, next) {
+StreamRouter.post('/follow/:userId', function(req, res, next) {
 	User.findOne({ _id: req.body.target }, function(err, target) {
 		if (target) {
-			var followData = { user: req.user.id, target: req.body.target };
+			var followData = { user: req.profile._id, target: req.body.target };
 			var follow = new Follow(followData);
 			follow.save(function(err) {
 				if (err) next(err);
@@ -282,8 +283,8 @@ StreamRouter.post('/follow', ensureAuthenticated, function(req, res, next) {
 });
 
 /*should trigger when logged in user unfollows another user*/
-StreamRouter.delete('/follow', ensureAuthenticated, function(req, res) {
-	Follow.findOne({ user: req.user.id, target: req.body.target }, function(
+StreamRouter.delete('/follow/:userId', function(req, res) {
+	Follow.findOne({ user: req.profile._id, target: req.body.target }, function(
 		err,
 		follow
 	) {

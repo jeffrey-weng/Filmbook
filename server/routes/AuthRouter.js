@@ -5,6 +5,8 @@ var mongoose = require('mongoose'),
     AuthRouter = require('express').Router();
 
 
+    var currentUser=null;
+
 //Middleware that converts error objects into simple JSON
 AuthRouter.use(function(err,req,res,next){
     if(err.name === 'ValidationError'){
@@ -51,6 +53,8 @@ AuthRouter.post('/login', function(req,res,next){
 
         if(user){
             user.token = user.generateJWT();
+            currentUser=user.toAuthJSON();
+            console.log(currentUser);
             return res.json({success: true, user: user.toAuthJSON()});
         } else {
             return res.status(422).json({info: info});
