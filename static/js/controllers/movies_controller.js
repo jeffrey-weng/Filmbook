@@ -1,8 +1,6 @@
 angular.module('filmApp').controller('MoviesController',
 	function ($scope, $http) {
 
-		var today = new Date();
-		var date = today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
 
 		$scope.movieType = 'movie in popular';
 		$scope.displayType = 2; //set default display to top rated movies
@@ -499,6 +497,8 @@ angular.module('filmApp').controller('MoviesController',
 		
 		};
 
+		
+
 		$scope.addToWatched = function () {
 
 
@@ -521,10 +521,84 @@ angular.module('filmApp').controller('MoviesController',
 			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist,
 			watched:$scope.currentUser.watched});
 
+			$http.post(window.location.origin+'/api/watch/',{user:$scope.currentUser.id,movie:$scope.movieTitle});
+
+
 			alert("Movie added to Recently Seen.");
 			//console.log($scope.currentUser);
 		
 		};
+
+		$http.get(window.location.origin+'/api/home/'+$scope.currentUser.id)
+		.then(function(response){
+			$scope.activities = response.data.activities;
+		});
+
+				
+		$http.get(window.location.origin+'/api/profile/'+$scope.currentUser.id)
+		.then(function(response){
+			$scope.userActivities = response.data.activities;
+		});
+
+		//Refresh feeds every one minute (to show updates on how long ago an activity occured)
+		setInterval(function(){
+			$http.get(window.location.origin+'/api/home/'+$scope.currentUser.id)
+		.then(function(response){
+			$scope.activities = response.data.activities;
+		});
+
+				
+		$http.get(window.location.origin+'/api/profile/'+$scope.currentUser.id)
+		.then(function(response){
+			$scope.userActivities = response.data.activities;
+		});
+
+		},60000);
+
+
+
+		
+
+		$scope.activityObject = function(activity){
+			if(activity.verb=="Follow"){
+				return activity.object.target.username;
+			}
+			else if(activity.verb=="Watch"){
+				return activity.object.movie;
+			}
+		}
+
+		$scope.dateRecorded = function(activity){
+			var date=new Date();
+
+			var activityDate = new Date(activity.object.created_at);
+
+			var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
+
+			if(timeDiff<86400000 && timeDiff>=3600000){
+				var diffHours = Math.ceil(timeDiff/3600000);
+				return diffHours + " hours ago";
+			}
+			else if(timeDiff<3600000){
+				var diffMinutes = Math.ceil(timeDiff/60000);
+				return diffMinutes + " minutes ago";
+			}
+			else if(timeDiff<60000){
+				return "Just now";
+			}
+			else{
+			var diffDays = Math.ceil(timeDiff / (1000*3600*24));
+			return diffDays+ " days ago";
+			}
+		}
+
+		$scope.emptyWatchListMsg = function(watchlist){
+			console.log("Entered");
+			if(watchlist.length==0)
+			return true;
+
+			else return false;
+		}
 
 
 

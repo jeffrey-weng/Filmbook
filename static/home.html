@@ -9,13 +9,54 @@
 <body>
 <br><br>
 
-<h3>Update Your Watchlist:</h3>
-<br>
+<!--Styling messes up when you use container-fluid instead of container-->
 <div class="container">
+      <div class="row">
+<h3>Update Your Watchlist:</h3>
+      </div>
 <div class="row">
 <div class="card space" ng-repeat="movie in currentUser.watchlist" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)" >
         <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found">
 </div>
+</div>
+<div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)"><h5>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies you plan to watch!</h5></div>
+<div class="row">
+      <br>
+      <br>
+     </div>
+
+<div class="row">
+ <h3>Your Newsfeed:</h3>
+</div>
+ <div class="row">
+ <ul class="list-group">
+   <li class="list-group-item" ng-repeat="activity in activities">
+      <a href="#">{{activity.actor.username}}</a> {{activity.verb.toLowerCase()+"ed"}} <a href="#">{{activityObject(activity)}}</a>.
+
+      <small>{{dateRecorded(activity)}}</small>
+
+   </li>
+      
+ </ul>
+</div>
+<div class="row">
+      <br>
+      <br>
+     </div>
+<div class="row">
+      <h3>Your Recent Activity:</h3>
+     </div>
+     <div class="row">
+     <ul class="list-group">
+       <li class="list-group-item" ng-repeat="activity in userActivities">
+          You {{activity.verb.toLowerCase()+"ed"}} <a href="#">{{activityObject(activity)}}</a>.
+    
+          <small>{{dateRecorded(activity)}}</small>
+    
+       </li>
+          
+     </ul>
+    </div>
 </div>
 </div>
 </body>

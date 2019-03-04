@@ -38,6 +38,6 @@ exports.config = {
 		/**
     * GetStream.io Aggregated Feed slug
     */
-		aggregated: 'aggregated',
+		aggregated: 'aggregated'
 	},
 };

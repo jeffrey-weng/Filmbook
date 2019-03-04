@@ -1,0 +1,57 @@
+
+<div class="container-fluid">
+    <div class="input-group" id="searchBar">
+       <input type="text" class="form-control" placeholder="Search Site Users..." ng-model="peopleSearchText" ng-change="onSearchChange()">
+    </div>
+    <h2 style="text-align: center;"></h2>
+
+   <div class="container">
+    <div class="row">
+    <div class="card space" ng-repeat="person in searchResults | filter: peopleSearchText">
+        <div class="card-body" ng-click="showProfileDetails(person)" data-toggle="modal" data-target="#personDetailsModal">
+        <h5 class="card-title">{{person.username}}</h5>
+         <img class="card-img-top" src={{person.avatar}} alt="Profile Picture Not Found">
+         </div>
+         <button id={{person._id}} ng-click="follow(person)"></button>
+     </div>
+     </div>
+     </div>
+
+
+
+
+ </div>
+ <div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+           <div class="modal-content">
+              <div class="modal-header">
+                 <h5 class="modal-title">{{username}}</h5>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                 </button>
+              </div>
+              <div class="modal-body">
+                 <div class="container-fluid">
+                    <div class="row">
+                       <div class="col-md-6">
+                          <img src={{avatar}} class="img-responsive" alt="Profile Picture Not Found">
+                       </div>
+                       <div class="col-md-6">
+                          <strong>Favorite Movies:</strong>  {{favMovies}}
+                          <br><br>
+                          <strong>Favorite Genre(s):</strong>  {{favGenres}}
+                          <br><br>
+                         <strong>Watchlist:</strong> {{watchlist}}
+                         <br><br>
+                         <strong>Recently Seen:</strong> {{watched}}
+                       </div>
+                    </div>
+                 </div>
+              </div>
+              <div class="modal-footer">
+                 <button type="button" id="modalFollow" class="btn btn-primary" ng-click="follow(id)">Follow {{username}}</button>
+                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+           </div>
+        </div>
+     </div>

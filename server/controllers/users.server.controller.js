@@ -121,7 +121,7 @@ exports.UserByUserName = function(req,res,next,username) {
 
  //named it req.profile because if it was req.user it might conflict with Passport's req.user?
 exports.UserByID = function(req, res, next, id) {
-  User.findById(id).exec(function(err, user) {
+  User.findById(id,function(err, user) {
     if(err) {
       res.status(400).send(err);
     } else {

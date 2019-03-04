@@ -52,6 +52,14 @@ angular.module('filmApp', [
                         authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
                     }
                 })
+                .state('people', {
+                    url: '/people',
+                    templateUrl: 'people.html',
+                    controller: 'PeopleController',
+                    data: {
+                        authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor]
+                    }
+                })
 
                 /*
                 .state('home.profile', {
@@ -120,7 +128,7 @@ angular.module('filmApp', [
             ]);
             */
 
-        }]);
+        }])
 
 
 /*

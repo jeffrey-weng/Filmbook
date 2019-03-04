@@ -36,7 +36,7 @@ var StreamBackend = new StreamMongoose.Backend();
 var enrichActivities = function(body) {
 	var activities = body.results;
 	return StreamBackend.enrichActivities(activities);
-};
+}; 
 
 /*passport stuff (NOT USED)*/
 /*var ensureAuthenticated = function(req, res, next) {
@@ -113,32 +113,21 @@ StreamRouter.use(function(req, res, next) {
 /*to parse POST request url-encoded bodies*/
 StreamRouter.use(bodyParser.urlencoded({ extended: true }));
 
-/*To allow deletion in a url encoded form*/
-StreamRouter.use(
-	methodOverride(function(req, res) {
-		if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-			// look in urlencoded POST bodies and delete it
-			var method = req.body._method;
-			delete req.body._method;
-			return method;
-		}
-	})
-);
 
 /*fetches feed data for user by ID */
+//NOTE TO SELF: ONLY THE DATA OF USERS YOU **FOLLOW** SHOW UP IN A USER'S FLAT FEED
 StreamRouter.get('/home/:userId', function(req, res, next) {
 
-	var flatFeed = FeedManager.getNewsFeeds(req.profile._id)['timeline'];
-//console.log(flatFeed);
+	var flatFeed = FeedManager.getNewsFeeds(req.profile._id)['flat'];
+	//console.log(flatFeed);
 	flatFeed
 		.get({})
 		.then(enrichActivities)
 		.then(function(enrichedActivities) {
 			res.json(
-				{location: 'home',
-					user: req.profile,
+				{
 					activities: enrichedActivities, //feed data
-					path: req.url,
+					
 				});
 		})
 		.catch(next);
@@ -146,124 +135,33 @@ StreamRouter.get('/home/:userId', function(req, res, next) {
 
 
 
-/*get user profile data by username*/
+/*get user profile data by userId*/
 StreamRouter.get('/profile/:userId', function(req, res, next) {
 	var userFeed = FeedManager.getUserFeed(req.profile._id);
+	//console.log((userFeed));
 	var enrichment,userData,Followers,Following;
 	userFeed
 		.get({})
 		.then(enrichActivities)
 		.then(function(enrichedActivities) {
-			enrichment=enrichedActivities;
-		});
-
-	//console.log("PROFILE = " +req.profile);
-	User.findOne({username:req.profile.username}).exec(function(err, user) {
-			if (err) return err;
-		
-			userData = user;
-
-		}
-	);
-
-	Follow.find({target:req.profile._id}).exec(function(err,followers){
-		if(err){
-			console.log(err);
-			res.status(400).send(err);
-		}
-		else{
-			Followers=followers;
-		}
-
-	});
-
-	Follow.find({user:req.profile._id}).exec(function(err,following){
-		if(err){
-			console.log(err);
-			res.status(400).send(err);
-		}
-		else{
-			Following=following;
-		}
-
-	});
-	//console.log(userFeed);
-	res.json({
-		location: 'profile',
-		activities: enrichment,
-		user: userData,
-		followers: Followers, //access followers by foreach x in followers: x.user
-		following: Following, //access followers by foreach x in following: x.target
-		path: req.url,
-		show_feed: true,
-	});
-	next();
+			res.json({activities:enrichedActivities})
+		}).catch(next);
+	
 });
 
-
-/*get user profile data by username*/
-StreamRouter.get('/profile/:user', function(req, res, next) {
-	User.findOne({ username: req.params.user }, function(err, foundUser) {
-		if (err) return next(err);
-
-		if (!foundUser)
-			return res.send('User ' + req.params.user + ' not found.');
-
-		var flatFeed = FeedManager.getNewsFeeds(foundUser._id)['flat'];
-		var enrichment,userData,Followers,Following;
-
-		flatFeed
-			.get({})
-			.then(enrichActivities)
-			.then(function(enrichedActivities) {
-				enrichment=enrichedActivities;
-			});
-
-		User.findOne({username:foundUser.username}).exec(function(err, user) {
-				if (err) return err;
-
-				userData = user;
-
-			}
-		);
-
-		Follow.find({target:foundUser._id}).exec(function(err,followers){
-			if(err){
-				console.log(err);
-				res.status(400).send(err);
-			}
-			else{
-				Followers=followers;
-			}
-
-		});
-
-		Follow.find({user:foundUser._id}).exec(function(err,following){
-			if(err){
-				console.log(err);
-				res.status(400).send(err);
-			}
-			else{
-				Following=following;
-			}
-
-		});
-
-		res.json({
-			location: 'profile',
-			activities: enrichment,
-			user: userData,
-			followers: Followers,  //access followers by foreach x in followers: x.user
-			following: Following, //access followers by foreach x in following: x.target
-			path: req.url,
-			show_feed: true,
-		});
-		next();
-	})});
 
 /******************
  Follow
  ******************/
+
+StreamRouter.get('/follow/:userId', function(req, res, next) {
+	Follow.find({ user: req.params.userId }, function(err, targets) {
+		if(err)next(err);
+		res.json(targets);
+	});
+});
+
+
 
 /*should trigger when logged in user follows another user*/
 StreamRouter.post('/follow/:userId', function(req, res, next) {
