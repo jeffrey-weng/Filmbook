@@ -8,7 +8,9 @@ var config = require('../config/config'),
 	bodyParser = require('body-parser'),
 	methodOverride = require('method-override'),
 	auth = require('./auth.js'),
-	AuthRouter = require('./AuthRouter');
+	AuthRouter = require('./AuthRouter'),
+	formidable = require('formidable'),
+	fs = require('fs');
 
 	var currentUser = AuthRouter.currentUser;
 
@@ -230,9 +232,37 @@ StreamRouter.route('/users/:userId')
 	.put(users.update)
 	.delete(users.delete);
 
+StreamRouter.route('/users/usernames/:user').get(users.read);
+
 //Watch API
 StreamRouter.route('/watch/:user').get(watches.getAllWatched);
 StreamRouter.route('/watch').post(watches.create);
+
+//Avatar upload
+StreamRouter.route('/files/:userId').post(function(req,res){
+	var form = new formidable.IncomingForm();
+	form.parse(req,function(err,fields,files){
+		var oldpath = files.avatar.path;
+		var newpath = 'static/images/'+req.profile._id+'-'+
+		files.avatar.name;
+
+		fs.rename(oldpath,newpath,function(err){
+			if(err) throw err;
+		});
+		User.findById(req.profile._id,function(err,user){
+			if(err)throw err;
+			user.avatar=newpath.substring(14);
+			user.save(function(err){
+				if(err)throw err;
+				console.log('User avatar updated.');
+			})
+		})
+		
+		
+	});
+
+	res.redirect('back');
+})
 
 
 

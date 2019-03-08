@@ -1,11 +1,47 @@
 <body>
-    <br><br>
+
+    <div class="container-fluid">
+         <div class="row justify-content-end">
+             
+               <h5 class="avatar-heading">Change your Avatar:</h5>
+      
+         </div>
+         <div class="row justify-content-end">
+
+               <img class="avatar avatar-heading" src={{'images/'+currentUser.avatar}} alt="No avatar found" data-toggle="modal" data-target="#avatarModal">
+      
+   </div>
+      <div class="row justify-content-end">
+           
+            <form id="uploadbanner" enctype="multipart/form-data" method="post" action={{'/api/files/'+currentUser.id}}>
+               <input id="fileupload" name="avatar" type="file" accept="image/*"/>
+               <br>
+               <input class="btn btn-primary btn-sm" type="submit" value="Upload" id="submit" disabled />
+            </form>
+         
+   </div>
+    </div>
+
+
+
     
-    <h3>Recently Seen:</h3>
-    <br>
     <div class="container">
+       <div class="row">
+         <h3>Recently Seen:</h3>
+      </div>
     <div class="row">
     <div class="card space" ng-repeat="movie in currentUser.watched" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)" >
+            <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found">
+    </div>
+    </div>
+
+
+
+    <div class="row">
+         <h3>Favorite Movies:</h3>
+      </div>
+    <div class="row">
+    <div class="card space" ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)" >
             <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found">
     </div>
     </div>
@@ -40,9 +76,35 @@
                  </div>
               </div>
               <div class="modal-footer">
-                 <button type="button" class="btn btn-primary" ng-click="">Write a Review for this movie</button>
+                 <button type="button" class="btn btn-success" ng-if="!inFavorites()" ng-click="addToFavorites()">Add to Favorites</button>
+                 <button type="button" class="btn btn-danger" ng-if="inFavorites()" ng-click="removeFromFavorites()">Remove from Favorites</button>
+                 <button type="button" class="btn btn-info" ng-click="writeReview()">Write a Review for this movie</button>
                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
            </div>
         </div>
      </div>
+
+
+     <div class="modal rain fade bd-example-modal-lg" id="avatarModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-lg">
+         <div>
+               <div>
+                    <img class="modalcontent" src={{'images/'+currentUser.avatar}}>
+                  </div>
+         </div>
+       </div>
+     </div>
+
+    <!-- <div class="modal fade" id="avatarModal" tabindex="-1" role="dialog" aria-labelledby="avatarModalLabel" aria-hidden="true">
+   
+           <div class="modal-content">              
+             <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+               <img class="modalcontent" src={{'images/'+currentUser.avatar}}>
+             </div>
+           </div>
+        
+       </div> -->
+
+   

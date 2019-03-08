@@ -36,12 +36,17 @@
       </div>
 
    </div>
+<div class="row">
+   <div class="col"></div>
+   <div class="col-8">
+   <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==1" ng-click="getMoreTheater();">Load More...</button>
+   <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==2" ng-click="getMoreTopRated();">Load More...</button>
+   <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==3" ng-click="getMorePopular();">Load More...</button>
+   <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==4" ng-click="getMoreSearch(movieSearchText);">Load More...</button>
+</div>
 
-   <button ng-if="displayType==1" ng-click="getMoreTheater();">Load More...</button>
-   <button ng-if="displayType==2" ng-click="getMoreTopRated();">Load More...</button>
-   <button ng-if="displayType==3" ng-click="getMorePopular();">Load More...</button>
-   <button ng-if="displayType==4" ng-click="getMoreSearch(movieSearchText);">Load More...</button>
-
+   <div class="col"></div>
+</div>
 </div>
 
 <div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel" aria-hidden="true">

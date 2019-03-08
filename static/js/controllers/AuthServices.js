@@ -116,6 +116,9 @@ angular.module('filmApp')
                 .then(function (res) {
                     console.log('Response from POST /auth/register: ');
                     console.log(res);
+
+                    $rootScope.searchResults.push(res.data.user);
+
                     return res.data.user;
                 }, function(res){
                     console.log(res);

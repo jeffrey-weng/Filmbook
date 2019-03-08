@@ -104,7 +104,7 @@ exports.list = function(req, res) {
 /*Getting a single user by username */
 exports.UserByUserName = function(req,res,next,username) {
 
-  User.findOne({username:username}).lean().exec(function(err, user) {
+  User.findOne({username:username}).exec(function(err, user) {
   if (err) return next(err);
 
      req.profile = user;

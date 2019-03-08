@@ -31,14 +31,17 @@
  <div class="row">
  <ul class="list-group">
    <li class="list-group-item" ng-repeat="activity in activities">
-      <a href="#">{{activity.actor.username}}</a> {{activity.verb.toLowerCase()+"ed"}} <a href="#">{{activityObject(activity)}}</a>.
+      <p><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal" data-target="#personDetailsModal" ng-click="activityModal(activity,'actor')">{{activity.actor.username}}</span> 
+         {{activity.verb.toLowerCase()+"ed"}} <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
 
-      <small>{{dateRecorded(activity)}}</small>
+      <small>{{dateRecorded(activity)}}</small> </p>
 
    </li>
       
  </ul>
 </div>
+<div class="row" ng-if="activities.length==0"><h5>Your newsfeed is currently empty! Follow other users to fill up your feed!</h5></div>
+
 <div class="row">
       <br>
       <br>
@@ -49,14 +52,15 @@
      <div class="row">
      <ul class="list-group">
        <li class="list-group-item" ng-repeat="activity in userActivities">
-          You {{activity.verb.toLowerCase()+"ed"}} <a href="#">{{activityObject(activity)}}</a>.
+          <p>You {{activity.verb.toLowerCase()+"ed"}} <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
     
-          <small>{{dateRecorded(activity)}}</small>
+          <small>{{dateRecorded(activity)}}</small></p>
     
        </li>
           
      </ul>
     </div>
+    <div class="row" ng-if="userActivities.length==0"><h5>No recent site activity.</h5></div>
 </div>
 </div>
 </body>
@@ -94,10 +98,51 @@
              </div>
           </div>
           <div class="modal-footer">
-             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" data-dismiss="modal">Remove from Watchlist</button>
-             <button type="button" class="btn btn-success" ng-click="addToWatched()" data-dismiss="modal">Add to Watched</button>
+             <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist() && !inWatched()" data-dismiss="modal">Add to WatchList</button>
+             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist()" data-dismiss="modal">Remove From Watchlist</button>
+             <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist()" data-dismiss="modal">Add to Watched</button>
+             <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites() && inWatched()" data-dismiss="modal">Add to Favorites</button>
+             <button type="button" class="btn btn-danger" ng-if="inFavorites()" ng-click="removeFromFavorites()">Remove from Favorites</button>
+             <button type="button" class="btn btn-info" ng-click="writeReview()" data-dismiss="modal">Write a Review for this Movie</button>
              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
        </div>
     </div>
  </div>
+
+
+
+ <div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">{{username}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'images/'+avatar}} class="img-responsive" alt="Profile Picture Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Favorite Movies:</strong>  {{favMovies}}
+                     <br><br>
+                     <strong>Most Viewed Genre(s):</strong>  {{favGenres}}
+                     <br><br>
+                    <strong>Watchlist:</strong> {{watchlist}}
+                    <br><br>
+                    <strong>Recently Seen:</strong> {{watched}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id={{'modal:'+id}} class="btn btn-danger" ng-click="follow(id)">Unfollow {{username}}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
