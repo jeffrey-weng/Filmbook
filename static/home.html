@@ -1,68 +1,93 @@
 <!DOCTYPE html>
 
 <head>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-        <link rel="stylesheet" href="css/style.css">
-     </head>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous">
+   <link rel="stylesheet" href="css/style.css">
+</head>
 
 
 <body>
-<br><br>
+   <br><br>
 
-<!--Styling messes up when you use container-fluid instead of container-->
-<div class="container">
+   <!--Styling messes up when you use container-fluid instead of container-->
+   <div class="container">
       <div class="row">
-<h3>Update Your Watchlist:</h3>
+         <h3>Update Your Watchlist:</h3>
       </div>
-<div class="row">
-<div class="card space" ng-repeat="movie in currentUser.watchlist" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)" >
-        <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found">
-</div>
-</div>
-<div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)"><h5>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies you plan to watch!</h5></div>
-<div class="row">
-      <br>
-      <br>
-     </div>
+      <div class="row">
+         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
+            ng-repeat="movie in currentUser.watchlist" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
 
-<div class="row">
- <h3>Your Newsfeed:</h3>
-</div>
- <div class="row">
- <ul class="list-group">
-   <li class="list-group-item" ng-repeat="activity in activities">
-      <p><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal" data-target="#personDetailsModal" ng-click="activityModal(activity,'actor')">{{activity.actor.username}}</span> 
-         {{activity.verb.toLowerCase()+"ed"}} <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
+      </div>
+      <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
+         <h5>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies you
+            plan to watch!</h5>
+      </div>
+      <div class="row">
+         <br>
+         <br>
+      </div>
+      <div class="row">
+         <h3>Movies You Might Like:</h3>
+      </div>
+      <h5 ng-if="noSuggestions()">Watch, favorite, or add to your Watchlist some <a ui-sref="movies">movies</a> to get
+         customized recommendations!</h5>
+      <div class="row">
+         <img class="movieRec" ng-repeat="movie in movieRecs" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+            alt="Movie Poster Not Found" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+      </div>
 
-      <small>{{dateRecorded(activity)}}</small> </p>
+      <div class="row">
+         <br>
+         <br>
+      </div>
 
-   </li>
-      
- </ul>
-</div>
-<div class="row" ng-if="activities.length==0"><h5>Your newsfeed is currently empty! Follow other users to fill up your feed!</h5></div>
+      <div class="row">
+         <h3>Your Newsfeed:</h3>
+      </div>
+      <div class="row">
+         <ul class="list-group">
+            <li class="list-group-item" ng-repeat="activity in activities">
+               <p><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal" data-target="#personDetailsModal"
+                     ng-click="activityModal(activity,'actor')">{{activity.actor.username}}</span>
+                  {{activity.verb.toLowerCase()+"ed"}} <span id={{activity.id}} class="activityLink" data-toggle="modal"
+                     data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
 
-<div class="row">
-      <br>
-      <br>
-     </div>
-<div class="row">
-      <h3>Your Recent Activity:</h3>
-     </div>
-     <div class="row">
-     <ul class="list-group">
-       <li class="list-group-item" ng-repeat="activity in userActivities">
-          <p>You {{activity.verb.toLowerCase()+"ed"}} <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
-    
-          <small>{{dateRecorded(activity)}}</small></p>
-    
-       </li>
-          
-     </ul>
-    </div>
-    <div class="row" ng-if="userActivities.length==0"><h5>No recent site activity.</h5></div>
-</div>
-</div>
+                  <small>{{dateRecorded(activity)}}</small> </p>
+
+            </li>
+
+         </ul>
+      </div>
+      <div class="row" ng-if="activities.length==0">
+         <h5>Your newsfeed is currently empty! Follow other users to fill up your feed!</h5>
+      </div>
+
+      <div class="row">
+         <br>
+         <br>
+      </div>
+      <div class="row">
+         <h3>Your Recent Activity:</h3>
+      </div>
+      <div class="row">
+         <ul class="list-group">
+            <li class="list-group-item" ng-repeat="activity in userActivities">
+               <p>You {{activity.verb.toLowerCase()+"ed"}} <span id={{activity.id}} class="activityLink" data-toggle="modal"
+                     data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
+
+                  <small>{{dateRecorded(activity)}}</small></p>
+
+            </li>
+
+         </ul>
+      </div>
+      <div class="row" ng-if="userActivities.length==0">
+         <h5>No recent site activity.</h5>
+      </div>
+   </div>
+   </div>
 </body>
 
 
@@ -70,49 +95,57 @@
 
 
 
- <div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-       <div class="modal-content">
-          <div class="modal-header">
-             <h5 class="modal-title">{{movieTitle}}</h5>
-             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-             </button>
-          </div>
-          <div class="modal-body">
-             <div class="container-fluid">
-                <div class="row">
-                   <div class="col-md-6">
-                      <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive" alt="Movie Poster Not Found">
-                   </div>
-                   <div class="col-md-6">
-                     <strong>Overview:</strong>  {{movieDescription}}
+<div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title">{{movieTitle}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive" alt="Movie Poster Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Overview:</strong> {{movieDescription}}
                      <br><br>
-                     <strong>Genre(s):</strong>  {{movieDisplayGenres}}
+                     <strong>Genre(s):</strong> {{movieDisplayGenres}}
                      <br><br>
-                     <strong>Average Rating:</strong>  {{movieRating}}/10
+                     <strong>Average Rating:</strong> {{movieRating}}/10
                      <br><br>
-                    <strong>Release Date:</strong> {{movieDisplayDate}}
-                   </div>
-                </div>
-             </div>
-          </div>
-          <div class="modal-footer">
-             <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist() && !inWatched()" data-dismiss="modal">Add to WatchList</button>
-             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist()" data-dismiss="modal">Remove From Watchlist</button>
-             <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist()" data-dismiss="modal">Add to Watched</button>
-             <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites() && inWatched()" data-dismiss="modal">Add to Favorites</button>
-             <button type="button" class="btn btn-danger" ng-if="inFavorites()" ng-click="removeFromFavorites()">Remove from Favorites</button>
-             <button type="button" class="btn btn-info" ng-click="writeReview()" data-dismiss="modal">Write a Review for this Movie</button>
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-       </div>
-    </div>
- </div>
+                     <strong>Release Date:</strong> {{movieDisplayDate}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist() && !inWatched()"
+               data-dismiss="modal">Add to WatchList</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist()"
+               data-dismiss="modal">Remove From Watchlist</button>
+            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist()" data-dismiss="modal">Add
+               to Watched</button>
+            <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites() && inWatched()"
+               data-dismiss="modal">Add to Favorites</button>
+            <button type="button" class="btn btn-danger" ng-if="inFavorites()" ng-click="removeFromFavorites()">Remove
+               from Favorites</button>
+            <button type="button" class="btn btn-info" ng-click="writeReview()" data-dismiss="modal">Write a Review for
+               this Movie</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
 
 
 
- <div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel" aria-hidden="true">
+<div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel"
+   aria-hidden="true">
    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
          <div class="modal-header">
@@ -125,16 +158,16 @@
             <div class="container-fluid">
                <div class="row">
                   <div class="col-md-6">
-                     <img src={{'images/'+avatar}} class="img-responsive" alt="Profile Picture Not Found">
+                     <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
                   </div>
                   <div class="col-md-6">
-                     <strong>Favorite Movies:</strong>  {{favMovies}}
+                     <strong>Favorite Movies:</strong> {{favMovies}}
                      <br><br>
-                     <strong>Most Viewed Genre(s):</strong>  {{favGenres}}
+                     <strong>Most Viewed Genre(s):</strong> {{favGenres}}
                      <br><br>
-                    <strong>Watchlist:</strong> {{watchlist}}
-                    <br><br>
-                    <strong>Recently Seen:</strong> {{watched}}
+                     <strong>Watchlist:</strong> {{watchlist}}
+                     <br><br>
+                     <strong>Recently Seen:</strong> {{watched}}
                   </div>
                </div>
             </div>

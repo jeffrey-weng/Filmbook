@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Registration Page</title>
@@ -66,50 +67,55 @@
 
     </style>
 
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
 </head>
+
 <body>
 
-<div class="login">
+    <div class="login">
 
-    <h1>Register</h1>
-    <br>
-    <form name="registerForm" ng-submit="register(newUser)">
-
-        <span style="color:maroon; font-family: 'Open Sans', sans-serif; font-size: 14px; font-weight: bold;" ng-show="registerForm.u.$dirty && registerForm.u.$invalid">
-            <span ng-show="registerForm.u.$error.required"> Username is required. </span>
-        </span>
-        <input type="text" name="u" placeholder="Username (unique)" ng-model="newUser.username" required="required" />
-
+        <h1>Register</h1>
         <br>
-        <span style="color:maroon; font-family: 'Open Sans', sans-serif; font-size: 14px; font-weight: bold;" ng-show="registerForm.e.$dirty && registerForm.e.$invalid">
-            <span ng-show="registerForm.e.$error.required">Email address is required.</span>
-            <span ng-show="registerForm.e.$error.email">Invalid email address.</span>
-        </span>
-        <input type="email" name="e" placeholder="Email Address" ng-model="newUser.email" required="required" />
+        <form name="registerForm" ng-submit="register(newUser)">
 
-        <br><br>
+            <span style="color:maroon; font-family: 'Open Sans', sans-serif; font-size: 14px; font-weight: bold;"
+                ng-show="registerForm.u.$dirty && registerForm.u.$invalid">
+                <span ng-show="registerForm.u.$error.required"> Username is required. </span>
+            </span>
+            <input type="text" name="u" placeholder="Username (unique)" ng-model="newUser.username" required="required" />
 
-        <span style="color:maroon; font-family: 'Open Sans', sans-serif; font-size: 14px; font-weight: bold;"
-              ng-show="(registerForm.p1.$dirty && registerForm.p1.$invalid) || (registerForm.p2.$dirty && registerForm.p2.$invalid)">
-            <span ng-show="registerForm.p1.$error.required"> Please enter your password. </span>
-            <span ng-show="registerForm.p2.$error.required"> Please confirm your password. </span>
-        </span>
-        <input type="password" name="p1" placeholder="Password" ng-model="newUser.password" required="required" />
-        <input type="password" name="p2" placeholder="Confirm Password" ng-model="newUser.password2" required="required" />
+            <br>
+            <span style="color:maroon; font-family: 'Open Sans', sans-serif; font-size: 14px; font-weight: bold;"
+                ng-show="registerForm.e.$dirty && registerForm.e.$invalid">
+                <span ng-show="registerForm.e.$error.required">Email address is required.</span>
+                <span ng-show="registerForm.e.$error.email">Invalid email address.</span>
+            </span>
+            <input type="email" name="e" placeholder="Email Address" ng-model="newUser.email" required="required" />
 
-        <br><br>
+            <br><br>
 
-        <button type="submit" class="btn btn-primary btn-block btn-large" ng-disabled="registerForm.u.$dirty &&
+            <span style="color:maroon; font-family: 'Open Sans', sans-serif; font-size: 14px; font-weight: bold;"
+                ng-show="(registerForm.p1.$dirty && registerForm.p1.$invalid) || (registerForm.p2.$dirty && registerForm.p2.$invalid)">
+                <span ng-show="registerForm.p1.$error.required"> Please enter your password. </span>
+                <span ng-show="registerForm.p2.$error.required"> Please confirm your password. </span>
+            </span>
+            <input type="password" name="p1" placeholder="Password" ng-model="newUser.password" required="required" />
+            <input type="password" name="p2" placeholder="Confirm Password" ng-model="newUser.password2" required="required" />
+
+            <br><br>
+
+            <button type="submit" class="btn btn-primary btn-block btn-large" ng-disabled="registerForm.u.$dirty &&
                 registerForm.u.$invalid || registerForm.e.$dirty && registerForm.e.$invalid || registerForm.p1.$dirty &&
                 registerForm.p1.$invalid || registerForm.p2.$dirty && registerForm.p2.$invalid">
-            Join Multiplex</button>
-    </form>
+                Join Multiplex</button>
+        </form>
 
-    <br><br>
+        <br><br>
 
-    <button class="btn btn-primary btn-block" ui-sref="login">Already have an account? Log in here.</button>
-</div>
+        <button class="btn btn-primary btn-block" ui-sref="login">Already have an account? Log in here.</button>
+    </div>
 
 </body>
+
 </html>

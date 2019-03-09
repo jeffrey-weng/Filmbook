@@ -1,37 +1,37 @@
-
 angular.module('filmApp').controller('MoviesController',
-	function ($scope,$rootScope, $http) {
+	function ($scope, $rootScope, $http) {
 
 
 		//populate currentUser's following
-		if($rootScope.targets.length==0){
-		$http.get(window.location.origin + "/api/users/")
-		.then(function (response) {
-			$scope.searchResults=[];
-				 for(var i=0;i<response.data.length;i++)
-				 $scope.searchResults.push(response.data[i]);
+		if ($rootScope.targets.length == 0) {
+			$http.get(window.location.origin + "/api/users/")
+				.then(function (response) {
+					$scope.searchResults = [];
+					for (var i = 0; i < response.data.length; i++)
+						$scope.searchResults.push(response.data[i]);
 
-				 $http.get(window.location.origin + "/api/follow/"+$scope.currentUser.id)
-				 .then(function (response) {
-					 $scope.followingList=[];
-					  for(var i=0;i<response.data.length;i++)
-					   $scope.followingList.push(response.data[i]);
+					$http.get(window.location.origin + "/api/follow/" + $scope.currentUser.id)
+						.then(function (response) {
+							$scope.followingList = [];
+							for (var i = 0; i < response.data.length; i++)
+								$scope.followingList.push(response.data[i]);
 
-					   $scope.followingList.forEach(function(value){
-						   $rootScope.targets.push(value.target);
-						 })
+							$scope.followingList.forEach(function (value) {
+								$rootScope.targets.push(value.target);
+							})
 
-						// console.log($rootScope.targets.length);  
-				  });     
-		});
-	}
+							// console.log($rootScope.targets.length);  
+						});
+				});
+		}
 
 		$scope.movieType = 'movie in popular';
 		$scope.displayType = 2; //set default display to top rated movies
 
-		$scope.genres = ["ACTION","ADVENTURE","ANIMATION","COMEDY","CRIME","DOCUMENTARY",
-			"DRAMA","FAMILY","FANTASY","HISTORY","HORROR","MUSIC","MYSTERY",
-			"ROMANCE","SCIENCE FICTION","TV MOVIE","THRILLER","WAR","WESTERN"];
+		$scope.genres = ["ACTION", "ADVENTURE", "ANIMATION", "COMEDY", "CRIME", "DOCUMENTARY",
+			"DRAMA", "FAMILY", "FANTASY", "HISTORY", "HORROR", "MUSIC", "MYSTERY",
+			"ROMANCE", "SCIENCE FICTION", "TV MOVIE", "THRILLER", "WAR", "WESTERN"
+		];
 
 		//Initial index values for each movie list
 		$scope.popularIndex = 4;
@@ -40,9 +40,9 @@ angular.module('filmApp').controller('MoviesController',
 		$scope.searchIndex = 3;
 
 		//"Load more" function for popular movies
-		$scope.getMorePopular = function() {
-			for(var i=$scope.popularIndex; i<$scope.popularIndex+3; i++){
-				$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page="+i)
+		$scope.getMorePopular = function () {
+			for (var i = $scope.popularIndex; i < $scope.popularIndex + 3; i++) {
+				$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=" + i)
 					.then(function (response) {
 						$scope.popular = $scope.popular.concat(response.data.results);
 					});
@@ -53,9 +53,9 @@ angular.module('filmApp').controller('MoviesController',
 		};
 
 		//"Load more" function for movies in theaters
-		$scope.getMoreTheater = function() {
-			for(var i=$scope.theaterIndex; i<$scope.theaterIndex+3; i++){
-				$http.get("https://api.themoviedb.org/3/movie/now_playing?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page="+i)
+		$scope.getMoreTheater = function () {
+			for (var i = $scope.theaterIndex; i < $scope.theaterIndex + 3; i++) {
+				$http.get("https://api.themoviedb.org/3/movie/now_playing?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=" + i)
 					.then(function (response) {
 						$scope.theater = $scope.theater.concat(response.data.results);
 					});
@@ -66,9 +66,9 @@ angular.module('filmApp').controller('MoviesController',
 		};
 
 		//"Load more" function for top rated movies
-		$scope.getMoreTopRated = function() {
-			for(var i=$scope.topRatedIndex; i<$scope.topRatedIndex+3; i++){
-				$http.get("https://api.themoviedb.org/3/discover/movie?api_key=c62258e5fcc86f114d95f2bd79b40c28&sort_by=vote_count.desc&page="+i)
+		$scope.getMoreTopRated = function () {
+			for (var i = $scope.topRatedIndex; i < $scope.topRatedIndex + 3; i++) {
+				$http.get("https://api.themoviedb.org/3/discover/movie?api_key=c62258e5fcc86f114d95f2bd79b40c28&sort_by=vote_count.desc&page=" + i)
 					.then(function (response) {
 						$scope.rated = $scope.rated.concat(response.data.results);
 					});
@@ -79,11 +79,10 @@ angular.module('filmApp').controller('MoviesController',
 		};
 
 		//"Load more" function for searched movies
-		$scope.getMoreSearch = function(movieSearchText) {
+		$scope.getMoreSearch = function (movieSearchText) {
 
 			//If movie search text is not a genre name
-			if(!($scope.genres.indexOf(movieSearchText.toUpperCase()) > -1))
-			{
+			if (!($scope.genres.indexOf(movieSearchText.toUpperCase()) > -1)) {
 				for (var i = $scope.searchIndex; i < $scope.searchIndex + 2; i++) {
 					$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=" + i)
 						.then(function (response) {
@@ -363,549 +362,592 @@ angular.module('filmApp').controller('MoviesController',
 		};
 
 		const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"];
+			"July", "August", "September", "October", "November", "December"
+		];
 
-  const genres = [ {
-	"id": 28,
-	"name": "Action"
-  },
-  {
-	"id": 12,
-	"name": "Adventure"
-  },
-  {
-	"id": 16,
-	"name": "Animation"
-  },
-  {
-	"id": 35,
-	"name": "Comedy"
-  },
-  {
-	"id": 80,
-	"name": "Crime"
-  },
-  {
-	"id": 99,
-	"name": "Documentary"
-  },
-  {
-	"id": 18,
-	"name": "Drama"
-  },
-  {
-	"id": 10751,
-	"name": "Family"
-  },
-  {
-	"id": 14,
-	"name": "Fantasy"
-  },
-  {
-	"id": 36,
-	"name": "History"
-  },
-  {
-	"id": 27,
-	"name": "Horror"
-  },
-  {
-	"id": 10402,
-	"name": "Music"
-  },
-  {
-	"id": 9648,
-	"name": "Mystery"
-  },
-  {
-	"id": 10749,
-	"name": "Romance"
-  },
-  {
-	"id": 878,
-	"name": "Science Fiction"
-  },
-  {
-	"id": 10770,
-	"name": "TV Movie"
-  },
-  {
-	"id": 53,
-	"name": "Thriller"
-  },
-  {
-	"id": 10752,
-	"name": "War"
-  },
-  {
-	"id": 37,
-	"name": "Western"
-  }];
+		const genres = [{
+				"id": 28,
+				"name": "Action"
+			},
+			{
+				"id": 12,
+				"name": "Adventure"
+			},
+			{
+				"id": 16,
+				"name": "Animation"
+			},
+			{
+				"id": 35,
+				"name": "Comedy"
+			},
+			{
+				"id": 80,
+				"name": "Crime"
+			},
+			{
+				"id": 99,
+				"name": "Documentary"
+			},
+			{
+				"id": 18,
+				"name": "Drama"
+			},
+			{
+				"id": 10751,
+				"name": "Family"
+			},
+			{
+				"id": 14,
+				"name": "Fantasy"
+			},
+			{
+				"id": 36,
+				"name": "History"
+			},
+			{
+				"id": 27,
+				"name": "Horror"
+			},
+			{
+				"id": 10402,
+				"name": "Music"
+			},
+			{
+				"id": 9648,
+				"name": "Mystery"
+			},
+			{
+				"id": 10749,
+				"name": "Romance"
+			},
+			{
+				"id": 878,
+				"name": "Science Fiction"
+			},
+			{
+				"id": 10770,
+				"name": "TV Movie"
+			},
+			{
+				"id": 53,
+				"name": "Thriller"
+			},
+			{
+				"id": 10752,
+				"name": "War"
+			},
+			{
+				"id": 37,
+				"name": "Western"
+			}
+		];
 
 		$scope.showMovieDetails = function (movie) {
 			var d = new Date(movie.release_date);
-
+			$scope.movieId = movie.id;
 			$scope.movieTitle = movie.title;
 			$scope.movieDescription = movie.overview;
 			$scope.moviePosterPath = movie.poster_path;
 			$scope.movieReleaseDate = movie.release_date;
 			$scope.movieRating = movie.vote_average;
-			$scope.movieGenres=movie.genre_ids;
+			$scope.movieGenres = movie.genre_ids;
 
-			$scope.movieDisplayDate=monthNames[d.getMonth()]+" "+d.getUTCDate()+", "+d.getFullYear();
+			$scope.movieDisplayDate = monthNames[d.getMonth()] + " " + d.getUTCDate() + ", " + d.getFullYear();
 			$scope.movieDisplayGenres = "";
 
-			for(var i=0;i<movie.genre_ids.length;i++)
-			for(var j=0;j<genres.length;j++)
-			if(movie.genre_ids[i]===genres[j].id)
-				if(i===movie.genre_ids.length-1)
-					$scope.movieDisplayGenres+=genres[j].name;
-				else
-					$scope.movieDisplayGenres+=genres[j].name+", ";
-			
+			for (var i = 0; i < movie.genre_ids.length; i++)
+				for (var j = 0; j < genres.length; j++)
+					if (movie.genre_ids[i] === genres[j].id)
+						if (i === movie.genre_ids.length - 1)
+							$scope.movieDisplayGenres += genres[j].name;
+						else
+							$scope.movieDisplayGenres += genres[j].name + ", ";
 
-			
+
+
 		};
 
 
 		$scope.addToWatchList = function () {
 
-			if($scope.currentUser.watchlist.length!=0)
-			if(!$scope.currentUser.watchlist.every(function(value){
-				return $scope.movieTitle!==value.title
-			})) {
-				alert("Movie already in watchlist.");
-				return;
-			}
+			if ($scope.currentUser.watchlist.length != 0)
+				if (!$scope.currentUser.watchlist.every(function (value) {
+						return $scope.movieTitle !== value.title
+					})) {
+					alert("Movie already in watchlist.");
+					return;
+				}
 
-			if($scope.currentUser.watched.length!=0)
-			if(!$scope.currentUser.watched.every(function(value){
-				return $scope.movieTitle!==value.title
-			})) {
-				alert("You've already seen this movie!");
-				return;
-			}
+			if ($scope.currentUser.watched.length != 0)
+				if (!$scope.currentUser.watched.every(function (value) {
+						return $scope.movieTitle !== value.title
+					})) {
+					alert("You've already seen this movie!");
+					return;
+				}
 
-			
 
-			$scope.currentUser.watchlist.push({
-				title:$scope.movieTitle,
-				overview:$scope.movieDescription,
-				poster_path:$scope.moviePosterPath,
-				release_date:$scope.movieReleaseDate,
-				genre_ids:$scope.movieGenres,
-				vote_average:$scope.movieRating
+
+			$scope.currentUser.watchlist.unshift({
+				id: $scope.movieId,
+				title: $scope.movieTitle,
+				overview: $scope.movieDescription,
+				poster_path: $scope.moviePosterPath,
+				release_date: $scope.movieReleaseDate,
+				genre_ids: $scope.movieGenres,
+				vote_average: $scope.movieRating
 			});
 
-			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist});
+			$http.put(window.location.origin + '/api/users/' + $scope.currentUser.id, {
+				watchlist: $scope.currentUser.watchlist
+			});
 
 			alert("Movie added to watchlist.");
 			//console.log($scope.currentUser);
-		
+
 		};
 
 		$scope.removeFromWatchList = function () {
 
 
-			for(var i=0;i<$scope.currentUser.watchlist.length;i++){
-				if($scope.currentUser.watchlist[i].title===$scope.movieTitle){
-				$scope.currentUser.watchlist.splice(i,1);
-				break;
+			for (var i = 0; i < $scope.currentUser.watchlist.length; i++) {
+				if ($scope.currentUser.watchlist[i].title === $scope.movieTitle) {
+					$scope.currentUser.watchlist.splice(i, 1);
+					break;
 				}
 			}
 
-			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist});
+			$http.put(window.location.origin + '/api/users/' + $scope.currentUser.id, {
+				watchlist: $scope.currentUser.watchlist
+			});
 
 			alert("Movie removed from watchlist.");
 			//console.log($scope.currentUser);
-		
+
 		};
 
-		
+
 
 		$scope.addToWatched = function () {
 
 
 			//first remove movie from watchlist, then add to watched
-			for(var i=0;i<$scope.currentUser.watchlist.length;i++){
-				if($scope.currentUser.watchlist[i].title===$scope.movieTitle){
-				$scope.currentUser.watchlist.splice(i,1);
-				break;
+			for (var i = 0; i < $scope.currentUser.watchlist.length; i++) {
+				if ($scope.currentUser.watchlist[i].title === $scope.movieTitle) {
+					$scope.currentUser.watchlist.splice(i, 1);
+					break;
 				}
 			}
 
 			$scope.currentUser.watched.unshift({
-				title:$scope.movieTitle,
-				overview:$scope.movieDescription,
-				poster_path:$scope.moviePosterPath,
-				release_date:$scope.movieReleaseDate,
-				genre_ids:$scope.movieGenres,
-				vote_average:$scope.movieRating
+				id: $scope.movieId,
+				title: $scope.movieTitle,
+				overview: $scope.movieDescription,
+				poster_path: $scope.moviePosterPath,
+				release_date: $scope.movieReleaseDate,
+				genre_ids: $scope.movieGenres,
+				vote_average: $scope.movieRating
 			});
 
-			$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {watchlist:$scope.currentUser.watchlist,
-			watched:$scope.currentUser.watched});
+			$http.put(window.location.origin + '/api/users/' + $scope.currentUser.id, {
+				watchlist: $scope.currentUser.watchlist,
+				watched: $scope.currentUser.watched
+			});
 
-			$http.post(window.location.origin+'/api/watch/',{user:$scope.currentUser.id,movie:$scope.movieTitle});
+			$http.post(window.location.origin + '/api/watch/', {
+				user: $scope.currentUser.id,
+				movie: $scope.movieTitle
+			});
 
 
 			alert("Movie added to Recently Seen.");
 			//console.log($scope.currentUser);
-		
+
 		};
 
-		$http.get(window.location.origin+'/api/home/'+$scope.currentUser.id)
-		.then(function(response){
-			$scope.activities = response.data.activities;
-		});
+		$http.get(window.location.origin + '/api/home/' + $scope.currentUser.id)
+			.then(function (response) {
+				$scope.activities = response.data.activities;
+			});
 
-				
-		$http.get(window.location.origin+'/api/profile/'+$scope.currentUser.id)
-		.then(function(response){
-			$scope.userActivities = response.data.activities;
-		});
+
+		$http.get(window.location.origin + '/api/profile/' + $scope.currentUser.id)
+			.then(function (response) {
+				$scope.userActivities = response.data.activities;
+			});
 
 		//Refresh feeds every one minute (to show updates on how long ago an activity occured)
-		setInterval(function(){
-			$http.get(window.location.origin+'/api/home/'+$scope.currentUser.id)
-		.then(function(response){
-			$scope.activities = response.data.activities;
-		});
-
-				
-		$http.get(window.location.origin+'/api/profile/'+$scope.currentUser.id)
-		.then(function(response){
-			$scope.userActivities = response.data.activities;
-		});
-
-		},60000);
+		setInterval(function () {
+			$http.get(window.location.origin + '/api/home/' + $scope.currentUser.id)
+				.then(function (response) {
+					$scope.activities = response.data.activities;
+				});
 
 
+			$http.get(window.location.origin + '/api/profile/' + $scope.currentUser.id)
+				.then(function (response) {
+					$scope.userActivities = response.data.activities;
+				});
 
-		
+		}, 60000);
 
-		$scope.activityObject = function(activity){
-			if(activity.verb=="Follow"){
+
+
+
+
+		$scope.activityObject = function (activity) {
+			if (activity.verb == "Follow") {
 				return activity.object.target.username;
-			}
-			else if(activity.verb=="Watch"){
+			} else if (activity.verb == "Watch") {
 				return activity.object.movie;
 			}
 		}
 
-		$scope.dateRecorded = function(activity){
-			var date=new Date();
+		$scope.dateRecorded = function (activity) {
+			var date = new Date();
 
 			var activityDate = new Date(activity.object.created_at);
 
 			var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
 
-			if(timeDiff<86400000 && timeDiff>=3600000){
-				var diffHours = Math.ceil(timeDiff/3600000);
+			if (timeDiff < 86400000 && timeDiff >= 3600000) {
+				var diffHours = Math.ceil(timeDiff / 3600000);
 				return diffHours + " hours ago";
-			}
-			else if(timeDiff<3600000 &&timeDiff>=60000){
-				var diffMinutes = Math.ceil(timeDiff/60000);
+			} else if (timeDiff < 3600000 && timeDiff >= 60000) {
+				var diffMinutes = Math.ceil(timeDiff / 60000);
 				return diffMinutes + " minutes ago";
-			}
-			else if(timeDiff<60000){
+			} else if (timeDiff < 60000) {
 				return "Just now";
-			}
-			else{
-			var diffDays = Math.ceil(timeDiff / (1000*3600*24));
-			return diffDays+ " days ago";
+			} else {
+				var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+				return diffDays + " days ago";
 			}
 		}
 
-		$scope.emptyWatchListMsg = function(watchlist){
-			if(watchlist.length==0)
-			return true;
+		$scope.emptyWatchListMsg = function (watchlist) {
+			if (watchlist.length == 0)
+				return true;
 
 			else return false;
 		}
 
-		$scope.showProfileDetails = function(person){
+		$scope.showProfileDetails = function (person) {
 
-            $scope.id=person._id;
-            $scope.avatar=person.avatar;
-						$scope.username=person.username;
-						$scope.favMovies=person.favoriteMovies;
-						
-						$scope.watched="";
+			$scope.id = person._id;
+			$scope.avatar = person.avatar;
+			$scope.username = person.username;
+			$scope.favMovies = person.favoriteMovies;
 
-            for(var i=0;i<person.watched.length;i++){
-            if((i==person.watched.length-1))
-            $scope.watched+=person.watched[i].title;
-            else
-            $scope.watched+=person.watched[i].title+", ";
-						}
-						
-						var temp={};
-            for(var i=0;i<person.watched.length;i++)
-                 for(var j=0;j<person.watched[i].genre_ids.length;j++)
-                 if(!temp[person.watched[i].genre_ids[j]])
-                 temp[person.watched[i].genre_ids[j]]=1;
-                 else
-                 temp[person.watched[i].genre_ids[j]]=temp[person.watched[i].genre_ids[j]]+1;
+			$scope.watched = "";
 
-            var frequencies=[];
-            for(var key in temp){
-               frequencies.push(temp[key]); //holds the frequencies of genres watched
-            }
-            frequencies.sort();
-            frequencies.reverse();
-           //console.log(frequencies);
-            frequencies.splice(3,frequencies.length-3); //holds top 3 frequencies
-            var top3=[];
-      
-            for( var key in temp){
-                 if(frequencies.includes(temp[key])){
-                 top3.push(key); //contains top 3 genre IDs
-               
-                 }
-                      
-            }
-            $scope.favGenres="";
+			for (var i = 0; i < person.watched.length; i++) {
+				if ((i == person.watched.length - 1))
+					$scope.watched += person.watched[i].title;
+				else
+					$scope.watched += person.watched[i].title + ", ";
+			}
 
-            var count=0;
-            //console.log(frequencies);
-            //console.log(top3);
+			var temp = {};
+			for (var i = 0; i < person.watched.length; i++)
+				for (var j = 0; j < person.watched[i].genre_ids.length; j++)
+					if (!temp[person.watched[i].genre_ids[j]])
+						temp[person.watched[i].genre_ids[j]] = 1;
+					else
+						temp[person.watched[i].genre_ids[j]] = temp[person.watched[i].genre_ids[j]] + 1;
 
-            for(var i=0;i<genres.length;i++){
-                 if(top3.includes(genres[i].id.toString())){
-                      if(count==2){
-                      $scope.favGenres+=genres[i].name;
-                      break;}
-                      else
-                      $scope.favGenres+=genres[i].name+", ";
-                      count++;
-                 }
-            }
-					  $scope.favMovies=person.favoriteMovies;
+			var frequencies = [];
+			for (var key in temp) {
+				frequencies.push(temp[key]); //holds the frequencies of genres watched
+			}
+			frequencies.sort();
+			frequencies.reverse();
+			//console.log(frequencies);
+			frequencies.splice(3, frequencies.length - 3); //holds top 3 frequencies
+			var top3 = [];
 
-            $scope.watchlist="";
+			for (var key in temp) {
+				if (frequencies.includes(temp[key])) {
+					top3.push(key); //contains top 3 genre IDs
 
-            for(var i=0;i<person.watchlist.length;i++){
-            if((i==person.watchlist.length-1))
-            $scope.watchlist+=person.watchlist[i].title;
-            else
-            $scope.watchlist+=person.watchlist[i].title+", ";
-            }
+				}
+
+			}
+			$scope.favGenres = "";
+
+			var count = 0;
+			//console.log(frequencies);
+			//console.log(top3);
+
+			for (var i = 0; i < genres.length; i++) {
+				if (top3.includes(genres[i].id.toString())) {
+					if (count == 2) {
+						$scope.favGenres += genres[i].name;
+						break;
+					} else
+						$scope.favGenres += genres[i].name + ", ";
+					count++;
+				}
+			}
+			$scope.favMovies = person.favoriteMovies;
+
+			$scope.watchlist = "";
+
+			for (var i = 0; i < person.watchlist.length; i++) {
+				if ((i == person.watchlist.length - 1))
+					$scope.watchlist += person.watchlist[i].title;
+				else
+					$scope.watchlist += person.watchlist[i].title + ", ";
+			}
 
 
 		}
-		
+
 		$scope.partofRecent = false;
 
-		$scope.activityModal = function(activity,forActor){
+		$scope.activityModal = function (activity, forActor) {
 
 
-			var x=function(id){
+			var x = function (id) {
 
-				if($rootScope.targets.includes(id))
-				return true;
+				if ($rootScope.targets.includes(id))
+					return true;
 				else return false;
 			}
-			
-			if(forActor=='actor'){
+
+			if (forActor == 'actor') {
 				$scope.showProfileDetails(activity.actor);
 
-				if(x($scope.id)){
-					$(document).ready(function(){
-					document.getElementById("modal:"+$scope.id).innerHTML="Unfollow "+$scope.username;
-					  document.getElementById("modal:"+$scope.id).className="btn btn-danger";
+				if (x($scope.id)) {
+					$(document).ready(function () {
+						document.getElementById("modal:" + $scope.id).innerHTML = "Unfollow " + $scope.username;
+						document.getElementById("modal:" + $scope.id).className = "btn btn-danger";
+					})
+				} else {
+					$(document).ready(function () {
+						document.getElementById("modal:" + $scope.id).innerHTML = "Follow " + $scope.username;
+						document.getElementById("modal:" + $scope.id).className = "btn btn-primary";
 					})
 				}
-				else{
-					$(document).ready(function(){
-					document.getElementById("modal:"+$scope.id).innerHTML="Follow "+$scope.username;
-					document.getElementById("modal:"+$scope.id).className="btn btn-primary";
-					})
-				}
-			}
-   
-			else if(activity.verb=="Watch"){
-				document.getElementById(activity.id).setAttribute("data-target","#movieDetailsModal");
+			} else if (activity.verb == "Watch") {
+				document.getElementById(activity.id).setAttribute("data-target", "#movieDetailsModal");
 
 				//if part of Recent Activity...user has obviously already seen the movie, so remove addtowatchlist button
-				if($scope.currentUser.username==activity.actor.username)
-					$scope.partOfRecent=true;
-				else $scope.partOfRecent=false;
+				if ($scope.currentUser.username == activity.actor.username)
+					$scope.partOfRecent = true;
+				else $scope.partOfRecent = false;
 
 
-				for(var i=0;i<activity.actor.watched.length;i++)
-					if(activity.actor.watched[i].title==activity.object.movie){
+				for (var i = 0; i < activity.actor.watched.length; i++)
+					if (activity.actor.watched[i].title == activity.object.movie) {
 						$scope.showMovieDetails(activity.actor.watched[i]);
 						break;
 					}
 
-			}
-			else if(activity.verb=="Follow"){
-				document.getElementById(activity.id).setAttribute("data-target","#personDetailsModal");
-				$http.get(window.location.origin + "/api/users/usernames/"+activity.object.target.username)
-				.then(function (response) {
-					
-					$scope.showProfileDetails(response.data);
+			} else if (activity.verb == "Follow") {
+				document.getElementById(activity.id).setAttribute("data-target", "#personDetailsModal");
+				$http.get(window.location.origin + "/api/users/usernames/" + activity.object.target.username)
+					.then(function (response) {
 
-					if(x($scope.id)){
-					    $(document).ready(function(){
-						document.getElementById("modal:"+$scope.id).innerHTML="Unfollow "+$scope.username;
-						  document.getElementById("modal:"+$scope.id).className="btn btn-danger";
-						})
+						$scope.showProfileDetails(response.data);
+
+						if (x($scope.id)) {
+							$(document).ready(function () {
+								document.getElementById("modal:" + $scope.id).innerHTML = "Unfollow " + $scope.username;
+								document.getElementById("modal:" + $scope.id).className = "btn btn-danger";
+							})
+						} else {
+							$(document).ready(function () {
+								document.getElementById("modal:" + $scope.id).innerHTML = "Follow " + $scope.username;
+								document.getElementById("modal:" + $scope.id).className = "btn btn-primary";
+							})
+						}
+					})
+
+			}
+
+
+
+		}
+
+		$scope.follow = function (id) {
+
+			var x = function (id) {
+
+				if ($rootScope.targets.includes(id))
+					return true;
+				else return false;
+			}
+
+			if (x(id)) {
+				var index = $rootScope.targets.indexOf(id);
+				$rootScope.targets.splice(index, 1);
+
+				$http.delete(window.location.origin + "/api/follow/" + $scope.currentUser.id, {
+						data: {
+							target: id
+						},
+						headers: {
+							'Content-Type': 'application/json;charset=utf-8'
+						}
+					})
+					.then(function (response) {
+
+						document.getElementById("modal:" + id).innerHTML = "Follow " + $scope.username;
+						document.getElementById("modal:" + id).className = "btn btn-primary";
+
+
+					})
+			} else {
+				$rootScope.targets.push(id);
+
+				$http.post(window.location.origin + "/api/follow/" + $scope.currentUser.id, {
+						target: id
+					})
+					.then(function (response) {
+						console.log("Exuected2");
+						document.getElementById("modal:" + id).innerHTML = "Unfollow " + $scope.username;
+						document.getElementById("modal:" + id).className = "btn btn-danger";
+
+
+					})
+			}
+		}
+
+		$scope.inWatchlist = function () {
+
+			for (var i = 0; i < $scope.currentUser.watchlist.length; i++) {
+				if ($scope.currentUser.watchlist[i].title == $scope.movieTitle)
+					return true;
+			}
+			return false;
+
+		}
+
+		$scope.inWatched = function () {
+			for (var i = 0; i < $scope.currentUser.watched.length; i++) {
+				if ($scope.currentUser.watched[i].title == $scope.movieTitle)
+					return true;
+			}
+			return false;
+		}
+
+		$scope.inFavorites = function () {
+
+			for (var i = 0; i < $scope.currentUser.favoriteMovies.length; i++) {
+				if ($scope.currentUser.favoriteMovies[i].title == $scope.movieTitle)
+					return true;
+			}
+			return false;
+		}
+
+		$scope.addToFavorites = function () {
+
+			if ($scope.currentUser.favoriteMovies.length != 0)
+				if (!$scope.currentUser.favoriteMovies.every(function (value) {
+						return $scope.movieTitle !== value.title
+					})) {
+					alert("Movie already in Favorites.");
+					return;
+				}
+
+			$scope.currentUser.favoriteMovies.unshift({
+				id: $scope.movieId,
+				title: $scope.movieTitle,
+				overview: $scope.movieDescription,
+				poster_path: $scope.moviePosterPath,
+				release_date: $scope.movieReleaseDate,
+				genre_ids: $scope.movieGenres,
+				vote_average: $scope.movieRating
+			});
+
+			$http.put(window.location.origin + '/api/users/' + $scope.currentUser.id, {
+				favoriteMovies: $scope.currentUser.favoriteMovies
+			});
+
+			alert("Movie added to Favorites.");
+			//console.log($scope.currentUser);
+
+
+		}
+
+		$scope.removeFromFavorites = function () {
+
+			for (var i = 0; i < $scope.currentUser.favoriteMovies.length; i++) {
+				if ($scope.currentUser.favoriteMovies[i].title === $scope.movieTitle) {
+					$scope.currentUser.favoriteMovies.splice(i, 1);
+					break;
+				}
+			}
+
+			$http.put(window.location.origin + '/api/users/' + $scope.currentUser.id, {
+				favoriteMovies: $scope.currentUser.favoriteMovies
+			});
+
+			alert("Movie removed from Favorites.");
+			//console.log($scope.currentUser);
+
+		}
+
+		$(document).ready(
+			function () {
+				$('input:file').change(
+					function () {
+						$('input:submit').attr('disabled', true);
+						if ($(this).val()) {
+							$('input:submit').attr('disabled', false);
+
+						}
 					}
-					else{
-						$(document).ready(function(){
-						document.getElementById("modal:"+$scope.id).innerHTML="Follow "+$scope.username;
-						document.getElementById("modal:"+$scope.id).className="btn btn-primary";
-						})
-					}
+				);
+			});
+
+
+
+		$scope.movieRecs = "";
+
+		//get Movie recommendations (need to install cors google chrome ext to work)
+		if ($scope.currentUser.favoriteMovies.length != 0 && $scope.currentUser.favoriteMovies[0].id)
+			$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[0].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+			.then(function (response) {
+
+
+				$scope.movieRecs = response.data.results
+				$scope.movieRecs.splice(5, response.data.results.length - 5);
+
 			})
 
+		else if ($scope.currentUser.watched.length != 0 && $scope.currentUser.watched[0].id)
+			$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[0].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+			.then(function (response) {
+				$scope.movieRecs = response.data.results
+				$scope.movieRecs.splice(5, response.data.results.length - 5);
+
+			})
+
+		else if ($scope.currentUser.watchlist.length != 0 && $scope.currentUser.watchlist[0].id)
+			$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[0].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+			.then(function (response) {
+
+				$scope.movieRecs = response.data.results
+				$scope.movieRecs.splice(5, response.data.results.length - 5);
+
+
+			})
+
+		$scope.noSuggestions = function () {
+			if ($scope.movieRecs == "") return true;
+			else return false;
 		}
 
 
 
-	}
-	
-	$scope.follow = function(id){
 
-		var x=function(id){
 
-			 if($rootScope.targets.includes(id))
-			 return true;
-			 else return false;
-		 }
+		$scope.writeReview = function () {
 
-		if(x(id)){
-			 var index = $rootScope.targets.indexOf(id);
-			 $rootScope.targets.splice(index,1);
 
-		  $http.delete(window.location.origin + "/api/follow/"+$scope.currentUser.id,{data: {target:id}, headers: {'Content-Type': 'application/json;charset=utf-8'}})
-		  .then(function(response){
-
-		  document.getElementById("modal:"+id).innerHTML="Follow "+$scope.username;
-		  document.getElementById("modal:"+id).className="btn btn-primary";
-
-		
-		  })
 		}
 
-		else{
-			 $rootScope.targets.push(id);
 
-			 $http.post(window.location.origin + "/api/follow/"+$scope.currentUser.id,{target:id})
-			 .then(function(response){
-							  console.log("Exuected2");
-						 document.getElementById("modal:"+id).innerHTML="Unfollow "+$scope.username;
-						 document.getElementById("modal:"+id).className="btn btn-danger";
-						 
-					
-				  })
-		}
-	  }
-
-$scope.inWatchlist = function(){
-
-	for(var i=0;i<$scope.currentUser.watchlist.length;i++){
-	if($scope.currentUser.watchlist[i].title==$scope.movieTitle)
-	return true;
-	}
-	return false;
-
-}
-
-$scope.inWatched = function(){
-	for(var i=0;i<$scope.currentUser.watched.length;i++){
-		if($scope.currentUser.watched[i].title==$scope.movieTitle)
-		return true;
-		}
-		return false;
-}
-
-$scope.inFavorites = function(){
-
-	for(var i=0;i<$scope.currentUser.favoriteMovies.length;i++){
-		if($scope.currentUser.favoriteMovies[i].title==$scope.movieTitle)
-		return true;
-		}
-		return false;
-}
-
-$scope.addToFavorites = function(){
-
-	if($scope.currentUser.favoriteMovies.length!=0)
-	if(!$scope.currentUser.favoriteMovies.every(function(value){
-		return $scope.movieTitle!==value.title
-	})) {
-		alert("Movie already in Favorites.");
-		return;
-	}	
-
-	$scope.currentUser.favoriteMovies.push({
-		title:$scope.movieTitle,
-		overview:$scope.movieDescription,
-		poster_path:$scope.moviePosterPath,
-		release_date:$scope.movieReleaseDate,
-		genre_ids:$scope.movieGenres,
-		vote_average:$scope.movieRating
 	});
-
-	$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {favoriteMovies:$scope.currentUser.favoriteMovies});
-
-	alert("Movie added to Favorites.");
-	//console.log($scope.currentUser);
-
-
-}
-
-$scope.removeFromFavorites = function(){
-
-	for(var i=0;i<$scope.currentUser.favoriteMovies.length;i++){
-		if($scope.currentUser.favoriteMovies[i].title===$scope.movieTitle){
-		$scope.currentUser.favoriteMovies.splice(i,1);
-		break;
-		}
-	}
-
-	$http.put(window.location.origin+'/api/users/'+$scope.currentUser.id, {favoriteMovies:$scope.currentUser.favoriteMovies});
-
-	alert("Movie removed from Favorites.");
-	//console.log($scope.currentUser);
-
-}
-
-	$(document).ready(
-    function(){
-        $('input:file').change(
-            function(){
-							$('input:submit').attr('disabled',true);
-                if ($(this).val()) {
-                    $('input:submit').attr('disabled',false);
-                 
-                } 
-            }
-            );
-    });
-
-
-
-
-
-
-
-
-
-
-$scope.writeReview = function(){
-
-
-}
-
-
-
-
-
-
-
-
-});
