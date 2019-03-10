@@ -637,7 +637,15 @@ angular.module('filmApp').controller('MoviesController',
 			$scope.id = person._id;
 			$scope.avatar = person.avatar;
 			$scope.username = person.username;
-			$scope.favMovies = person.favoriteMovies;
+
+			$scope.favMovies = "";
+
+			for (var i = 0; i < person.favoriteMovies.length; i++) {
+				if ((i == person.favoriteMovies.length - 1))
+					$scope.favMovies += person.favoriteMovies[i].title;
+				else
+					$scope.favMovies += person.favoriteMovies[i].title + ", ";
+			}
 
 			$scope.watched = "";
 
@@ -689,7 +697,6 @@ angular.module('filmApp').controller('MoviesController',
 					count++;
 				}
 			}
-			$scope.favMovies = person.favoriteMovies;
 
 			$scope.watchlist = "";
 
@@ -814,28 +821,28 @@ angular.module('filmApp').controller('MoviesController',
 			}
 		}
 
-		$scope.inWatchlist = function () {
+		$scope.inWatchlist = function (movieTitle) {
 
 			for (var i = 0; i < $scope.currentUser.watchlist.length; i++) {
-				if ($scope.currentUser.watchlist[i].title == $scope.movieTitle)
+				if ($scope.currentUser.watchlist[i].title == movieTitle)
 					return true;
 			}
 			return false;
 
 		}
 
-		$scope.inWatched = function () {
+		$scope.inWatched = function (movieTitle) {
 			for (var i = 0; i < $scope.currentUser.watched.length; i++) {
-				if ($scope.currentUser.watched[i].title == $scope.movieTitle)
+				if ($scope.currentUser.watched[i].title == movieTitle)
 					return true;
 			}
 			return false;
 		}
 
-		$scope.inFavorites = function () {
+		$scope.inFavorites = function (movieTitle) {
 
 			for (var i = 0; i < $scope.currentUser.favoriteMovies.length; i++) {
-				if ($scope.currentUser.favoriteMovies[i].title == $scope.movieTitle)
+				if ($scope.currentUser.favoriteMovies[i].title == movieTitle)
 					return true;
 			}
 			return false;
@@ -903,42 +910,197 @@ angular.module('filmApp').controller('MoviesController',
 			});
 
 
-
-		$scope.movieRecs = "";
-
-		//get Movie recommendations (need to install cors google chrome ext to work)
-		if ($scope.currentUser.favoriteMovies.length != 0 && $scope.currentUser.favoriteMovies[0].id)
-			$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[0].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
-			.then(function (response) {
-
-
-				$scope.movieRecs = response.data.results
-				$scope.movieRecs.splice(5, response.data.results.length - 5);
-
-			})
-
-		else if ($scope.currentUser.watched.length != 0 && $scope.currentUser.watched[0].id)
-			$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[0].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
-			.then(function (response) {
-				$scope.movieRecs = response.data.results
-				$scope.movieRecs.splice(5, response.data.results.length - 5);
-
-			})
-
-		else if ($scope.currentUser.watchlist.length != 0 && $scope.currentUser.watchlist[0].id)
-			$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[0].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
-			.then(function (response) {
-
-				$scope.movieRecs = response.data.results
-				$scope.movieRecs.splice(5, response.data.results.length - 5);
-
-
-			})
-
 		$scope.noSuggestions = function () {
 			if ($scope.movieRecs == "") return true;
 			else return false;
 		}
+
+
+		$scope.moreRecs = function () {
+
+			$scope.movieRecs = [];
+
+			var rand1 = Math.floor(Math.random() * $scope.currentUser.favoriteMovies.length);
+			var rand2 = Math.floor(Math.random() * $scope.currentUser.watched.length);
+			var rand3 = Math.floor(Math.random() * $scope.currentUser.watchlist.length);
+
+			if ($scope.currentUser.favoriteMovies.length != 0 && $scope.currentUser.watched.length >= 1) {
+				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[rand1].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+					.then(function (response) {
+						$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+							.then(function (response2) {
+								var x = true;
+
+								while (x) {
+									$scope.movieRecs = [];
+									for (var i = 0; i < 3; i++) {
+										var rand = Math.floor(Math.random() * 20);
+										while ($scope.inFavorites(response.data.results[rand].title) || $scope.inWatchlist(response.data.results[rand].title) || $scope.inWatched(response.data.results[rand].title))
+											rand = Math.floor(Math.random() * 20);
+
+										$scope.movieRecs.push(response.data.results[rand]);
+									}
+
+									for (var i = 0; i < 2; i++) {
+										var rand = Math.floor(Math.random() * 20);
+										while ($scope.inFavorites(response2.data.results[rand].title) || $scope.inWatchlist(response2.data.results[rand].title) || $scope.inWatched(response2.data.results[rand].title))
+											rand = Math.floor(Math.random() * 20);
+
+										$scope.movieRecs.push(response2.data.results[rand]);
+									}
+									//console.log($scope.movieRecs);
+									//console.log((new Set($scope.movieRecs)).size !== $scope.movieRecs.length)
+
+									var temp = [];
+
+									for (var i = 0; i < $scope.movieRecs.length; i++)
+										temp.push($scope.movieRecs[i].id);
+
+
+									if ((new Set(temp)).size !== temp.length)
+										x = true;
+									else x = false;
+
+								}
+
+							})
+					})
+			} else if ($scope.currentUser.favoriteMovies.length != 0)
+				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[rand1].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+				.then(function (response) {
+
+					var x = true;
+
+					while (x) {
+						$scope.movieRecs = [];
+						for (var i = 0; i < 5; i++) {
+
+							var rand = Math.floor(Math.random() * 20);
+							while ($scope.inFavorites(response.data.results[rand].title) || $scope.inWatchlist(response.data.results[rand].title) || $scope.inWatched(response.data.results[rand].title))
+								rand = Math.floor(Math.random() * 20);
+
+							$scope.movieRecs.push(response.data.results[rand]);
+
+						}
+
+						var temp = [];
+
+						for (var i = 0; i < $scope.movieRecs.length; i++)
+							temp.push($scope.movieRecs[i].id);
+
+
+						if ((new Set(temp)).size !== temp.length)
+							x = true;
+						else x = false;
+					}
+
+				})
+
+
+			else if ($scope.currentUser.watched.length != 0 && $scope.currentUser.watchlist.length >= 1) {
+				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+					.then(function (response) {
+						$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[rand3].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+							.then(function (response2) {
+
+								var x = true;
+								while (x) {
+									$scope.movieRecs = [];
+									for (var i = 0; i < 3; i++) {
+										var rand = Math.floor(Math.random() * 20);
+										while ($scope.inFavorites(response.data.results[rand].title) || $scope.inWatchlist(response.data.results[rand].title) || $scope.inWatched(response.data.results[rand].title))
+											rand = Math.floor(Math.random() * 20);
+
+										$scope.movieRecs.push(response.data.results[rand]);
+									}
+
+									for (var i = 0; i < 2; i++) {
+										var rand = Math.floor(Math.random() * 20);
+										while ($scope.inFavorites(response2.data.results[rand].title) || $scope.inWatchlist(response2.data.results[rand].title) || $scope.inWatched(response2.data.results[rand].title))
+											rand = Math.floor(Math.random() * 20);
+
+										$scope.movieRecs.push(response2.data.results[rand]);
+									}
+
+									var temp = [];
+
+									for (var i = 0; i < $scope.movieRecs.length; i++)
+										temp.push($scope.movieRecs[i].id);
+
+
+									if ((new Set(temp)).size !== temp.length)
+										x = true;
+									else x = false;
+								}
+							})
+					})
+			} else if ($scope.currentUser.watched.length != 0) {
+
+				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+					.then(function (response) {
+
+						var x = true;
+						while (x) {
+							$scope.movieRecs = [];
+							for (var i = 0; i < 5; i++) {
+
+								var rand = Math.floor(Math.random() * 20);
+								while ($scope.inFavorites(response.data.results[rand].title) || $scope.inWatchlist(response.data.results[rand].title) || $scope.inWatched(response.data.results[rand].title))
+									rand = Math.floor(Math.random() * 20);
+
+								$scope.movieRecs.push(response.data.results[rand]);
+
+							}
+
+							var temp = [];
+
+							for (var i = 0; i < $scope.movieRecs.length; i++)
+								temp.push($scope.movieRecs[i].id);
+
+
+							if ((new Set(temp)).size !== temp.length)
+								x = true;
+							else x = false;
+						}
+
+					})
+
+
+			} else if ($scope.currentUser.watchlist.length != 0) {
+				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[rand3].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+					.then(function (response) {
+						var x = true;
+
+						while (x) {
+							$scope.movieRecs = [];
+							for (var i = 0; i < 5; i++) {
+
+								var rand = Math.floor(Math.random() * 20);
+								while ($scope.inFavorites(response.data.results[rand].title) || $scope.inWatchlist(response.data.results[rand].title) || $scope.inWatched(response.data.results[rand].title))
+									rand = Math.floor(Math.random() * 20);
+
+								$scope.movieRecs.push(response.data.results[rand]);
+
+							}
+
+							var temp = [];
+
+							for (var i = 0; i < $scope.movieRecs.length; i++)
+								temp.push($scope.movieRecs[i].id);
+
+
+							if ((new Set(temp)).size !== temp.length)
+								x = true;
+							else x = false;
+						}
+
+					})
+
+
+			}
+		}
+
+		$scope.moreRecs();
 
 
 

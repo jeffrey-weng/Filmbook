@@ -34,8 +34,16 @@
       <h5 ng-if="noSuggestions()">Watch, favorite, or add to your Watchlist some <a ui-sref="movies">movies</a> to get
          customized recommendations!</h5>
       <div class="row">
-         <img class="movieRec" ng-repeat="movie in movieRecs" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+         <img class="movieRec" ng-repeat="movie in movieRecs track by $index" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
             alt="Movie Poster Not Found" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+      </div>
+      <div class="row">
+         <br>
+      </div>
+      <div class="row justify-content-end">
+            <div class="col-1.5">
+                  <button type="button" class="btn btn-dark btn-sm" ng-click="moreRecs()" ng-if="!noSuggestions()">Get more recommendations</button>
+                </div>
       </div>
 
       <div class="row">
@@ -124,17 +132,17 @@
             </div>
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist() && !inWatched()"
+            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)"
                data-dismiss="modal">Add to WatchList</button>
-            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist()"
+            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist(movieTitle)"
                data-dismiss="modal">Remove From Watchlist</button>
-            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist()" data-dismiss="modal">Add
+            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Add
                to Watched</button>
-            <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites() && inWatched()"
+            <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)"
                data-dismiss="modal">Add to Favorites</button>
-            <button type="button" class="btn btn-danger" ng-if="inFavorites()" ng-click="removeFromFavorites()">Remove
+            <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)" ng-click="removeFromFavorites()">Remove
                from Favorites</button>
-            <button type="button" class="btn btn-info" ng-click="writeReview()" data-dismiss="modal">Write a Review for
+            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()" data-dismiss="modal">Write a Review for
                this Movie</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
