@@ -9,6 +9,9 @@ angular.module('filmApp')
          .then(function (response) {
 
             for (var i = 0; i < response.data.length; i++) {
+               if(response.data[i]._id==$scope.currentUser.id)
+               continue;
+               else
                $rootScope.searchResults.push(response.data[i]);
             }
 
@@ -76,6 +79,9 @@ angular.module('filmApp')
                .then(function (response) {
 
                   for (var i = 0; i < response.data.length; i++) {
+                     if(response.data[i]._id==$scope.currentUser.id)
+                     continue;
+                     else
                      $rootScope.searchResults.push(response.data[i]);
                   }
 
@@ -128,8 +134,12 @@ angular.module('filmApp')
 
                   //get most recent list of users
                   var temp = [];
-                  for (var i = 0; i < response.data.length; i++)
+                  for (var i = 0; i < response.data.length; i++){
+                     if(response.data[i]._id==$scope.currentUser.id)
+                     continue;
+                     else
                      temp.push(response.data[i]);
+                  }
 
                   //compare with current list of users and see if they're different
 

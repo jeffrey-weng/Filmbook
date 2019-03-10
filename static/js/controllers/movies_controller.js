@@ -1102,9 +1102,51 @@ angular.module('filmApp').controller('MoviesController',
 
 		$scope.moreRecs();
 
+	$scope.calculateFavGenres = function(){
+		var temp = {};
+		for (var i = 0; i < $scope.currentUser.watched.length; i++)
+		   for (var j = 0; j < $scope.currentUser.watched[i].genre_ids.length; j++)
+			  if (!temp[$scope.currentUser.watched[i].genre_ids[j]])
+				 temp[$scope.currentUser.watched[i].genre_ids[j]] = 1;
+			  else
+				 temp[$scope.currentUser.watched[i].genre_ids[j]] = temp[$scope.currentUser.watched[i].genre_ids[j]] + 1;
 
+		var frequencies = [];
+		for (var key in temp) {
+		   frequencies.push(temp[key]); //holds the frequencies of genres watched
+		}
+		frequencies.sort();
+		frequencies.reverse();
+		//console.log(frequencies);
+		frequencies.splice(3, frequencies.length - 3); //holds top 3 frequencies
+		var top3 = [];
 
+		for (var key in temp) {
+		   if (frequencies.includes(temp[key])) {
+			  top3.push(key); //contains top 3 genre IDs
 
+		   }
+
+		}
+		$scope.favGenres = "";
+
+		var count = 0;
+		//console.log(frequencies);
+		//console.log(top3);
+
+		for (var i = 0; i < genres.length; i++) {
+		   if (top3.includes(genres[i].id.toString())) {
+			  if (count == 2) {
+				 $scope.favGenres += genres[i].name;
+				 break;
+			  } else
+				 $scope.favGenres += genres[i].name + ", ";
+			  count++;
+		   }
+		}
+		return $scope.favGenres;
+
+	}
 
 		$scope.writeReview = function () {
 

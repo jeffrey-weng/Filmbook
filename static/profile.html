@@ -28,6 +28,41 @@
 
    <div class="container">
       <div class="row">
+         <h3>Your Most Watched Genres:</h3>
+      </div>
+      <div class="row">
+         <h5>{{calculateFavGenres()}} </h5>
+      </div>
+      <div class="row">
+         <br>
+      </div>
+      <div class="row">
+         <h3>Your Watchlist:</h3>
+      </div>
+      <div class="row">
+         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
+            ng-repeat="movie in currentUser.watchlist" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+
+      </div>
+      <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
+         <h5>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies you
+            plan to watch!</h5>
+      </div>
+      <div class="row">
+            <br>
+         </div>
+      <div class="row">
+         <h3>Favorite Movies:</h3>
+      </div>
+      <div class="row">
+         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
+            ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal" data-target="#movieDetailsModal"
+            ng-click="showMovieDetails(movie)">
+      </div>
+      <div class="row">
+         <br>
+      </div>
+      <div class="row">
          <h3>Recently Seen:</h3>
       </div>
       <div class="row">
@@ -36,17 +71,6 @@
       </div>
       <div class="row">
          <br><br>
-      </div>
-
-
-
-      <div class="row">
-         <h3>Favorite Movies:</h3>
-      </div>
-      <div class="row">
-         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
-            ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal" data-target="#movieDetailsModal"
-            ng-click="showMovieDetails(movie)">
       </div>
    </div>
 </body>
@@ -80,11 +104,20 @@
             </div>
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-success" ng-if="!inFavorites()" ng-click="addToFavorites()">Add to
-               Favorites</button>
-            <button type="button" class="btn btn-danger" ng-if="inFavorites()" ng-click="removeFromFavorites()">Remove
+            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)"
+               data-dismiss="modal">Add to WatchList</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist(movieTitle)"
+               data-dismiss="modal">Remove From Watchlist</button>
+            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)"
+               data-dismiss="modal">Add
+               to Watched</button>
+            <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)"
+               data-dismiss="modal">Add to Favorites</button>
+            <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)" ng-click="removeFromFavorites()">Remove
                from Favorites</button>
-            <button type="button" class="btn btn-info" ng-click="writeReview()">Write a Review for this movie</button>
+            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()"
+               data-dismiss="modal">Write a Review for
+               this Movie</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
       </div>
