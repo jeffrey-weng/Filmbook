@@ -1,60 +1,14 @@
 angular.module('filmApp')
 
    .run(function ($rootScope, $http) {
-      $rootScope.targets = []; //initializing this array with list of users currentUser is following. Available to all controllers.
+      $rootScope.targets = [];
       $rootScope.searchResults = [];
       $rootScope.followingList = [];
-
-      $http.get(window.location.origin + "/api/users/")
-         .then(function (response) {
-
-            for (var i = 0; i < response.data.length; i++) {
-               if(response.data[i]._id==$scope.currentUser.id)
-               continue;
-               else
-               $rootScope.searchResults.push(response.data[i]);
-            }
-
-            var x = function (value) {
-
-               if ($rootScope.targets.includes(value._id))
-                  return true;
-               else return false;
-            }
-
-            $http.get(window.location.origin + "/api/follow/" + $scope.currentUser.id)
-               .then(function (response) {
-                  for (var i = 0; i < response.data.length; i++)
-                     $rootScope.followingList.push(response.data[i]);
-
-                  $rootScope.followingList.forEach(function (value) {
-                     $rootScope.targets.push(value.target);
-                  })
-
-                  console.log($rootScope.targets.length);
-
-
-                  $rootScope.searchResults.forEach(function (value) {
-                     $(document).ready(function () {
-                        // your code
-                        if (x(value)) {
-                           console.log("Exuected");
-                           document.getElementById(value._id).innerHTML = "Unfollow";
-                           document.getElementById(value._id).className = "btn btn-danger";
-                        } else {
-                           console.log("Exuected2");
-                           document.getElementById(value._id).innerHTML = "Follow";
-                           document.getElementById(value._id).className = "btn btn-primary";
-                        }
-                     });
-
-                  });
-
-               });
-         });
-
+      $rootScope.followersList = [];
+      $rootScope.followers = [];
+      $rootScope.following = [];
+      $rootScope.followers2 = [];
    })
-
 
    .controller('PeopleController',
       function ($scope, $rootScope, $http) {
@@ -79,10 +33,10 @@ angular.module('filmApp')
                .then(function (response) {
 
                   for (var i = 0; i < response.data.length; i++) {
-                     if(response.data[i]._id==$scope.currentUser.id)
-                     continue;
+                     if (response.data[i]._id == $scope.currentUser.id)
+                        continue;
                      else
-                     $rootScope.searchResults.push(response.data[i]);
+                        $rootScope.searchResults.push(response.data[i]);
                   }
 
                   var x = function (value) {
@@ -134,11 +88,11 @@ angular.module('filmApp')
 
                   //get most recent list of users
                   var temp = [];
-                  for (var i = 0; i < response.data.length; i++){
-                     if(response.data[i]._id==$scope.currentUser.id)
-                     continue;
+                  for (var i = 0; i < response.data.length; i++) {
+                     if (response.data[i]._id == $scope.currentUser.id)
+                        continue;
                      else
-                     temp.push(response.data[i]);
+                        temp.push(response.data[i]);
                   }
 
                   //compare with current list of users and see if they're different

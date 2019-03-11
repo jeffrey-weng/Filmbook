@@ -8,7 +8,8 @@ var express = require('express'),
     config = require('./config'),
     passport = require('passport'),
     StreamRouter = require('../routes/StreamRouter'),
-    AuthRouter = require('../routes/AuthRouter.js');
+    AuthRouter = require('../routes/AuthRouter.js'),
+    methodOverride = require('method-override');
 
 module.exports.init = function() {
 
@@ -18,6 +19,8 @@ module.exports.init = function() {
 
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
+
+    app.use(methodOverride('_method'))
     app.use(express.static('static'));
 
     require('./passport.js');

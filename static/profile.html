@@ -1,78 +1,97 @@
 <body>
+   <div class="container-fluid" ng-cloak>
 
-   <div class="container-fluid">
-      <div class="row justify-content-end">
+      <div class="row profileMargin">
+         <div class="col-lg-10">
+            <div class="row">
+               <h3>Your Most Watched Genres:</h3>
+            </div>
+            <div class="row">
+               <p class="msg">{{calculateFavGenres()}} </p>
+            </div>
+            <div class="row">
+               <br>
+            </div>
+            <div class="row">
+               <h3>Your Watchlist:</h3>
+            </div>
+            <div class="row">
+               <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
+                  ng-repeat="movie in currentUser.watchlist" data-toggle="modal" data-target="#movieDetailsModal"
+                  ng-click="showMovieDetails(movie)">
 
-         <h5 class="avatar-heading">Change your Avatar:</h5>
+            </div>
+            <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
+               <h5>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies
+                  you
+                  plan to watch!</h5>
+            </div>
+            <div class="row">
+               <br>
+            </div>
+            <div class="row">
+               <h3>Favorite Movies:</h3>
+            </div>
+            <div class="row">
+               <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
+                  ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal" data-target="#movieDetailsModal"
+                  ng-click="showMovieDetails(movie)">
+            </div>
+            <div class="row">
+               <br>
+            </div>
+            <div class="row">
+               <h3>Recently Seen:</h3>
+            </div>
+            <div class="row">
+               <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
+                  ng-repeat="movie in currentUser.watched" data-toggle="modal" data-target="#movieDetailsModal"
+                  ng-click="showMovieDetails(movie)">
+            </div>
+            <div class="row">
+               <br><br>
+            </div>
 
-      </div>
-      <div class="row justify-content-end">
-
-         <img class="avatar avatar-heading" src={{'images/'+currentUser.avatar}} alt="No avatar found" data-toggle="modal"
-            data-target="#avatarModal">
-
-      </div>
-      <div class="row justify-content-end">
-
-         <form id="uploadbanner" enctype="multipart/form-data" method="post" action={{'/api/files/'+currentUser.id}}>
-            <input id="fileupload" name="avatar" type="file" accept="image/*" />
-            <br>
-            <input class="btn btn-primary btn-sm" type="submit" value="Upload" id="submit" disabled />
-         </form>
-
-      </div>
-   </div>
-
-
-
-
-   <div class="container">
-      <div class="row">
-         <h3>Your Most Watched Genres:</h3>
-      </div>
-      <div class="row">
-         <h5>{{calculateFavGenres()}} </h5>
-      </div>
-      <div class="row">
-         <br>
-      </div>
-      <div class="row">
-         <h3>Your Watchlist:</h3>
-      </div>
-      <div class="row">
-         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
-            ng-repeat="movie in currentUser.watchlist" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
-
-      </div>
-      <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
-         <h5>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies you
-            plan to watch!</h5>
-      </div>
-      <div class="row">
-            <br>
          </div>
-      <div class="row">
-         <h3>Favorite Movies:</h3>
-      </div>
-      <div class="row">
-         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
-            ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal" data-target="#movieDetailsModal"
-            ng-click="showMovieDetails(movie)">
-      </div>
-      <div class="row">
-         <br>
-      </div>
-      <div class="row">
-         <h3>Recently Seen:</h3>
-      </div>
-      <div class="row">
-         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
-            ng-repeat="movie in currentUser.watched" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
-      </div>
-      <div class="row">
-         <br><br>
+         <div class="col-lg-2">
+
+            <h5 class="avatar-heading">Change your Avatar:</h5>
+
+            <img class="avatar avatar-heading" src={{'images/'+currentUser.avatar}} alt="No avatar found" data-toggle="modal"
+               data-target="#avatarModal">
+
+            <form id="uploadbanner" enctype="multipart/form-data" method="post" action={{'/api/files/'+currentUser.id}}>
+               <input id="fileupload" name="avatar" type="file" accept="image/*" />
+               <br>
+               <input class="btn btn-primary btn-sm" type="submit" value="Upload" id="submit" disabled />
+            </form>
+
+            <br>
+            <button type="button" class="btn btn-light btn-sm editInfo" ng-click="resetEmail()" data-toggle="modal"
+               data-target="#modalAccountForm">View or Edit Your Account Information</button>
+            <br><br>
+            <h5>Following:</h5>
+            <p ng-if="following.length==0">You're not following anyone!</p>
+            <ul class="list-group listScroll">
+               <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="person in following">{{person.username}}
+                  <span class="btn btn-danger btn-sm" ng-if="isFollowing(person._id)" ng-click="follow(person._id,'hide')">Unfollow</span>
+                  <span class="btn btn-primary btn-sm" ng-if="!isFollowing(person._id)" ng-click="follow(person._id,'hide')">Follow</span>
+               </li>
+            </ul>
+            <br>
+            <h5>Followers:</h5>
+            <p ng-if="followers2.length==0">You have no followers!</p>
+            <ul class="list-group listScroll">
+               <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="person in followers2">{{person.username}}
+                  <span class="btn btn-danger btn-sm" ng-if="isFollowing(person._id)" ng-click="follow(person._id,'hide')">Unfollow</span>
+                  <span class="btn btn-primary btn-sm" ng-if="!isFollowing(person._id)" ng-click="follow(person._id,'hide')">Follow</span>
+               </li>
+            </ul>
+
+         </div>
       </div>
    </div>
+
 </body>
 
 <div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
@@ -124,15 +143,59 @@
    </div>
 </div>
 
+<div class="modal fade" id="modalAccountForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog smallModal" role="document">
+      <div class="modal-content smallModal">
+         <div class="modal-header text-center">
+            <h4 class="modal-title w-100 font-weight-bold">Your Account Information</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+
+            <form id="accountForm" method="POST" action={{'/api/users/'+currentUser.id+'?_method=PUT'}}>
+               <input type="hidden" name="_METHOD" value="PUT">
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="acc-username">Username:</label>
+                  <input type="text" id="acc-username" value={{currentUser.username}} class="form-control validate"
+                     disabled>
+               </div>
+
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="acc-password">Password:</label>
+                  <input type="password" id="acc-password" placeholder="Set a new password" class="form-control validate"
+                     ng-model="password" ng-change="changePass()">
+               </div>
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="acc-email">Email:</label>
+                  <input type="email" name="email" id="acc-email" class="form-control validate" ng-model="email"
+                     ng-change="infoChanged=true" required>
+               </div>
+            </form>
+
+         </div>
+         <div class="modal-footer">
+            <input class="btn btn-primary" form="accountForm" type="submit" ng-disabled="!infoChanged" value="Save"
+               data-dismiss="modal" ng-click="accUpdated()">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
 
 <div class="modal rain fade bd-example-modal-lg" id="avatarModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
    aria-hidden="true">
    <div class="modal-dialog modal-lg">
+
       <div>
          <div>
-            <img src={{'images/'+currentUser.avatar}}>
+            <img src={{'images/'+currentUser.avatar}} style="height:50%;">
          </div>
       </div>
+
    </div>
 </div>
 

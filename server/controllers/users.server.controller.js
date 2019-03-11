@@ -64,7 +64,7 @@ exports.update = function(req, res) {
 	  user.save(function(err){
 		  if(err)throw err;
 		  
-		  res.json(user);
+		  
 		  console.log('User saved successfully!');
 		  
 	  });

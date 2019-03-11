@@ -82,8 +82,8 @@
 }
 
 .avatar {
-    height: 100%;
-    width: 10%;
+    height: 5%;
+    width: 70%;
     object-fit: cover;
 
 }
@@ -148,9 +148,51 @@
     box-sizing: border-box
 }
 
-.movieRec:hover {
+.movieRec:hover,
+.movieProfile:hover {
     cursor: pointer;
     border: 5px solid black;
+}
+
+.editInfo {
+    margin-right: 0.5%;
+}
+
+.smallModal {
+    /* 80% of window height */
+    height: 70%;
+}
+
+.modal-body {
+    /* 100% = dialog height, 120px = header + footer */
+    max-height: calc(100% - 120px);
+    overflow-y: auto;
+}
+
+.movieProfile {
+    width: 14%;
+    height: 25%;
+    object-fit: cover;
+    border: 5px solid transparent;
+    box-sizing: border-box
+}
+
+.profileMargin {
+    margin-left: 1.5%;
+}
+
+.unfollow {
+    align-content: flex-end;
+}
+
+.listScroll {
+    max-height: 350px;
+    overflow-y: scroll;
+
+}
+
+.msg {
+    font-size: 20px;
 }
 
 

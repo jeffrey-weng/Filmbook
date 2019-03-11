@@ -3,27 +3,56 @@ angular.module('filmApp').controller('MoviesController',
 
 
 		//populate currentUser's following
-		if ($rootScope.targets.length == 0) {
-			$http.get(window.location.origin + "/api/users/")
-				.then(function (response) {
-					$scope.searchResults = [];
-					for (var i = 0; i < response.data.length; i++)
-						$scope.searchResults.push(response.data[i]);
 
-					$http.get(window.location.origin + "/api/follow/" + $scope.currentUser.id)
-						.then(function (response) {
-							$scope.followingList = [];
-							for (var i = 0; i < response.data.length; i++)
-								$scope.followingList.push(response.data[i]);
+		$rootScope.targets = [];
+		$rootScope.searchResults = [];
+		$rootScope.followingList = [];
+		$rootScope.followersList = [];
+		$rootScope.followers = [];
+		$rootScope.following = [];
+		$rootScope.followers2 = [];
 
-							$scope.followingList.forEach(function (value) {
-								$rootScope.targets.push(value.target);
+		$http.get(window.location.origin + "/api/users/")
+			.then(function (response) {
+				$rootScope.searchResults = [];
+				for (var i = 0; i < response.data.length; i++)
+					$rootScope.searchResults.push(response.data[i]);
+
+				$http.get(window.location.origin + "/api/follow/" + $scope.currentUser.id)
+					.then(function (response) {
+						$scope.followingList = [];
+						for (var i = 0; i < response.data.length; i++)
+							$scope.followingList.push(response.data[i]);
+
+						$scope.followingList.forEach(function (value) {
+							$rootScope.targets.push(value.target);
+						})
+
+						$http.get(window.location.origin + "/api/follow/followers/" + $scope.currentUser.id)
+							.then(function (response) {
+								for (var i = 0; i < response.data.length; i++)
+									$rootScope.followersList.push(response.data[i]);
+
+								$rootScope.followersList.forEach(function (value) {
+									$rootScope.followers.push(value.user);
+								})
+
+								$rootScope.searchResults.forEach(function (value) {
+									if ($scope.isFollowing(value._id))
+										$scope.following.push(value);
+								})
+
+								$rootScope.searchResults.forEach(function (value) {
+									if ($scope.isAFollower(value._id))
+										$scope.followers2.push(value);
+								})
 							})
 
-							// console.log($rootScope.targets.length);  
-						});
-				});
-		}
+						// console.log($rootScope.targets.length);  
+					});
+			});
+
+
 
 		$scope.movieType = 'movie in popular';
 		$scope.displayType = 2; //set default display to top rated movies
@@ -777,7 +806,7 @@ angular.module('filmApp').controller('MoviesController',
 
 		}
 
-		$scope.follow = function (id) {
+		$scope.follow = function (id, hide) {
 
 			var x = function (id) {
 
@@ -799,10 +828,10 @@ angular.module('filmApp').controller('MoviesController',
 						}
 					})
 					.then(function (response) {
-
-						document.getElementById("modal:" + id).innerHTML = "Follow " + $scope.username;
-						document.getElementById("modal:" + id).className = "btn btn-primary";
-
+						if (!hide) {
+							document.getElementById("modal:" + id).innerHTML = "Follow " + $scope.username;
+							document.getElementById("modal:" + id).className = "btn btn-primary";
+						}
 
 					})
 			} else {
@@ -812,10 +841,10 @@ angular.module('filmApp').controller('MoviesController',
 						target: id
 					})
 					.then(function (response) {
-						console.log("Exuected2");
-						document.getElementById("modal:" + id).innerHTML = "Unfollow " + $scope.username;
-						document.getElementById("modal:" + id).className = "btn btn-danger";
-
+						if (!hide) {
+							document.getElementById("modal:" + id).innerHTML = "Unfollow " + $scope.username;
+							document.getElementById("modal:" + id).className = "btn btn-danger";
+						}
 
 					})
 			}
@@ -1102,51 +1131,94 @@ angular.module('filmApp').controller('MoviesController',
 
 		$scope.moreRecs();
 
-	$scope.calculateFavGenres = function(){
-		var temp = {};
-		for (var i = 0; i < $scope.currentUser.watched.length; i++)
-		   for (var j = 0; j < $scope.currentUser.watched[i].genre_ids.length; j++)
-			  if (!temp[$scope.currentUser.watched[i].genre_ids[j]])
-				 temp[$scope.currentUser.watched[i].genre_ids[j]] = 1;
-			  else
-				 temp[$scope.currentUser.watched[i].genre_ids[j]] = temp[$scope.currentUser.watched[i].genre_ids[j]] + 1;
+		$scope.calculateFavGenres = function () {
+			var temp = {};
+			for (var i = 0; i < $scope.currentUser.watched.length; i++)
+				for (var j = 0; j < $scope.currentUser.watched[i].genre_ids.length; j++)
+					if (!temp[$scope.currentUser.watched[i].genre_ids[j]])
+						temp[$scope.currentUser.watched[i].genre_ids[j]] = 1;
+					else
+						temp[$scope.currentUser.watched[i].genre_ids[j]] = temp[$scope.currentUser.watched[i].genre_ids[j]] + 1;
 
-		var frequencies = [];
-		for (var key in temp) {
-		   frequencies.push(temp[key]); //holds the frequencies of genres watched
+			var frequencies = [];
+			for (var key in temp) {
+				frequencies.push(temp[key]); //holds the frequencies of genres watched
+			}
+			frequencies.sort();
+			frequencies.reverse();
+			//console.log(frequencies);
+			frequencies.splice(3, frequencies.length - 3); //holds top 3 frequencies
+			var top3 = [];
+
+			for (var key in temp) {
+				if (frequencies.includes(temp[key])) {
+					top3.push(key); //contains top 3 genre IDs
+
+				}
+
+			}
+			$scope.favGenres = "";
+
+			var count = 0;
+			//console.log(frequencies);
+			//console.log(top3);
+
+			for (var i = 0; i < genres.length; i++) {
+				if (top3.includes(genres[i].id.toString())) {
+					if (count == 2) {
+						$scope.favGenres += genres[i].name;
+						break;
+					} else
+						$scope.favGenres += genres[i].name + ", ";
+					count++;
+				}
+			}
+			return $scope.favGenres;
+
 		}
-		frequencies.sort();
-		frequencies.reverse();
-		//console.log(frequencies);
-		frequencies.splice(3, frequencies.length - 3); //holds top 3 frequencies
-		var top3 = [];
 
-		for (var key in temp) {
-		   if (frequencies.includes(temp[key])) {
-			  top3.push(key); //contains top 3 genre IDs
+		$scope.infoChanged = false;
 
-		   }
+
+		$scope.resetEmail = function () {
+			$scope.email = $scope.currentUser.email;
+			$scope.infoChanged = false;
+		}
+
+		$scope.changePass = function () {
+
+			$scope.infoChanged = true;
+			if ($scope.password.length > 0) {
+				document.getElementById("acc-password").setAttribute("name", "password");
+			} else {
+				document.getElementById("acc-password").removeAttribute("name");
+				$scope.infoChanged = false;
+			}
 
 		}
-		$scope.favGenres = "";
 
-		var count = 0;
-		//console.log(frequencies);
-		//console.log(top3);
-
-		for (var i = 0; i < genres.length; i++) {
-		   if (top3.includes(genres[i].id.toString())) {
-			  if (count == 2) {
-				 $scope.favGenres += genres[i].name;
-				 break;
-			  } else
-				 $scope.favGenres += genres[i].name + ", ";
-			  count++;
-		   }
+		$scope.accUpdated = function () {
+			alert('Account info updated.');
 		}
-		return $scope.favGenres;
 
-	}
+		$scope.isFollowing = function (id) {
+			if ($rootScope.targets.includes(id))
+				return true;
+			else return false;
+
+		}
+		$scope.isAFollower = function (id) {
+
+			if ($rootScope.followers.includes(id))
+				return true;
+			else return false;
+		}
+
+		console.log($scope.following);
+		console.log($scope.followers2);
+		console.log($rootScope.searchResults);
+		console.log($rootScope.followers);
+		console.log($rootScope.targets);
 
 		$scope.writeReview = function () {
 

@@ -21,8 +21,8 @@
 
       </div>
       <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
-         <h5>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies you
-            plan to watch!</h5>
+         <p class="msg">Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies you
+            plan to watch!</p>
       </div>
       <div class="row">
          <br>
@@ -31,8 +31,8 @@
       <div class="row">
          <h3>Movies You Might Like:</h3>
       </div>
-      <h5 ng-if="noSuggestions()">Watch, favorite, or add to your Watchlist some <a ui-sref="movies">movies</a> to get
-         customized recommendations!</h5>
+      <p class="msg" ng-if="noSuggestions()">Watch, favorite, or add to your Watchlist some <a ui-sref="movies">movies</a> to get
+         customized recommendations!</p>
       <div class="row">
          <img class="movieRec" ng-repeat="movie in movieRecs track by $index" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
             alt="Movie Poster Not Found" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
@@ -41,9 +41,10 @@
          <br>
       </div>
       <div class="row justify-content-end">
-            <div class="col-1.5">
-                  <button type="button" class="btn btn-dark btn-sm" ng-click="moreRecs()" ng-if="!noSuggestions()">Get more recommendations</button>
-                </div>
+         <div class="col-1.5">
+            <button type="button" class="btn btn-dark btn-sm" ng-click="moreRecs()" ng-if="!noSuggestions()">Get more
+               recommendations</button>
+         </div>
       </div>
 
       <div class="row">
@@ -69,7 +70,7 @@
          </ul>
       </div>
       <div class="row" ng-if="activities.length==0">
-         <h5>Your newsfeed is currently empty! Follow other users to fill up your feed!</h5>
+         <p class="msg">Your newsfeed is currently empty! Follow other users to fill up your feed!</p>
       </div>
 
       <div class="row">
@@ -92,7 +93,7 @@
          </ul>
       </div>
       <div class="row" ng-if="userActivities.length==0">
-         <h5>No recent site activity.</h5>
+         <p class="msg">No recent site activity.</p>
       </div>
    </div>
    </div>
@@ -136,13 +137,15 @@
                data-dismiss="modal">Add to WatchList</button>
             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist(movieTitle)"
                data-dismiss="modal">Remove From Watchlist</button>
-            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Add
+            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)"
+               data-dismiss="modal">Add
                to Watched</button>
             <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)"
                data-dismiss="modal">Add to Favorites</button>
             <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)" ng-click="removeFromFavorites()">Remove
                from Favorites</button>
-            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()" data-dismiss="modal">Write a Review for
+            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()"
+               data-dismiss="modal">Write a Review for
                this Movie</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
