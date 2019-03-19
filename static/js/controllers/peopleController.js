@@ -373,12 +373,6 @@ angular.module('filmApp')
             }
          }
 
-         $scope.isFollowing = function (id) {
-            if ($rootScope.targets.includes(id))
-               return true;
-            else return false;
-
-         }
 
 
       });

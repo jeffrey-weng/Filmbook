@@ -115,6 +115,14 @@ angular.module('filmApp', [
                     data:{
                         authorizedRoles: [USER_ROLES.all]
                     }
+                })
+                .state('reviews',{
+                    url:'/reviews',
+                    templateUrl:'reviews.html',
+                    controller:'ReviewsController',
+                    data:{
+                        authorizedRoles:[USER_ROLES.all]
+                    }
                 });
 
             $urlRouterProvider.otherwise('/');

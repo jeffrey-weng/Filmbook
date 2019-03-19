@@ -39,7 +39,7 @@ var userSchema = new Schema({
 
     reviews: [{
         type: Schema.Types.ObjectId,
-        ref: 'ReviewPost'
+        ref: 'Review'
     }],
 
     discussions: [{
@@ -145,7 +145,7 @@ var DiscussionPost = mongoose.model('DiscussionPost', discussionPostSchema);
 
 //------------------------------------------------------------------------
 
-var reviewPostSchema = new Schema({
+var reviewSchema = new Schema({
 
     user: {
         type: Schema.Types.ObjectId,
@@ -163,28 +163,30 @@ var reviewPostSchema = new Schema({
     updated_at: Date
 
 }, {
-    collection: 'ReviewPost'
+    collection: 'Review'
 });
 
-reviewPostSchema.statics.pathsToPopulate = function () {
+reviewSchema.statics.pathsToPopulate = function () {
     return ['user'];
 };
 
-reviewPostSchema.plugin(StreamMongoose.activity);
+reviewSchema.plugin(StreamMongoose.activity);
 
 
-reviewPostSchema.pre('save', function (next) {
+reviewSchema.pre('save', function (next) {
     var currentDate = new Date();
     this.updated_at = currentDate;
 
     if (!this.created_at)
         this.created_at = currentDate;
+    if (!this.upVotes)
+        this.upVotes = 0;
 
     next();
 });
 
 
-var ReviewPost = mongoose.model('ReviewPost', reviewPostSchema);
+var Review = mongoose.model('Review', reviewSchema);
 
 //------------------------------------------------------------------------
 
@@ -281,7 +283,7 @@ StreamMongoose.setupMongoose(mongoose);
 module.exports = {
     User: User,
     DiscussionPost: DiscussionPost,
-    ReviewPost: ReviewPost,
+    Review: Review,
     Follow: Follow,
     Watch: Watch
 };

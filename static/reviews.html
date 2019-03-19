@@ -1,0 +1,220 @@
+<div class="container">
+
+   <div class="row">
+      <div class="input-group searchSpace" id="searchBar">
+
+         <input type="text" class="form-control" placeholder="Filter reviews by film name or username" ng-model="reviewSearchText"
+            ng-change="searchReviews(reviewSearchText)">
+         <p class="space"> or </p>
+         <button type="button" class="btn btn-success btn-sm space" data-toggle="modal" data-target="#reviewModal"
+            ng-click="makeReview()">Click here to write your own review</button>
+      </div>
+   </div>
+   <div class="col-12">
+      <ul class="list-group">
+         <li class="list-group-item" ng-repeat="review in reviews | myFilter:[reviewSearchText]">
+            <div class="row">
+               <div class="col-4">
+                  <img src={{'images/'+review.user.avatar}} alt="No avatar found" class="reviewAvatar">
+               </div>
+               <div class="col-8">
+                  <p>
+                     <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal" ng-click="showProfileDetails(review.user)">{{review.user.username}}</span>
+                     reviewed
+
+                     <span class="activityLink" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(review.movie)">{{review.movie.title}}</span>
+                     on
+                     {{reviewDate(review.created_at)}}. </p>
+
+                  <div class="star-rating">
+
+                     <i class="active toy fa fa-star" ng-class="{yellow: review.rating==5}"></i>
+
+
+                     <i class="active toy fa fa-star" ng-class="{yellow: review.rating>=4}"></i>
+
+
+
+                     <i class="active toy fa fa-star" ng-class="{yellow: review.rating>=3}"></i>
+
+
+                     <i class="active toy fa fa-star" ng-class="{yellow: review.rating>=2}"></i>
+
+
+
+                     <i class=" active toy fa fa-star" ng-class="{yellow: review.rating>=1}"></i>
+
+                     <p style="margin-right:15px;">Rating Given: </p>
+
+                  </div>
+                  <h6>Written Review:</h6>
+                  <p>{{review.description}}</p>
+
+               </div>
+            </div>
+         </li>
+      </ul>
+
+
+   </div>
+
+</div>
+
+<iframe name="hiddenFrame" class="hide"></iframe>
+
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+   <div class="modal-dialog reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header text-center">
+            <h4 class="modal-title w-100 font-weight-bold">Write A Review</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+
+            <form id="reviewForm" name="reviewForm" method="POST" action="/api/reviews/" target="hiddenFrame" ng-submit="reviewSubmitted()">
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="movieName">Movie:</label>
+                  <div class="input-group mb-3">
+                     <select id="movieName2" name="movie" ng-model="movieName" required>
+                        <option selected value="">Choose a Movie to Review</option>
+                        <option ng-repeat="movie in currentUser.watched" value={{movie.title}}>{{movie.title}}</option>
+                     </select>
+                  </div>
+               </div>
+               <input type="hidden" name="user" ng-model="user2" value={{currentUser.id}}>
+               <div class="form-group">
+                  <div class="rating">
+                     <label data-error="wrong" data-success="right" for="rating">Star Rating:</label>
+                     <div class="star-rating">
+                        <input id="star-5" type="radio" name="rating" ng-model="rating2" value="5" required>
+                        <label for="star-5" title="5 stars">
+                           <i class="active fa fa-star"></i>
+                        </label>
+                        <input id="star-4" type="radio" name="rating" ng-model="rating2" value="4" required>
+                        <label for="star-4" title="4 stars">
+                           <i class="active fa fa-star"></i>
+                        </label>
+                        <input id="star-3" type="radio" name="rating" ng-model="rating2" value="3" required>
+                        <label for="star-3" title="3 stars">
+                           <i class="active fa fa-star"></i>
+                        </label>
+                        <input id="star-2" type="radio" name="rating" ng-model="rating2" value="2" required>
+                        <label for="star-2" title="2 stars">
+                           <i class="active fa fa-star"></i>
+                        </label>
+                        <input id="star-1" type="radio" name="rating" ng-model="rating2" value="1" required>
+                        <label for="star-1" title="1 star">
+                           <i class=" active fa fa-star "></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="written">Written Review:</label>
+                  <textarea class="form-control" rows="15" cols="50" id="written" name="description" aria-label="With textarea"
+                     ng-model="comment" required></textarea>
+               </div>
+            </form>
+
+         </div>
+         <div class="modal-footer">
+            <input class="btn btn-success" form="reviewForm" type="submit" value="Submit" ng-disabled="!isValidReview()">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header">
+            <h5 class="modal-title">{{username}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Favorite Movies:</strong> {{favMovies}}
+                     <br><br>
+                     <strong>Most Viewed Genre(s):</strong> {{favGenres}}
+                     <br><br>
+                     <strong>Watchlist:</strong> {{watchlist}}
+                     <br><br>
+                     <strong>Recently Seen:</strong> {{watched}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-danger" ng-if="isFollowing(id)&& username!=currentUser.username"
+               ng-click="follow(id)">Unfollow {{username}}</button>
+            <button type="button" class="btn btn-primary" ng-if="!isFollowing(id) && username!=currentUser.username"
+               ng-click="follow(id)">Follow {{username}}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header">
+            <h5 class="modal-title">{{movieTitle}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive" alt="Movie Poster Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Overview:</strong> {{movieDescription}}
+                     <br><br>
+                     <strong>Genre(s):</strong> {{movieDisplayGenres}}
+                     <br><br>
+                     <strong>Average Rating:</strong> {{movieRating}}/10
+                     <br><br>
+                     <strong>Release Date:</strong> {{movieDisplayDate}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)"
+               data-dismiss="modal">Add to WatchList</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist(movieTitle)"
+               data-dismiss="modal">Remove From Watchlist</button>
+            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)"
+               data-dismiss="modal">Add
+               to Watched</button>
+            <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)"
+               data-dismiss="modal">Add to Favorites</button>
+            <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)" ng-click="removeFromFavorites()">Remove
+               from Favorites</button>
+            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()"
+               data-dismiss="modal">Write a Review for
+               this Movie</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>

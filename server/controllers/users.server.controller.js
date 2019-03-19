@@ -60,12 +60,16 @@ exports.update = function(req, res) {
 
     if(req.body.avatar)    
       user.avatar=req.body.avatar;
-	  
+    
+      console.log("entered");
+
 	  user.save(function(err){
 		  if(err)throw err;
 		  
-		  
-		  console.log('User saved successfully!');
+		  else{ 
+      console.log('User saved successfully!');
+      res.status(200).end();
+      }
 		  
 	  });
   });

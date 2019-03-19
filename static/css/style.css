@@ -82,8 +82,10 @@
 }
 
 .avatar {
-    height: 5%;
-    width: 70%;
+    height: 100%;
+    width: 100%;
+    max-height: 180px;
+    max-width: 180px;
     object-fit: cover;
 
 }
@@ -92,9 +94,7 @@
     cursor: pointer;
 }
 
-.avatar-heading {
-    margin-right: 2.5%;
-}
+
 
 #uploadbanner {
     margin-right: -3%;
@@ -163,6 +163,11 @@
     height: 70%;
 }
 
+.reviewModal {
+    height: 94%;
+}
+
+
 .modal-body {
     /* 100% = dialog height, 120px = header + footer */
     max-height: calc(100% - 120px);
@@ -195,7 +200,62 @@
     font-size: 20px;
 }
 
+.searchSpace {
+    margin-top: 3%;
+}
 
+/* For Star Rating System*/
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    padding: 10px 10px 10px 0;
+}
+
+.star-rating input[type=radio] {
+    display: none;
+}
+
+.star-rating label {
+    color: #bbb;
+    font-size: 35px;
+    padding: 0;
+    cursor: pointer;
+    transition: all .3s ease-in-out
+}
+
+.star-rating label:hover,
+.star-rating label:hover~label,
+.star-rating input[type=radio]:checked~label {
+    color: #f2b600
+}
+
+
+
+.hide {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 1px;
+    height: 1px;
+}
+
+.reviewAvatar {
+    height: 100%;
+    width: 100%;
+    max-height: 120px;
+    max-width: 120px;
+    object-fit: cover;
+    margin-right: 40px;
+}
+
+.yellow {
+    color: #f2b600;
+}
+
+.toy {
+    margin-top: 3.5px
+}
 
 /* dark bluish background from register page */
 .body {

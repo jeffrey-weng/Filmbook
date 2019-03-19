@@ -25,7 +25,7 @@ discussions = require('../controllers/discussion.server.controller.js'),
 var StreamRouter = express.Router(),
 	User = models.User,
 	DiscussionPost = models.DiscussionPost,
-	ReviewPost = models.ReviewPost,
+	Review = models.Review,
 	Follow = models.Follow,
 	Watch = models.Watch;
 

@@ -12,7 +12,7 @@
                <img class="card-img-top person2 cover" src={{'images/'+person.avatar}} alt="Profile Picture Not Found">
             </div>
             <button id={{person._id}} ng-click="follow(person)"></button>
-            <button class="btn btn-secondary" ng-if="person.username==currentUser.username">View Your Profile</button>
+
          </div>
          <div class="card space person">
             <div class="card-body" ui-sref="profile">
@@ -24,15 +24,13 @@
          </div>
       </div>
    </div>
-
-
-
-
 </div>
+
+
 <div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel"
    aria-hidden="true">
-   <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
          <div class="modal-header">
             <h5 class="modal-title">{{username}}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">

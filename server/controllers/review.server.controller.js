@@ -1,14 +1,14 @@
 /* Dependencies */
 var mongoose = require('mongoose'), 
     models= require('../models.js'),
-    ReviewPost=models.ReviewPost;
+    Review=models.Review;
 
 
 /* Create a Review */
 exports.create = function(req, res) {
 
   /* Instantiate a Review */
-  var review = new ReviewPost(req.body);
+  var review = new Review(req.body);
 
 
   /* Then save the Review */
@@ -16,8 +16,9 @@ exports.create = function(req, res) {
     if(err) {
       console.log(err);
       res.status(400).send(err);
-    } else {
-      res.json(review);
+    }
+    else{
+      res.status(200).end();
     }
   });
 };
@@ -35,7 +36,7 @@ exports.update = function(req, res) {
   /* Replace the article's properties with the new properties found in req.body */
   /* Save the article */
   
-  ReviewPost.findById(review._id,function(err,review){
+  Review.findById(review._id,function(err,review){
 	  if(err) throw err;
 	  
 	    review.description=req.body.description;
@@ -58,7 +59,7 @@ exports.delete = function(req, res) {
 
   /* Remove the article */
   
-  ReviewPost.findOneAndRemove({user:review.user,movie:review.movie},function(err){
+  Review.findOneAndRemove({user:review.user,movie:review.movie},function(err){
 	  if(err){
 		  throw err;
 	  }	  
@@ -73,7 +74,7 @@ exports.delete = function(req, res) {
 /* Get all Reviews */
 exports.list = function(req, res) {
   
-  ReviewPost.find({}, function(err, reviews) {
+  Review.find({}, function(err, reviews) {
   if (err) throw err;
 
  
@@ -89,7 +90,7 @@ exports.list = function(req, res) {
         then finally call next
  */
 exports.ReviewByID = function(req, res, next, id) {
-  ReviewPost.findById(id).exec(function(err, review) {
+  Review.findById(id).exec(function(err, review) {
     if(err) {
       res.status(400).send(err);
     } else {
