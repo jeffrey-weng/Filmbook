@@ -38,9 +38,12 @@ exports.update = function(req, res) {
   
   Review.findById(review._id,function(err,review){
 	  if(err) throw err;
-	  
-	    review.description=req.body.description;
+    
+    if(req.body.description)
+      review.description=req.body.description;
+    if(req.body.rating)
       review.rating=req.body.rating;
+    if(req.body.upvotes)
       review.upVotes=req.body.upvotes;
 	  
 	  review.save(function(err){
@@ -59,7 +62,7 @@ exports.delete = function(req, res) {
 
   /* Remove the article */
   
-  Review.findOneAndRemove({user:review.user,movie:review.movie},function(err){
+  Review.findOneAndRemove({_id:review._id},function(err){
 	  if(err){
 		  throw err;
 	  }	  

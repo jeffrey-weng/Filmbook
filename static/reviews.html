@@ -17,7 +17,7 @@
                <div class="col-4">
                   <img src={{'images/'+review.user.avatar}} alt="No avatar found" class="reviewAvatar">
                </div>
-               <div class="col-8">
+               <div class="col-6">
                   <p>
                      <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal" ng-click="showProfileDetails(review.user)">{{review.user.username}}</span>
                      reviewed
@@ -51,6 +51,12 @@
                   <p>{{review.description}}</p>
 
                </div>
+               <div class="col-2">
+                  <button type="button" class="btn btn-info" ng-if="review.user.username==currentUser.username"
+                     data-toggle="modal" data-target="#editModal" ng-click="editReview(review)">Edit</button>
+                  <button type="button" class="btn btn-danger" ng-if="review.user.username==currentUser.username"
+                     ng-click="deleteReview(review)">Delete</button>
+               </div>
             </div>
          </li>
       </ul>
@@ -59,6 +65,76 @@
    </div>
 
 </div>
+
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+   <div class="modal-dialog reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header text-center">
+            <h4 class="modal-title w-100 font-weight-bold">Edit Review</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+
+            <form id="editForm" name="editForm" method="POST" action={{"/api/reviews/"+reviewId+"?_method=PUT"}} target="hiddenFrame"
+               ng-submit="reviewEdited()">
+               <input type="hidden" name="_METHOD" value="PUT">
+
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="movieName3">Movie:</label>
+
+                  <input type="text" id="movieName3" name="movie" value={{reviewMovie}} class="form-control validate" disabled>
+               </div>
+               <input type="hidden" name="user" ng-model="user2" value={{currentUser.id}}>
+               <div class="form-group">
+                  <div class="rating">
+                     <label data-error="wrong" data-success="right" for="rating">Star Rating:</label>
+                     <div class="star-rating">
+                        <input id="star-55" type="radio" name="rating" ng-model="reviewRating" value="5" required>
+                        <label for="star-55" title="5 stars">
+                           <i class="active fa fa-star" ng-class="{yellow: reviewRating==5}"></i>
+                        </label>
+                        <input id="star-54" type="radio" name="rating" ng-model="reviewRating" value="4" required>
+                        <label for="star-54" title="4 stars">
+                           <i class="active fa fa-star" ng-class="{yellow: reviewRating>=4}"></i>
+                        </label>
+
+                        <input id="star-53" type="radio" name="rating" ng-model="reviewRating" value="3" required>
+                        <label for="star-53" title="3 stars">
+                           <i class="active fa fa-star" ng-class="{yellow: reviewRating>=3}"></i>
+                        </label>
+                        <input id="star-52" type="radio" name="rating" ng-model="reviewRating" value="2" required>
+                        <label for="star-52" title="2 stars">
+                           <i class="active fa fa-star" ng-class="{yellow: reviewRating>=2}"></i>
+                        </label>
+                        <input id="star-51" type="radio" name="rating" ng-model="reviewRating" value="1" required>
+                        <label for="star-51" title="1 star">
+                           <i class=" active fa fa-star" ng-class="{yellow: reviewRating>=1}"></i>
+                        </label>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="written2">Written Review:</label>
+                  <textarea class="form-control" rows="15" cols="50" id="written2" name="description" aria-label="With textarea"
+                     ng-model="reviewComment" required>{{reviewComment}}</textarea>
+               </div>
+            </form>
+
+         </div>
+         <div class="modal-footer">
+            <input class="btn btn-success" form="editForm" type="submit" value="Submit" ng-disabled="!isValidEdit()">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+
 
 <iframe name="hiddenFrame" class="hide"></iframe>
 

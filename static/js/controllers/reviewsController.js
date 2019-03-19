@@ -1,3 +1,4 @@
+
 angular.module('filmApp')
 
     .filter('myFilter', function () {
@@ -56,6 +57,12 @@ angular.module('filmApp')
             $scope.isValidReview = function () {
                 if (!$scope.comment || !$scope.rating2 || !$scope.movieName)
                     return false;
+                else return true;
+            }
+            
+            $scope.isValidEdit = function(){
+                if(!$scope.reviewMovie || !$scope.reviewRating || !$scope.reviewComment)
+                return false;
                 else return true;
             }
 
@@ -165,9 +172,48 @@ angular.module('filmApp')
 
                     }
                 }
+            }
 
+            $scope.editReview = function(review){
+
+                $scope.reviewId = review._id;
+                $scope.reviewMovie = review.movie.title;
+                $scope.reviewRating = review.rating;
+                $scope.reviewComment = review.description;
+                $scope.reviewCreation = review.created_at;
+                
+                $scope.review = review;
+            }
+
+            $scope.reviewEdited = function(){
+                alert("Review edited.");
+
+                $('#editModal').modal('hide');
+
+
+                var pos = $scope.reviews.findIndex(function(value){
+                    return value._id==$scope.reviewId;
+                })
+                console.log(pos);
+                console.log($scope.review);
+
+                $scope.review.description=$scope.reviewComment;
+                $scope.review.rating = $scope.reviewRating;
+                
+                $scope.reviews[pos]=$scope.review;
 
 
             }
 
+            $scope.deleteReview = function(review){
+
+                var pos = $scope.reviews.findIndex(function(value){
+                    return value.user.username==$scope.currentUser.username && value.movie.title==review.movie.title && value.created_at==review.created_at;
+                })
+                $scope.reviews.splice(pos,1);
+
+                $http.delete(window.location.origin + "/api/reviews/" + review._id);
+      
+            }
+            
         });
