@@ -6,13 +6,29 @@
          <input type="text" class="form-control" placeholder="Filter reviews by film name or username" ng-model="reviewSearchText"
             ng-change="searchReviews(reviewSearchText)">
          <p class="space"> or </p>
+         <div class="dropdown" style="margin-right:50px;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+               sort by
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+               <a class="dropdown-item" ng-click="orderBy('-created_at')">Newest First</a>
+               <a class="dropdown-item" ng-click="orderBy('created_at')">Oldest First</a>
+               <a class="dropdown-item" ng-click="orderBy('movie.title')">Film Title</a>
+               <a class="dropdown-item" ng-click="orderBy('-rating')">Rating Desc.</a>
+               <a class="dropdown-item" ng-click="orderBy('rating')">Rating Asc.</a>
+               <a class="dropdown-item" ng-click="orderBy('user.username')">User Name</a>
+               <a class="dropdown-item" ng-click="orderBy('-upVotes')">Number of Upvotes Desc.</a>
+               <a class="dropdown-item" ng-click="orderBy('upVotes')">Number of Upvotes Asc.</a>
+            </div>
+         </div>
          <button type="button" class="btn btn-success btn-sm space" data-toggle="modal" data-target="#reviewModal"
             ng-click="makeReview()">Click here to write your own review</button>
       </div>
    </div>
    <div class="col-12">
       <ul class="list-group">
-         <li class="list-group-item" ng-repeat="review in reviews | myFilter:[reviewSearchText]">
+         <li id="repeat" class="list-group-item" ng-repeat="review in reviews | myFilter:[reviewSearchText]| orderBy:orderByCriteria">
             <div class="row">
                <div class="col-4">
                   <img src={{'images/'+review.user.avatar}} alt="No avatar found" class="reviewAvatar">
@@ -56,6 +72,12 @@
                      data-toggle="modal" data-target="#editModal" ng-click="editReview(review)">Edit</button>
                   <button type="button" class="btn btn-danger" ng-if="review.user.username==currentUser.username"
                      ng-click="deleteReview(review)">Delete</button>
+
+                  <div class="upvote1">
+                     <i class="fas fa-arrow-circle-up upvote2" id={{review._id}} ng-click="upVote(review)"></i><br>
+                     <span style="margin-left:3.5px;">{{review.upVotes}}</span> <br>
+                     <i class="fas fa-arrow-circle-down upvote2" id={{review._id+'x'}} ng-click="downVote(review)"></i>
+                  </div>
                </div>
             </div>
          </li>
@@ -85,31 +107,32 @@
                <div class="form-group">
                   <label data-error="wrong" data-success="right" for="movieName3">Movie:</label>
 
-                  <input type="text" id="movieName3" name="movie" value={{reviewMovie}} class="form-control validate" disabled>
+                  <input type="text" id="movieName3" name="movie" value={{reviewMovie}} class="form-control validate"
+                     disabled>
                </div>
                <input type="hidden" name="user" ng-model="user2" value={{currentUser.id}}>
                <div class="form-group">
                   <div class="rating">
                      <label data-error="wrong" data-success="right" for="rating">Star Rating:</label>
                      <div class="star-rating">
-                        <input id="star-55" type="radio" name="rating" ng-model="reviewRating" value="5" required>
+                        <input id="star-55" type="radio" name="rating" ng-model="reviewRating" value="5">
                         <label for="star-55" title="5 stars">
                            <i class="active fa fa-star" ng-class="{yellow: reviewRating==5}"></i>
                         </label>
-                        <input id="star-54" type="radio" name="rating" ng-model="reviewRating" value="4" required>
+                        <input id="star-54" type="radio" name="rating" ng-model="reviewRating" value="4">
                         <label for="star-54" title="4 stars">
                            <i class="active fa fa-star" ng-class="{yellow: reviewRating>=4}"></i>
                         </label>
 
-                        <input id="star-53" type="radio" name="rating" ng-model="reviewRating" value="3" required>
+                        <input id="star-53" type="radio" name="rating" ng-model="reviewRating" value="3">
                         <label for="star-53" title="3 stars">
                            <i class="active fa fa-star" ng-class="{yellow: reviewRating>=3}"></i>
                         </label>
-                        <input id="star-52" type="radio" name="rating" ng-model="reviewRating" value="2" required>
+                        <input id="star-52" type="radio" name="rating" ng-model="reviewRating" value="2">
                         <label for="star-52" title="2 stars">
                            <i class="active fa fa-star" ng-class="{yellow: reviewRating>=2}"></i>
                         </label>
-                        <input id="star-51" type="radio" name="rating" ng-model="reviewRating" value="1" required>
+                        <input id="star-51" type="radio" name="rating" ng-model="reviewRating" value="1">
                         <label for="star-51" title="1 star">
                            <i class=" active fa fa-star" ng-class="{yellow: reviewRating>=1}"></i>
                         </label>

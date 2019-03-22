@@ -1,5 +1,5 @@
 <body>
-   <div class="container-fluid" ng-cloak>
+   <div class="container-fluid" style="overflow-x: hidden;" ng-cloak>
 
       <div class="row profileMargin">
          <div class="col-lg-10">
@@ -73,7 +73,8 @@
             <h5>Following:</h5>
             <p ng-if="following.length==0">You're not following anyone!</p>
             <ul class="list-group listScroll">
-               <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="person in following">{{person.username}}
+               <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="person in following">
+                  <span class="followLink" ng-click="showProfileDetails(person)" data-toggle="modal" data-target="#personDetailsModal">{{person.username}}</span>
                   <span class="btn btn-danger btn-sm" ng-if="isFollowing(person._id)" ng-click="follow(person._id,'hide')">Unfollow</span>
                   <span class="btn btn-primary btn-sm" ng-if="!isFollowing(person._id)" ng-click="follow(person._id,'hide')">Follow</span>
                </li>
@@ -82,7 +83,8 @@
             <h5>Followers:</h5>
             <p ng-if="followers2.length==0">You have no followers!</p>
             <ul class="list-group listScroll">
-               <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="person in followers2">{{person.username}}
+               <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="person in followers2">
+                  <span class="followLink" ng-click="showProfileDetails(person)" data-toggle="modal" data-target="#personDetailsModal">{{person.username}}</span>
                   <span class="btn btn-danger btn-sm" ng-if="isFollowing(person._id)" ng-click="follow(person._id,'hide')">Unfollow</span>
                   <span class="btn btn-primary btn-sm" ng-if="!isFollowing(person._id)" ng-click="follow(person._id,'hide')">Follow</span>
                </li>
@@ -93,6 +95,47 @@
    </div>
 
 </body>
+
+<div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header">
+            <h5 class="modal-title">{{username}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Favorite Movies:</strong> {{favMovies}}
+                     <br><br>
+                     <strong>Most Viewed Genre(s):</strong> {{favGenres}}
+                     <br><br>
+                     <strong>Watchlist:</strong> {{watchlist}}
+                     <br><br>
+                     <strong>Recently Seen:</strong> {{watched}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="modalFollow" class="btn btn-primary" ng-if="!isFollowing(id)" ng-click="follow(id)">Follow
+               {{username}}</button>
+            <button type="button" class="btn btn-danger" ng-if="isFollowing(id)" ng-click="follow(id)">Unfollow
+               {{username}}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
 
 <div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
    aria-hidden="true">

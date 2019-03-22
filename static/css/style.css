@@ -257,6 +257,29 @@
     margin-top: 3.5px
 }
 
+.followLink:hover {
+    cursor: pointer;
+}
+
+.upvote1 {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.upvote2 {
+    opacity: 0.7;
+}
+
+.opacity {
+    opacity: 1;
+}
+
+.upvote2:hover {
+    opacity: 1;
+}
+
+
 /* dark bluish background from register page */
 .body {
     background: rgb(0, 0, 0);

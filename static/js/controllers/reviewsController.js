@@ -1,4 +1,3 @@
-
 angular.module('filmApp')
 
     .filter('myFilter', function () {
@@ -37,12 +36,25 @@ angular.module('filmApp')
                     .then(function (response) {
                         $scope.reviews = response.data;
                         $scope.reviews.forEach(function (review) {
+
                             $http.get(window.location.origin + "/api/users/" + review.user)
                                 .then(function (response2) {
                                     review.user = response2.data;
                                     review.movie = review.user.watched.find(function (movie) {
                                         return movie.title == review.movie;
                                     })
+
+
+                                    document.getElementById(review._id).setAttribute("value", localStorage.getItem(review._id));
+
+                                    if (document.getElementById(review._id).getAttribute("value") == "-1") {
+
+                                        document.getElementById(review._id + 'x').className += " opacity";
+                                    } else if (document.getElementById(review._id).getAttribute("value") == "1") {
+
+                                        document.getElementById(review._id).className += " opacity";
+                                    }
+
                                 })
 
                         })
@@ -59,10 +71,10 @@ angular.module('filmApp')
                     return false;
                 else return true;
             }
-            
-            $scope.isValidEdit = function(){
-                if(!$scope.reviewMovie || !$scope.reviewRating || !$scope.reviewComment)
-                return false;
+
+            $scope.isValidEdit = function () {
+                if (!$scope.reviewMovie || !$scope.reviewRating || !$scope.reviewComment)
+                    return false;
                 else return true;
             }
 
@@ -174,46 +186,113 @@ angular.module('filmApp')
                 }
             }
 
-            $scope.editReview = function(review){
+            $scope.editReview = function (review) {
 
                 $scope.reviewId = review._id;
                 $scope.reviewMovie = review.movie.title;
                 $scope.reviewRating = review.rating;
                 $scope.reviewComment = review.description;
                 $scope.reviewCreation = review.created_at;
-                
+
                 $scope.review = review;
             }
 
-            $scope.reviewEdited = function(){
+            $scope.reviewEdited = function () {
                 alert("Review edited.");
 
                 $('#editModal').modal('hide');
 
 
-                var pos = $scope.reviews.findIndex(function(value){
-                    return value._id==$scope.reviewId;
+                var pos = $scope.reviews.findIndex(function (value) {
+                    return value._id == $scope.reviewId;
                 })
                 console.log(pos);
                 console.log($scope.review);
 
-                $scope.review.description=$scope.reviewComment;
+                $scope.review.description = $scope.reviewComment;
                 $scope.review.rating = $scope.reviewRating;
-                
-                $scope.reviews[pos]=$scope.review;
+
+                $scope.reviews[pos] = $scope.review;
 
 
             }
 
-            $scope.deleteReview = function(review){
+            $scope.deleteReview = function (review) {
 
-                var pos = $scope.reviews.findIndex(function(value){
-                    return value.user.username==$scope.currentUser.username && value.movie.title==review.movie.title && value.created_at==review.created_at;
+                var pos = $scope.reviews.findIndex(function (value) {
+                    return value.user.username == $scope.currentUser.username && value.movie.title == review.movie.title && value.created_at == review.created_at;
                 })
-                $scope.reviews.splice(pos,1);
+                $scope.reviews.splice(pos, 1);
 
                 $http.delete(window.location.origin + "/api/reviews/" + review._id);
-      
+
             }
-            
+
+            $scope.orderByCriteria = "";
+
+            $scope.orderBy = function (criteria) {
+                $scope.orderByCriteria = criteria;
+            }
+
+
+            $scope.upVote = function (review) {
+
+                if (!localStorage.getItem(review._id))
+                    localStorage.setItem(review._id, 0);
+
+                document.getElementById(review._id).setAttribute("value", localStorage.getItem(review._id));
+
+                if (document.getElementById(review._id).getAttribute("value") == "1")
+                    return;
+
+                review.upVotes++;
+
+                if (document.getElementById(review._id).getAttribute("value") == "0") {
+                    document.getElementById(review._id).setAttribute("value", "1");
+                    localStorage.setItem(review._id, 1);
+                    document.getElementById(review._id).className += " opacity";
+                } else if (document.getElementById(review._id).getAttribute("value") == "-1") {
+                    document.getElementById(review._id).setAttribute("value", "0");
+                    localStorage.setItem(review._id, 0);
+                    document.getElementById(review._id + 'x').classList.remove("opacity");
+                }
+
+                $http.put(window.location.origin + "/api/reviews/" + review._id, {
+                        upvotes: review.upVotes
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                    });
+
+            }
+            $scope.downVote = function (review) {
+                if (!localStorage.getItem(review._id))
+                    localStorage.setItem(review._id, 0);
+
+                document.getElementById(review._id).setAttribute("value", localStorage.getItem(review._id));
+
+                if (document.getElementById(review._id).getAttribute("value") == "-1")
+                    return;
+
+                review.upVotes--;
+
+                if (document.getElementById(review._id).getAttribute("value") == "0") {
+                    document.getElementById(review._id).setAttribute("value", "-1");
+                    localStorage.setItem(review._id, -1);
+                    document.getElementById(review._id + 'x').className += " opacity";
+                } else if (document.getElementById(review._id).getAttribute("value") == "1") {
+                    document.getElementById(review._id).setAttribute("value", "0");
+                    localStorage.setItem(review._id, 0);
+                    document.getElementById(review._id).classList.remove("opacity");
+                }
+
+                $http.put(window.location.origin + "/api/reviews/" + review._id, {
+                        upvotes: review.upVotes
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                    });
+            }
+
+
         });
