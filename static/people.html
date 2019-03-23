@@ -1,13 +1,15 @@
 <div class="container-fluid">
    <div class="input-group" id="searchBar">
-      <input type="text" class="form-control" placeholder="Search Site Users..." ng-model="peopleSearchText" ng-change="onSearchChange()">
+      <input type="text" class="form-control" placeholder="Search Site Users..." ng-model="peopleSearchText"
+         ng-change="onSearchChange()">
    </div>
    <h2 style="text-align: center;"></h2>
 
    <div class="container">
       <div class="row">
          <div class="card space person" ng-repeat="person in searchResults | filter: peopleSearchText">
-            <div class="card-body" ng-click="showProfileDetails(person)" data-toggle="modal" data-target="#personDetailsModal">
+            <div class="card-body" ng-click="showProfileDetails(person)" data-toggle="modal"
+               data-target="#personDetailsModal">
                <h5 class="card-title">{{person.username}}</h5>
                <img class="card-img-top person2 cover" src={{'images/'+person.avatar}} alt="Profile Picture Not Found">
             </div>
@@ -17,7 +19,8 @@
          <div class="card space person">
             <div class="card-body" ui-sref="profile">
                <h5 class="card-title">{{currentUser.username}}</h5>
-               <img class="card-img-top person2 cover" src={{'images/'+currentUser.avatar}} alt="Profile Picture Not Found">
+               <img class="card-img-top person2 cover" src={{'images/'+currentUser.avatar}}
+                  alt="Profile Picture Not Found">
             </div>
             <button ui-sref="profile" class="btn btn-secondary">View Your Profile</button>
 
@@ -56,7 +59,8 @@
             </div>
          </div>
          <div class="modal-footer">
-            <button type="button" id="modalFollow" class="btn btn-primary" ng-if="!isFollowing(id)" ng-click="follow(id)">Follow
+            <button type="button" id="modalFollow" class="btn btn-primary" ng-if="!isFollowing(id)"
+               ng-click="follow(id)">Follow
                {{username}}</button>
             <button type="button" class="btn btn-danger" ng-if="isFollowing(id)" ng-click="follow(id)">Unfollow
                {{username}}</button>

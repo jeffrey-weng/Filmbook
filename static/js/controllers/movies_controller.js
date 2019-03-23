@@ -604,9 +604,27 @@ angular.module('filmApp').controller('MoviesController',
 			var rand3 = Math.floor(Math.random() * $scope.currentUser.watchlist.length);
 
 			if ($scope.currentUser.favoriteMovies.length != 0 && $scope.currentUser.watched.length >= 1) {
-				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[rand1].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+				$http.get("https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[rand1].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1", {
+
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json',
+
+							'Access-Control-Allow-Headers': '*',
+							'Access-Control-Allow-Origin': '*',
+						}
+					})
 					.then(function (response) {
-						$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+						$http.get("https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1", {
+
+								headers: {
+									'Accept': 'application/json',
+									'Content-Type': 'application/json',
+
+									'Access-Control-Allow-Headers': '*',
+									'Access-Control-Allow-Origin': '*',
+								}
+							})
 							.then(function (response2) {
 								var x = true;
 
@@ -645,7 +663,16 @@ angular.module('filmApp').controller('MoviesController',
 							})
 					})
 			} else if ($scope.currentUser.favoriteMovies.length != 0)
-				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[rand1].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+				$http.get("https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/" + $scope.currentUser.favoriteMovies[rand1].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1", {
+
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+
+						'Access-Control-Allow-Headers': '*',
+						'Access-Control-Allow-Origin': '*',
+					}
+				})
 				.then(function (response) {
 
 					var x = true;
@@ -677,9 +704,27 @@ angular.module('filmApp').controller('MoviesController',
 
 
 			else if ($scope.currentUser.watched.length != 0 && $scope.currentUser.watchlist.length >= 1) {
-				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+				$http.get("https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1", {
+
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json',
+
+							'Access-Control-Allow-Headers': '*',
+							'Access-Control-Allow-Origin': '*',
+						}
+					})
 					.then(function (response) {
-						$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[rand3].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+						$http.get("https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[rand3].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1", {
+
+								headers: {
+									'Accept': 'application/json',
+									'Content-Type': 'application/json',
+
+									'Access-Control-Allow-Headers': '*',
+									'Access-Control-Allow-Origin': '*',
+								}
+							})
 							.then(function (response2) {
 
 								var x = true;
@@ -715,7 +760,16 @@ angular.module('filmApp').controller('MoviesController',
 					})
 			} else if ($scope.currentUser.watched.length != 0) {
 
-				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+				$http.get("https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/" + $scope.currentUser.watched[rand2].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1", {
+
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json',
+
+							'Access-Control-Allow-Headers': '*',
+							'Access-Control-Allow-Origin': '*',
+						}
+					})
 					.then(function (response) {
 
 						var x = true;
@@ -746,7 +800,16 @@ angular.module('filmApp').controller('MoviesController',
 
 
 			} else if ($scope.currentUser.watchlist.length != 0) {
-				$http.get("https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[rand3].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1")
+				$http.get("https://cors-anywhere.herokuapp.com/https://api.themoviedb.org/3/movie/" + $scope.currentUser.watchlist[rand3].id + "/similar?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=1", {
+
+						headers: {
+							'Accept': 'application/json',
+							'Content-Type': 'application/json',
+
+							'Access-Control-Allow-Headers': '*',
+							'Access-Control-Allow-Origin': '*',
+						}
+					})
 					.then(function (response) {
 						var x = true;
 

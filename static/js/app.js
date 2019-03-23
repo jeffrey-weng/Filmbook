@@ -123,6 +123,14 @@ angular.module('filmApp', [
                     data:{
                         authorizedRoles:[USER_ROLES.all]
                     }
+                })
+                .state('discussions',{
+                    url:'/discussions',
+                    templateUrl:'discussions.html',
+                    controller:'DiscussionsController',
+                    data:{
+                        authorizedRoles:[USER_ROLES.all]
+                    }
                 });
 
             $urlRouterProvider.otherwise('/');

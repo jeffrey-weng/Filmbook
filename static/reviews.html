@@ -3,12 +3,12 @@
    <div class="row">
       <div class="input-group searchSpace" id="searchBar">
 
-         <input type="text" class="form-control" placeholder="Filter reviews by film name or username" ng-model="reviewSearchText"
-            ng-change="searchReviews(reviewSearchText)">
+         <input type="text" class="form-control" placeholder="Filter reviews by film name or username"
+            ng-model="reviewSearchText" ng-change="searchReviews(reviewSearchText)">
          <p class="space"> or </p>
          <div class="dropdown" style="margin-right:50px;">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                sort by
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -28,17 +28,20 @@
    </div>
    <div class="col-12">
       <ul class="list-group">
-         <li id="repeat" class="list-group-item" ng-repeat="review in reviews | myFilter:[reviewSearchText]| orderBy:orderByCriteria">
+         <li id="repeat" class="list-group-item"
+            ng-repeat="review in reviews | myFilter:[reviewSearchText]| orderBy:orderByCriteria">
             <div class="row">
                <div class="col-4">
                   <img src={{'images/'+review.user.avatar}} alt="No avatar found" class="reviewAvatar">
                </div>
                <div class="col-6">
                   <p>
-                     <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal" ng-click="showProfileDetails(review.user)">{{review.user.username}}</span>
+                     <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal"
+                        ng-click="showProfileDetails(review.user)">{{review.user.username}}</span>
                      reviewed
 
-                     <span class="activityLink" data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(review.movie)">{{review.movie.title}}</span>
+                     <span class="activityLink" data-toggle="modal" data-target="#movieDetailsModal"
+                        ng-click="showMovieDetails(review.movie)">{{review.movie.title}}</span>
                      on
                      {{reviewDate(review.created_at)}}. </p>
 
@@ -100,8 +103,8 @@
          </div>
          <div class="modal-body">
 
-            <form id="editForm" name="editForm" method="POST" action={{"/api/reviews/"+reviewId+"?_method=PUT"}} target="hiddenFrame"
-               ng-submit="reviewEdited()">
+            <form id="editForm" name="editForm" method="POST" action={{"/api/reviews/"+reviewId+"?_method=PUT"}}
+               target="hiddenFrame" ng-submit="reviewEdited()">
                <input type="hidden" name="_METHOD" value="PUT">
 
                <div class="form-group">
@@ -141,8 +144,8 @@
                </div>
                <div class="form-group">
                   <label data-error="wrong" data-success="right" for="written2">Written Review:</label>
-                  <textarea class="form-control" rows="15" cols="50" id="written2" name="description" aria-label="With textarea"
-                     ng-model="reviewComment" required>{{reviewComment}}</textarea>
+                  <textarea class="form-control" rows="15" cols="50" id="written2" name="description"
+                     aria-label="With textarea" ng-model="reviewComment" required>{{reviewComment}}</textarea>
                </div>
             </form>
 
@@ -161,7 +164,8 @@
 
 <iframe name="hiddenFrame" class="hide"></iframe>
 
-<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel"
+   aria-hidden="true">
    <div class="modal-dialog reviewModal" role="document">
       <div class="modal-content reviewModal">
          <div class="modal-header text-center">
@@ -172,7 +176,8 @@
          </div>
          <div class="modal-body">
 
-            <form id="reviewForm" name="reviewForm" method="POST" action="/api/reviews/" target="hiddenFrame" ng-submit="reviewSubmitted()">
+            <form id="reviewForm" name="reviewForm" method="POST" action="/api/reviews/" target="hiddenFrame"
+               ng-submit="reviewSubmitted()">
                <div class="form-group">
                   <label data-error="wrong" data-success="right" for="movieName">Movie:</label>
                   <div class="input-group mb-3">
@@ -212,14 +217,15 @@
                </div>
                <div class="form-group">
                   <label data-error="wrong" data-success="right" for="written">Written Review:</label>
-                  <textarea class="form-control" rows="15" cols="50" id="written" name="description" aria-label="With textarea"
-                     ng-model="comment" required></textarea>
+                  <textarea class="form-control" rows="15" cols="50" id="written" name="description"
+                     aria-label="With textarea" ng-model="comment" required></textarea>
                </div>
             </form>
 
          </div>
          <div class="modal-footer">
-            <input class="btn btn-success" form="reviewForm" type="submit" value="Submit" ng-disabled="!isValidReview()">
+            <input class="btn btn-success" form="reviewForm" type="submit" value="Submit"
+               ng-disabled="!isValidReview()">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
       </div>
@@ -283,7 +289,8 @@
             <div class="container-fluid">
                <div class="row">
                   <div class="col-md-6">
-                     <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive" alt="Movie Poster Not Found">
+                     <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
+                        alt="Movie Poster Not Found">
                   </div>
                   <div class="col-md-6">
                      <strong>Overview:</strong> {{movieDescription}}
@@ -298,16 +305,18 @@
             </div>
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()" ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)"
-               data-dismiss="modal">Add to WatchList</button>
-            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()" ng-if="inWatchlist(movieTitle)"
-               data-dismiss="modal">Remove From Watchlist</button>
+            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()"
+               ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)" data-dismiss="modal">Add to
+               WatchList</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()"
+               ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Remove From Watchlist</button>
             <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)"
                data-dismiss="modal">Add
                to Watched</button>
-            <button type="button" class="btn btn-success" ng-click="addToFavorites()" ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)"
-               data-dismiss="modal">Add to Favorites</button>
-            <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)" ng-click="removeFromFavorites()">Remove
+            <button type="button" class="btn btn-success" ng-click="addToFavorites()"
+               ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)" data-dismiss="modal">Add to Favorites</button>
+            <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)"
+               ng-click="removeFromFavorites()">Remove
                from Favorites</button>
             <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()"
                data-dismiss="modal">Write a Review for

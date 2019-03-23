@@ -226,6 +226,9 @@ angular.module('filmApp')
                         count++;
                     }
                 }
+                if ($scope.favGenres.length == 0)
+                    return "None";
+
                 return $scope.favGenres;
 
             }
