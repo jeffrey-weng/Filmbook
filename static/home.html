@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<head>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+   <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body>
+   <br><br>
+
+   <!--Styling messes up when you use container-fluid instead of container-->
+   <div class="container">
+      <div class="row">
+         <h3>Update Your Watchlist:</h3>
+      </div>
+      <div class="row">
+         <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+            alt="Movie Poster Not Found" ng-repeat="movie in currentUser.watchlist" data-toggle="modal"
+            data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+
+      </div>
+      <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
+         <p class="msg">Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new
+            movies you
+            plan to watch!</p>
+      </div>
+      <div class="row">
+         <br>
+         <br>
+      </div>
+      <div class="row">
+         <h3>Movies You Might Like:</h3>
+      </div>
+      <p class="msg" ng-if="noSuggestions()">Watch, favorite, or add to your Watchlist some <a
+            ui-sref="movies">movies</a>
+         to get
+         customized recommendations!</p>
+      <div class="row">
+         <img class="movieRec" ng-repeat="movie in movieRecs track by $index"
+            src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}} alt="Movie Poster Not Found"
+            data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+      </div>
+      <div class="row">
+         <br>
+      </div>
+      <div class="row justify-content-end">
+         <div class="col-1.5">
+            <button type="button" class="btn btn-dark btn-sm" ng-click="moreRecs()" ng-if="!noSuggestions()">Get more
+               recommendations</button>
+         </div>
+      </div>
+
+      <div class="row">
+         <br>
+         <br>
+      </div>
+
+      <div class="row">
+         <h3>Your Newsfeed:</h3>
+      </div>
+      <div class="row">
+         <ul class="list-group">
+            <li class="list-group-item" ng-repeat="activity in activities">
+               <p><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal"
+                     data-target="#personDetailsModal"
+                     ng-click="activityModal(activity,'actor')">{{activity.actor.username}}</span>
+                  {{activityVerb(activity.verb)}} <span id={{activity.id}} class="activityLink" data-toggle="modal"
+                     data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
+
+                  <small>{{dateRecorded(activity)}}</small> </p>
+
+            </li>
+
+         </ul>
+      </div>
+      <div class="row" ng-if="activities.length==0">
+         <p class="msg">Your newsfeed is currently empty! Follow other users to fill up your feed!</p>
+      </div>
+
+      <div class="row">
+         <br>
+         <br>
+      </div>
+      <div class="row">
+         <h3>Your Recent Activity:</h3>
+      </div>
+      <div class="row">
+         <ul class="list-group">
+            <li class="list-group-item" ng-repeat="activity in userActivities">
+               <p>You {{activityVerb(activity.verb)}} <span id={{activity.id}} class="activityLink" data-toggle="modal"
+                     data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
+
+                  <small>{{dateRecorded(activity)}}</small></p>
+
+            </li>
+
+         </ul>
+      </div>
+      <div class="row" ng-if="userActivities.length==0">
+         <p class="msg">No recent site activity.</p>
+      </div>
+   </div>
+   </div>
+</body>
+
+
+
+
+<div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header">
+            <h5 class="modal-title">{{movieTitle}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
+                        alt="Movie Poster Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Overview:</strong> {{movieDescription}}
+                     <br><br>
+                     <strong>Genre(s):</strong> {{movieDisplayGenres}}
+                     <br><br>
+                     <strong>Average Rating:</strong> {{movieRating}}/10
+                     <br><br>
+                     <strong>Release Date:</strong> {{movieDisplayDate}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()"
+               ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)" data-dismiss="modal">Add to
+               WatchList</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()"
+               ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Remove From Watchlist</button>
+            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)"
+               data-dismiss="modal">Add
+               to Watched</button>
+            <button type="button" class="btn btn-success" ng-click="addToFavorites()"
+               ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)" data-dismiss="modal">Add to Favorites</button>
+            <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)"
+               ng-click="removeFromFavorites()">Remove
+               from Favorites</button>
+            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()"
+               data-dismiss="modal">Write a Review for
+               this Movie</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header">
+            <h5 class="modal-title">{{username}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Favorite Movies:</strong> {{favMovies}}
+                     <br><br>
+                     <strong>Most Viewed Genre(s):</strong> {{favGenres}}
+                     <br><br>
+                     <strong>Watchlist:</strong> {{watchlist}}
+                     <br><br>
+                     <strong>Recently Seen:</strong> {{watched}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id={{'modal:'+id}} class="btn btn-danger" ng-click="follow(id)">Unfollow
+               {{username}}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>

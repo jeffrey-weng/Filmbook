@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<body>
+    <br><br>
+    <h1 style="text-align: center; font-weight: bold;" ng-if="!isAuthorized('editor')">Landing Page - About Multiplex:
+    </h1>
+    <br>
+    <p style="margin-left:30%;margin-right:30%;font-size:25px; text-align: center" ng-if="!isAuthorized('editor')">
+        Multiplex was made to serve as an online social hub for movie enthusiasts. As a user, you can browse, review,
+        and discuss movies, as well as connect with other
+        like-minded movie lovers by following them and receiving updates on their activities on the site!
+    </p> <br>
+    <h3 style="text-align: center" ng-if="isAuthorized('admin')"> Logged in as admin: {{currentUser.username}}</h3>
+    <h3 style="text-align: center" ng-if="isAuthorized('editor')"> Welcome to Multiplex, {{currentUser.username}}!</h3>
+    <h3 style="text-align: center" ng-if="!currentUser">You are not logged in! Head over to the <a
+            ui-sref="login">login</a> page or <a ui-sref="register">register</a>
+        if you don't already have an account!</h3>
+
+</body>

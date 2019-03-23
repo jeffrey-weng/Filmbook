@@ -1,0 +1,277 @@
+<body>
+   <div class="container-fluid" style="overflow-x: hidden;" ng-cloak>
+
+      <div class="row profileMargin">
+         <div class="col-lg-10">
+            <div class="row">
+               <h3>Your Most Watched Genres:</h3>
+            </div>
+            <div class="row">
+               <p class="msg">{{calculateFavGenres()}} </p>
+            </div>
+            <div class="row">
+               <br>
+            </div>
+            <div class="row">
+               <h3>Your Watchlist:</h3>
+            </div>
+            <div class="row">
+               <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+                  alt="Movie Poster Not Found" ng-repeat="movie in currentUser.watchlist" data-toggle="modal"
+                  data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+
+            </div>
+            <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
+               <p>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies
+                  you
+                  plan to watch!</p>
+            </div>
+            <div class="row">
+               <br>
+            </div>
+            <div class="row">
+               <h3>Favorite Movies:</h3>
+            </div>
+            <div class="row">
+               <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+                  alt="Movie Poster Not Found" ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal"
+                  data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+            </div>
+            <div class="row" ng-if="currentUser.favoriteMovies.length==0">
+               <p>None</p>
+            </div>
+            <div class="row">
+               <br>
+            </div>
+            <div class="row">
+               <h3>Recently Seen:</h3>
+            </div>
+            <div class="row">
+               <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+                  alt="Movie Poster Not Found" ng-repeat="movie in currentUser.watched" data-toggle="modal"
+                  data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+            </div>
+            <div class="row" ng-if="currentUser.watched.length==0">
+               <p>None</p>
+            </div>
+            <div class="row">
+               <br><br>
+            </div>
+
+         </div>
+         <div class="col-lg-2">
+
+            <h5 class="avatar-heading">Change your Avatar:</h5>
+
+            <img class="avatar avatar-heading" src={{'images/'+currentUser.avatar}} alt="No avatar found"
+               data-toggle="modal" data-target="#avatarModal">
+
+            <form id="uploadbanner" enctype="multipart/form-data" method="post" action={{'/api/files/'+currentUser.id}}>
+               <input id="fileupload" name="avatar" type="file" accept="image/*" />
+               <br>
+               <input class="btn btn-primary btn-sm" type="submit" value="Upload" id="submit" disabled />
+            </form>
+
+            <br>
+            <button type="button" class="btn btn-light btn-sm editInfo" ng-click="resetEmail()" data-toggle="modal"
+               data-target="#modalAccountForm">View or Edit Your Account Information</button>
+            <br><br>
+            <h5>Following:</h5>
+            <p ng-if="following.length==0">You're not following anyone!</p>
+            <ul class="list-group listScroll">
+               <li class="list-group-item d-flex justify-content-between align-items-center"
+                  ng-repeat="person in following">
+                  <span class="followLink" ng-click="showProfileDetails(person)" data-toggle="modal"
+                     data-target="#personDetailsModal">{{person.username}}</span>
+                  <span class="btn btn-danger btn-sm" ng-if="isFollowing(person._id)"
+                     ng-click="follow(person._id,'hide')">Unfollow</span>
+                  <span class="btn btn-primary btn-sm" ng-if="!isFollowing(person._id)"
+                     ng-click="follow(person._id,'hide')">Follow</span>
+               </li>
+            </ul>
+            <br>
+            <h5>Followers:</h5>
+            <p ng-if="followers2.length==0">You have no followers!</p>
+            <ul class="list-group listScroll">
+               <li class="list-group-item d-flex justify-content-between align-items-center"
+                  ng-repeat="person in followers2">
+                  <span class="followLink" ng-click="showProfileDetails(person)" data-toggle="modal"
+                     data-target="#personDetailsModal">{{person.username}}</span>
+                  <span class="btn btn-danger btn-sm" ng-if="isFollowing(person._id)"
+                     ng-click="follow(person._id,'hide')">Unfollow</span>
+                  <span class="btn btn-primary btn-sm" ng-if="!isFollowing(person._id)"
+                     ng-click="follow(person._id,'hide')">Follow</span>
+               </li>
+            </ul>
+
+         </div>
+      </div>
+   </div>
+
+</body>
+
+<div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header">
+            <h5 class="modal-title">{{username}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Favorite Movies:</strong> {{favMovies}}
+                     <br><br>
+                     <strong>Most Viewed Genre(s):</strong> {{favGenres}}
+                     <br><br>
+                     <strong>Watchlist:</strong> {{watchlist}}
+                     <br><br>
+                     <strong>Recently Seen:</strong> {{watched}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" id="modalFollow" class="btn btn-primary" ng-if="!isFollowing(id)"
+               ng-click="follow(id)">Follow
+               {{username}}</button>
+            <button type="button" class="btn btn-danger" ng-if="isFollowing(id)" ng-click="follow(id)">Unfollow
+               {{username}}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog modal-lg reviewModal" role="document">
+      <div class="modal-content reviewModal">
+         <div class="modal-header">
+            <h5 class="modal-title">{{movieTitle}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+            <div class="container-fluid">
+               <div class="row">
+                  <div class="col-md-6">
+                     <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
+                        alt="Movie Poster Not Found">
+                  </div>
+                  <div class="col-md-6">
+                     <strong>Overview:</strong> {{movieDescription}}
+                     <br><br>
+                     <strong>Genre(s):</strong> {{movieDisplayGenres}}
+                     <br><br>
+                     <strong>Average Rating:</strong> {{movieRating}}/10
+                     <br><br>
+                     <strong>Release Date:</strong> {{movieDisplayDate}}
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()"
+               ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)" data-dismiss="modal">Add to
+               WatchList</button>
+            <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()"
+               ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Remove From Watchlist</button>
+            <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)"
+               data-dismiss="modal">Add
+               to Watched</button>
+            <button type="button" class="btn btn-success" ng-click="addToFavorites()"
+               ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)" data-dismiss="modal">Add to Favorites</button>
+            <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)"
+               ng-click="removeFromFavorites()">Remove
+               from Favorites</button>
+            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()"
+               data-dismiss="modal">Write a Review for
+               this Movie</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+<iframe name="hiddenFrame" class="hide"></iframe>
+
+<div class="modal fade" id="modalAccountForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+   aria-hidden="true">
+   <div class="modal-dialog smallModal" role="document">
+      <div class="modal-content smallModal">
+         <div class="modal-header text-center">
+            <h4 class="modal-title w-100 font-weight-bold">Your Account Information</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+         <div class="modal-body">
+
+            <form id="accountForm" autocomplete="off" method="POST"
+               action={{'/api/users/'+currentUser.id+'?_method=PUT'}} target="hiddenFrame" ng-submit="accUpdated()">
+               <input type="hidden" name="_METHOD" value="PUT">
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="acc-username">Username:</label>
+                  <input type="text" id="acc-username" value={{currentUser.username}} class="form-control validate"
+                     disabled>
+               </div>
+
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="acc-password">Password:</label>
+                  <input type="password" id="acc-password" placeholder="Set a new password"
+                     class="form-control validate" ng-model="password" ng-change="changePass()" readonly
+                     onfocus="this.removeAttribute('readonly');">
+               </div>
+               <div class="form-group">
+                  <label data-error="wrong" data-success="right" for="acc-email">Email:</label>
+                  <input type="email" name="email" id="acc-email" class="form-control validate" ng-model="email"
+                     ng-change="infoChanged=true" required>
+               </div>
+            </form>
+
+         </div>
+         <div class="modal-footer">
+            <input class="btn btn-primary" form="accountForm" type="submit" ng-disabled="!infoChanged" value="Save">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="modal rain fade bd-example-modal-lg" id="avatarModal" tabindex="-1" role="dialog"
+   aria-labelledby="myLargeModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+
+      <div>
+         <div>
+            <img src={{'images/'+currentUser.avatar}}
+               style="height:50%;width:100%;max-height:500px;max-width:800px;float:right;">
+         </div>
+      </div>
+
+   </div>
+</div>
+
+<!-- <div class="modal fade" id="avatarModal" tabindex="-1" role="dialog" aria-labelledby="avatarModalLabel" aria-hidden="true">
+   
+           <div class="modal-content">              
+             <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+               <img class="modalcontent" src={{'images/'+currentUser.avatar}}>
+             </div>
+           </div>
+        
+       </div> -->

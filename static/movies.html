@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+   <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+   <br>
+   <div class="container-fluid">
+      <div class="input-group" id="searchBar">
+
+         <input type="text" class="form-control" placeholder="Search Movies by keyword, genre, or year"
+            ng-model="movieSearchText" ng-change="searchMovies(movieSearchText)">
+         <p class="space"> or browse by:</p>
+         <button type="button" class="btn btn-success space" ng-click="updateMovieDisplay(1)">Now playing in
+            theaters</button>
+         <button type="button" class="btn btn-danger space" ng-click="updateMovieDisplay(2)">Top Rated Movies</button>
+         <button type="button" class="btn btn-info space" ng-click="updateMovieDisplay(3)">Most Popular Movies
+            Today</button>
+      </div>
+      <h2 style="text-align: center;">Search Results</h2>
+   </div>
+   <div class="container">
+      <div class="row">
+         <!-- can apply ng-repeat to card -->
+         <div class="card space" ng-repeat="movie in theater track by $index" ng-if="displayType==1" data-toggle="modal"
+            data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+            <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+               alt="Movie Poster Not Found">
+         </div>
+         <!-- can apply ng-repeat to card -->
+         <div class="card space" ng-repeat="movie in rated track by $index" ng-if="displayType==2" data-toggle="modal"
+            data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+            <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+               alt="Movie Poster Not Found">
+         </div>
+         <div class="card space" ng-repeat="movie in popular track by $index" ng-if="displayType==3" data-toggle="modal"
+            data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+            <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+               alt="Movie Poster Not Found">
+         </div>
+         <div class="card space" ng-repeat="movie in searchResults track by $index" ng-if="displayType==4"
+            data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
+            <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
+               alt="Movie Poster Not Found">
+         </div>
+
+      </div>
+      <div class="row">
+         <div class="col"></div>
+         <div class="col-8">
+            <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==1" ng-click="getMoreTheater();">Load
+               More...</button>
+            <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==2" ng-click="getMoreTopRated();">Load
+               More...</button>
+            <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==3" ng-click="getMorePopular();">Load
+               More...</button>
+            <button class="btn btn-primary btn-lg btn-block" ng-if="displayType==4"
+               ng-click="getMoreSearch(movieSearchText);">Load
+               More...</button>
+         </div>
+
+         <div class="col"></div>
+      </div>
+   </div>
+
+   <div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg reviewModal" role="document">
+         <div class="modal-content reviewModal">
+            <div class="modal-header">
+               <h5 class="modal-title">{{movieTitle}}</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <div class="modal-body">
+               <div class="container-fluid">
+                  <div class="row">
+                     <div class="col-md-6">
+                        <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
+                           alt="Movie Poster Not Found">
+                     </div>
+                     <div class="col-md-6">
+                        <strong>Overview:</strong> {{movieDescription}}
+                        <br><br>
+                        <strong>Genre(s):</strong> {{movieDisplayGenres}}
+                        <br><br>
+                        <strong>Average Rating:</strong> {{movieRating}}/10
+                        <br><br>
+                        <strong>Release Date:</strong> {{movieDisplayDate}}
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" ng-click="addToWatchList()">Add to Watchlist</button>
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+         </div>
+      </div>
+   </div>
+
+</body>
+
+</html>
