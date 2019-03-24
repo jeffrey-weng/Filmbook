@@ -282,9 +282,18 @@ StreamRouter.route('/files/:userId').post(function (req, res) {
 		var newpath = 'static/images/' + req.profile._id + '-' +
 			files.avatar.name;
 
-		fs.rename(oldpath, newpath, function (err) {
+		/*fs.rename(oldpath, newpath, function (err) {
 			if (err) throw err;
-		});
+		});*/
+
+		fs.copyFile(oldpath,newpath,(err)=>{
+			if(err)throw err;
+			console.log("copied");
+		})
+		fs.unlink(oldpath,(err)=>{
+			if(err)throw err;
+			console.log("old deleted");
+		})
 		User.findById(req.profile._id, function (err, user) {
 			if (err) throw err;
 			user.avatar = newpath.substring(14);
