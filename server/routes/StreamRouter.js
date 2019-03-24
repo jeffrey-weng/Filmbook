@@ -291,13 +291,12 @@ StreamRouter.route('/files/:userId').post(function (req, res) {
 			user.save(function (err) {
 				if (err) throw err;
 				console.log('User avatar updated.');
+				
 			})
 		})
 
 
 	});
-
-	res.redirect('back');
 })
 
 

@@ -66,7 +66,8 @@
             <img class="avatar avatar-heading" src={{'images/'+currentUser.avatar}} alt="No avatar found"
                data-toggle="modal" data-target="#avatarModal">
 
-            <form id="uploadbanner" enctype="multipart/form-data" method="post" action={{'/api/files/'+currentUser.id}}>
+            <form id="uploadbanner" enctype="multipart/form-data" method="post" target="hiddenFrame"
+               action={{'/api/files/'+currentUser.id}} ng-submit="avatarUpdated()">
                <input id="fileupload" name="avatar" type="file" accept="image/*" />
                <br>
                <input class="btn btn-primary btn-sm" type="submit" value="Upload" id="submit" disabled />
@@ -264,14 +265,3 @@
 
    </div>
 </div>
-
-<!-- <div class="modal fade" id="avatarModal" tabindex="-1" role="dialog" aria-labelledby="avatarModalLabel" aria-hidden="true">
-   
-           <div class="modal-content">              
-             <div class="modal-body">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-               <img class="modalcontent" src={{'images/'+currentUser.avatar}}>
-             </div>
-           </div>
-        
-       </div> -->

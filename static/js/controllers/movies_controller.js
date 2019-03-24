@@ -902,4 +902,18 @@ angular.module('filmApp').controller('MoviesController',
 		}
 
 
+		
+
+		$scope.avatarUpdated = function(){
+			alert("Avatar updated.");
+
+			setTimeout(function(){
+				$http.get(window.location.origin + '/api/users/' + $scope.currentUser.id)
+				.then(function(response){
+					$scope.currentUser.avatar=response.data.avatar;
+			  
+				})
+			},800)
+		
+		}
 	});

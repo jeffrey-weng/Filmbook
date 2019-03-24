@@ -444,5 +444,4 @@ angular.module('filmApp')
 
             };
 
-
         });
