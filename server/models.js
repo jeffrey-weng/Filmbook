@@ -158,7 +158,10 @@ var reviewSchema = new Schema({
     },
     description: String,
     rating: Number,
-    upVotes: Number,
+    upVotes: {
+        type: Number,
+        default: 0
+    },
     created_at: Date,
     updated_at: Date
 

@@ -78,6 +78,7 @@ angular.module('filmApp')
                 else return true;
             }
 
+
             $scope.makeReview = function () {
                 document.getElementById("reviewForm").reset();
                 document.getElementById("movieName2").selectedIndex = "0";
@@ -94,23 +95,14 @@ angular.module('filmApp')
 
                 alert("Review submitted.");
 
+                console.log("Scoped");
+
+                setTimeout(function () {
+                    $scope.refreshReviews()
+                }, 800)
+
+
                 $('#reviewModal').modal('hide');
-                $http.get(window.location.origin + "/api/users/" + $scope.currentUser.id)
-                    .then(function (response2) {
-                        var user = response2.data;
-                        var movie = user.watched.find(function (movie) {
-                            return movie.title == $scope.movieName;
-                        })
-
-                        $scope.reviews.push({
-                            'user': user,
-                            'movie': movie,
-                            'rating': $scope.rating2,
-                            'description': $scope.comment,
-                            'created_at': new Date()
-                        })
-                    })
-
 
             }
 
@@ -120,8 +112,21 @@ angular.module('filmApp')
                 var month = d.getMonth() + 1;
                 var day = d.getDate();
                 var year = d.getFullYear();
+                var hour = d.getHours();
+                var dayOrNight = "";
 
-                return month + "/" + day + "/" + year;
+                if (hour >= 0 && hour <= 11) {
+                    dayOrNight = "a.m.";
+                    if (hour == 0)
+                        hour = 12;
+                } else {
+                    dayOrNight = "p.m";
+                    if (hour > 12)
+                        hour %= 12;
+                }
+                var minutes = d.getMinutes();
+
+                return month + "/" + day + "/" + year + " " + hour + ":" + minutes + " " + dayOrNight;
             }
 
 

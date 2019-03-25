@@ -35,7 +35,7 @@
                   <img src={{'images/'+review.user.avatar}} alt="No avatar found" class="reviewAvatar">
                </div>
                <div class="col-6">
-                  <p>
+                  <p style="margin-left:-3%;">
                      <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal"
                         ng-click="showProfileDetails(review.user)">{{review.user.username}}</span>
                      reviewed
@@ -188,6 +188,7 @@
                   </div>
                </div>
                <input type="hidden" name="user" ng-model="user2" value={{currentUser.id}}>
+               <input type="number" name="upVotes" value="0" style="display:none;">
                <div class="form-group">
                   <div class="rating">
                      <label data-error="wrong" data-success="right" for="rating">Star Rating:</label>
@@ -318,9 +319,6 @@
             <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)"
                ng-click="removeFromFavorites()">Remove
                from Favorites</button>
-            <button type="button" class="btn btn-info" ng-if="inWatched(movieTitle)" ng-click="writeReview()"
-               data-dismiss="modal">Write a Review for
-               this Movie</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
       </div>
