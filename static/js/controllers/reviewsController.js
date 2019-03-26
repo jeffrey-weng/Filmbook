@@ -116,7 +116,7 @@ angular.module('filmApp')
                 var dayOrNight = "";
 
                 if (hour >= 0 && hour <= 11) {
-                    dayOrNight = "a.m.";
+                    dayOrNight = "a.m";
                     if (hour == 0)
                         hour = 12;
                 } else {
@@ -125,6 +125,7 @@ angular.module('filmApp')
                         hour %= 12;
                 }
                 var minutes = d.getMinutes();
+                if(minutes<=9) minutes="0"+minutes;
 
                 return month + "/" + day + "/" + year + " " + hour + ":" + minutes + " " + dayOrNight;
             }
