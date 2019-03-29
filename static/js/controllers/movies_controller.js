@@ -394,12 +394,14 @@ angular.module('filmApp').controller('MoviesController',
 		$http.get(window.location.origin + '/api/home/' + $scope.currentUser.id)
 			.then(function (response) {
 				$scope.activities = response.data.activities;
+				console.log($scope.activities);
 			});
 
 
 		$http.get(window.location.origin + '/api/profile/' + $scope.currentUser.id)
 			.then(function (response) {
 				$scope.userActivities = response.data.activities;
+				console.log($scope.userActivities)
 			});
 
 		//Refresh feeds every one minute (to show updates on how long ago an activity occured)
@@ -432,6 +434,7 @@ angular.module('filmApp').controller('MoviesController',
 				} else
 					return activity.object.target.username;
 			} else if (activity.verb == "Watch" || activity.verb == "ReviewPost" || activity.verb == "Review") {
+				
 				return activity.object.movie;
 			}
 		}

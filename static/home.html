@@ -62,8 +62,8 @@
       </div>
       <div class="row">
          <ul class="list-group">
-            <li class="list-group-item" ng-repeat="activity in activities">
-               <p><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal"
+            <li class="list-group-item" ng-repeat="activity in activities" ng-if="activity.object.created_at">
+               <p ng-if="activity.object"><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal"
                      data-target="#personDetailsModal"
                      ng-click="activityModal(activity,'actor')">{{activity.actor.username}}</span>
                   {{activityVerb(activity.verb)}} <span id={{activity.id}} class="activityLink" data-toggle="modal"
@@ -88,7 +88,7 @@
       </div>
       <div class="row">
          <ul class="list-group">
-            <li class="list-group-item" ng-repeat="activity in userActivities">
+            <li class="list-group-item" ng-repeat="activity in userActivities" ng-if="activity.object.created_at">
                <p>You {{activityVerb(activity.verb)}} <span id={{activity.id}} class="activityLink" data-toggle="modal"
                      data-target="" ng-click="activityModal(activity)">{{activityObject(activity)}}</span>.
 
