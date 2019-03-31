@@ -273,30 +273,33 @@ angular.module('filmApp')
 
 
             $scope.inWatchlist = function (movieTitle) {
-
-                for (var i = 0; i < $scope.currentUser.watchlist.length; i++) {
-                    if ($scope.currentUser.watchlist[i].title == movieTitle)
-                        return true;
+                if ($scope.currentUser) {
+                    for (var i = 0; i < $scope.currentUser.watchlist.length; i++) {
+                        if ($scope.currentUser.watchlist[i].title == movieTitle)
+                            return true;
+                    }
+                    return false;
                 }
-                return false;
-
             }
 
             $scope.inWatched = function (movieTitle) {
-                for (var i = 0; i < $scope.currentUser.watched.length; i++) {
-                    if ($scope.currentUser.watched[i].title == movieTitle)
-                        return true;
+                if ($scope.currentUser) {
+                    for (var i = 0; i < $scope.currentUser.watched.length; i++) {
+                        if ($scope.currentUser.watched[i].title == movieTitle)
+                            return true;
+                    }
+                    return false;
                 }
-                return false;
             }
 
             $scope.inFavorites = function (movieTitle) {
-
-                for (var i = 0; i < $scope.currentUser.favoriteMovies.length; i++) {
-                    if ($scope.currentUser.favoriteMovies[i].title == movieTitle)
-                        return true;
+                if ($scope.currentUser) {
+                    for (var i = 0; i < $scope.currentUser.favoriteMovies.length; i++) {
+                        if ($scope.currentUser.favoriteMovies[i].title == movieTitle)
+                            return true;
+                    }
+                    return false;
                 }
-                return false;
             }
 
             $scope.addToFavorites = function () {
@@ -443,5 +446,26 @@ angular.module('filmApp')
                 //console.log($scope.currentUser);
 
             };
+
+            $scope.dateRecorded = function (activity) {
+                var date = new Date();
+
+                var activityDate = new Date(activity.object.created_at);
+
+                var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
+
+                if (timeDiff < 86400000 && timeDiff >= 3600000) {
+                    var diffHours = Math.ceil(timeDiff / 3600000);
+                    return diffHours + " hours ago";
+                } else if (timeDiff < 3600000 && timeDiff >= 60000) {
+                    var diffMinutes = Math.ceil(timeDiff / 60000);
+                    return diffMinutes + " minutes ago";
+                } else if (timeDiff < 60000) {
+                    return "Just now";
+                } else {
+                    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                    return diffDays + " days ago";
+                }
+            }
 
         });

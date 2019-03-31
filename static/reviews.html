@@ -23,25 +23,26 @@
             </div>
          </div>
          <button type="button" class="btn btn-success btn-sm space" data-toggle="modal" data-target="#reviewModal"
-            ng-click="makeReview()">Click here to write your own review</button>
+            ng-click="makeReview()" ng-if="currentUser">Click here to write your own review</button>
       </div>
    </div>
    <div class="col-12">
       <ul class="list-group">
          <li id="repeat" class="list-group-item"
-            ng-repeat="review in reviews | myFilter:[reviewSearchText]| orderBy:orderByCriteria">
+            ng-repeat="review in reviews | myFilter:[reviewSearchText]| orderBy:orderByCriteria"
+            ng-click="reviewDetails($event,review)">
             <div class="row">
                <div class="col-4">
                   <img src={{'images/'+review.user.avatar}} alt="No avatar found" class="reviewAvatar">
                </div>
                <div class="col-6">
                   <p style="margin-left:-3%;">
-                     <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal"
-                        ng-click="showProfileDetails(review.user)">{{review.user.username}}</span>
+                     <span class="activityLink"
+                        ng-click="showProfileDetails($event,review.user)">{{review.user.username}}</span>
                      reviewed
 
-                     <span class="activityLink" data-toggle="modal" data-target="#movieDetailsModal"
-                        ng-click="showMovieDetails(review.movie)">{{review.movie.title}}</span>
+                     <span class="activityLink"
+                        ng-click="showMovieDetails($event,review.movie)">{{review.movie.title}}</span>
                      on
                      {{reviewDate(review.created_at)}}. </p>
 
@@ -67,19 +68,21 @@
 
                   </div>
                   <h6>Written Review:</h6>
-                  <p>{{review.description}}</p>
+                  <p>{{reviewPreview(review)}}</p>
 
                </div>
                <div class="col-2">
                   <button type="button" class="btn btn-info" ng-if="review.user.username==currentUser.username"
-                     data-toggle="modal" data-target="#editModal" ng-click="editReview(review)">Edit</button>
+                     ng-click="editReview($event,review)">Edit</button>
                   <button type="button" class="btn btn-danger" ng-if="review.user.username==currentUser.username"
-                     ng-click="deleteReview(review)">Delete</button>
+                     ng-click="deleteReview($event,review)">Delete</button>
 
-                  <div class="upvote1">
-                     <i class="fas fa-arrow-circle-up upvote2" id={{review._id}} ng-click="upVote(review)"></i><br>
+                  <div class="upvote1" ng-if="currentUser">
+                     <i class="fas fa-arrow-circle-up upvote2" id={{review._id}}
+                        ng-click="upVote(review);$event.stopPropagation();"></i><br>
                      <span style="margin-left:3.5px;">{{review.upVotes}}</span> <br>
-                     <i class="fas fa-arrow-circle-down upvote2" id={{review._id+'x'}} ng-click="downVote(review)"></i>
+                     <i class="fas fa-arrow-circle-down upvote2" id={{review._id+'x'}}
+                        ng-click="downVote(review);$event.stopPropagation();"></i>
                   </div>
                </div>
             </div>
@@ -266,7 +269,7 @@
          <div class="modal-footer">
             <button type="button" class="btn btn-danger" ng-if="isFollowing(id)&& username!=currentUser.username"
                ng-click="follow(id)">Unfollow {{username}}</button>
-            <button type="button" class="btn btn-primary" ng-if="!isFollowing(id) && username!=currentUser.username"
+            <button type="button" class="btn btn-primary" ng-if="currentUser && !isFollowing(id) && username!=currentUser.username"
                ng-click="follow(id)">Follow {{username}}</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
@@ -307,7 +310,7 @@
          </div>
          <div class="modal-footer">
             <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()"
-               ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)" data-dismiss="modal">Add to
+               ng-if="currentUser && !partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)" data-dismiss="modal">Add to
                WatchList</button>
             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()"
                ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Remove From Watchlist</button>

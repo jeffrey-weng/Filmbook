@@ -36,11 +36,17 @@ exports.update = function(req, res) {
   
   DiscussionPost.findById(discussion._id,function(err,discussion){
 	  if(err) throw err;
-	  
-	    discussion.title=req.body.title;
+    
+    if(req.body.title)
+      discussion.title=req.body.title;
+
+    if(req.body.description)
       discussion.description=req.body.description;
-      discussion.upVotes=req.body.upvotes;
-      discussion.comments=req.body.comments;
+    
+    if(req.body.upVotes)
+      discussion.upVotes=req.body.upVotes;
+    
+
 	  
 	  discussion.save(function(err){
 		  if(err)throw err;

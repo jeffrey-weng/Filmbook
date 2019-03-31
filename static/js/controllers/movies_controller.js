@@ -1,5 +1,5 @@
 angular.module('filmApp').controller('MoviesController',
-	function ($scope, $rootScope, $http) {
+	function ($scope, $rootScope, $http, $state) {
 
 
 		//populate currentUser's following
@@ -18,41 +18,46 @@ angular.module('filmApp').controller('MoviesController',
 				for (var i = 0; i < response.data.length; i++)
 					$rootScope.searchResults.push(response.data[i]);
 
-				$http.get(window.location.origin + "/api/follow/" + $scope.currentUser.id)
-					.then(function (response) {
-						$scope.followingList = [];
-						for (var i = 0; i < response.data.length; i++)
-							$scope.followingList.push(response.data[i]);
+				if ($scope.currentUser) {
+					$http.get(window.location.origin + "/api/follow/" + $scope.currentUser.id)
+						.then(function (response) {
+							$scope.followingList = [];
+							for (var i = 0; i < response.data.length; i++)
+								$scope.followingList.push(response.data[i]);
 
-						$scope.followingList.forEach(function (value) {
-							$rootScope.targets.push(value.target);
-						})
-
-						$http.get(window.location.origin + "/api/follow/followers/" + $scope.currentUser.id)
-							.then(function (response) {
-								for (var i = 0; i < response.data.length; i++)
-									$rootScope.followersList.push(response.data[i]);
-
-								$rootScope.followersList.forEach(function (value) {
-									$rootScope.followers.push(value.user);
-								})
-
-								$rootScope.searchResults.forEach(function (value) {
-									if ($scope.isFollowing(value._id))
-										$scope.following.push(value);
-								})
-
-								$rootScope.searchResults.forEach(function (value) {
-									if ($scope.isAFollower(value._id))
-										$scope.followers2.push(value);
-								})
+							$scope.followingList.forEach(function (value) {
+								$rootScope.targets.push(value.target);
 							})
 
-						// console.log($rootScope.targets.length);  
-					});
+							$http.get(window.location.origin + "/api/follow/followers/" + $scope.currentUser.id)
+								.then(function (response) {
+									for (var i = 0; i < response.data.length; i++)
+										$rootScope.followersList.push(response.data[i]);
+
+									$rootScope.followersList.forEach(function (value) {
+										$rootScope.followers.push(value.user);
+									})
+
+									$rootScope.searchResults.forEach(function (value) {
+										if ($scope.isFollowing(value._id))
+											$scope.following.push(value);
+									})
+
+									$rootScope.searchResults.forEach(function (value) {
+										if ($scope.isAFollower(value._id))
+											$scope.followers2.push(value);
+									})
+								})
+
+							// console.log($rootScope.targets.length);  
+						});
+				}
 			});
 
 
+            $('.dropdown-menu a').click(function () {
+                $('#dropdownMenuButton').text($(this).text());
+            });
 
 		$scope.movieType = 'movie in popular';
 		$scope.displayType = 2; //set default display to top rated movies
@@ -73,7 +78,8 @@ angular.module('filmApp').controller('MoviesController',
 			for (var i = $scope.popularIndex; i < $scope.popularIndex + 3; i++) {
 				$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=" + i)
 					.then(function (response) {
-						$scope.popular = $scope.popular.concat(response.data.results);
+						if ($scope.popular)
+							$scope.popular = $scope.popular.concat(response.data.results);
 					});
 			}
 
@@ -86,7 +92,8 @@ angular.module('filmApp').controller('MoviesController',
 			for (var i = $scope.theaterIndex; i < $scope.theaterIndex + 3; i++) {
 				$http.get("https://api.themoviedb.org/3/movie/now_playing?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=" + i)
 					.then(function (response) {
-						$scope.theater = $scope.theater.concat(response.data.results);
+						if ($scope.theater)
+							$scope.theater = $scope.theater.concat(response.data.results);
 					});
 			}
 
@@ -99,7 +106,8 @@ angular.module('filmApp').controller('MoviesController',
 			for (var i = $scope.topRatedIndex; i < $scope.topRatedIndex + 3; i++) {
 				$http.get("https://api.themoviedb.org/3/discover/movie?api_key=c62258e5fcc86f114d95f2bd79b40c28&sort_by=vote_count.desc&page=" + i)
 					.then(function (response) {
-						$scope.rated = $scope.rated.concat(response.data.results);
+						if ($scope.rated)
+							$scope.rated = $scope.rated.concat(response.data.results);
 					});
 			}
 
@@ -115,7 +123,8 @@ angular.module('filmApp').controller('MoviesController',
 				for (var i = $scope.searchIndex; i < $scope.searchIndex + 2; i++) {
 					$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=" + i)
 						.then(function (response) {
-							$scope.popular = $scope.popular.concat(response.data.results);
+							if ($scope.popular)
+								$scope.popular = $scope.popular.concat(response.data.results);
 						});
 				}
 			}
@@ -131,13 +140,15 @@ angular.module('filmApp').controller('MoviesController',
 
 		$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=2")
 			.then(function (response) {
-				$scope.popular = $scope.popular.concat(response.data.results);
+				if ($scope.popular)
+					$scope.popular = $scope.popular.concat(response.data.results);
 			});
 
 
 		$http.get("https://api.themoviedb.org/3/movie/popular?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=3")
 			.then(function (response) {
-				$scope.popular = $scope.popular.concat(response.data.results);
+				if ($scope.popular)
+					$scope.popular = $scope.popular.concat(response.data.results);
 			});
 
 		//movies in theaters
@@ -148,13 +159,15 @@ angular.module('filmApp').controller('MoviesController',
 
 		$http.get("https://api.themoviedb.org/3/movie/now_playing?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=2")
 			.then(function (response) {
-				$scope.theater = $scope.theater.concat(response.data.results);
+				if ($scope.theater)
+					$scope.theater = $scope.theater.concat(response.data.results);
 			});
 
 
 		$http.get("https://api.themoviedb.org/3/movie/now_playing?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=3")
 			.then(function (response) {
-				$scope.theater = $scope.theater.concat(response.data.results);
+				if ($scope.theater)
+					$scope.theater = $scope.theater.concat(response.data.results);
 			});
 
 		//rated
@@ -165,13 +178,15 @@ angular.module('filmApp').controller('MoviesController',
 
 		$http.get("https://api.themoviedb.org/3/discover/movie?api_key=c62258e5fcc86f114d95f2bd79b40c28&sort_by=vote_count.desc" + "&page=2")
 			.then(function (response) {
-				$scope.rated = $scope.rated.concat(response.data.results);
+				if ($scope.rated)
+					$scope.rated = $scope.rated.concat(response.data.results);
 			});
 
 
 		$http.get("https://api.themoviedb.org/3/discover/movie?api_key=c62258e5fcc86f114d95f2bd79b40c28&sort_by=vote_count.desc" + "&page=3")
 			.then(function (response) {
-				$scope.rated = $scope.rated.concat(response.data.results);
+				if ($scope.rated)
+					$scope.rated = $scope.rated.concat(response.data.results);
 			});
 
 
@@ -380,7 +395,8 @@ angular.module('filmApp').controller('MoviesController',
 
 			$http.get("https://api.themoviedb.org/3/search/movie?api_key=c62258e5fcc86f114d95f2bd79b40c28&language=en-US&page=2&include_adult=false&query=" + movieSearchText)
 				.then(function (response) {
-					$scope.searchResults = $scope.searchResults.concat(response.data.results);
+					if ($scope.searchResults)
+						$scope.searchResults = $scope.searchResults.concat(response.data.results);
 				});
 
 			$scope.displayType = 4;
@@ -390,34 +406,98 @@ angular.module('filmApp').controller('MoviesController',
 			$scope.displayType = type;
 		};
 
-
-		$http.get(window.location.origin + '/api/home/' + $scope.currentUser.id)
-			.then(function (response) {
-				$scope.activities = response.data.activities;
-				console.log($scope.activities);
-			});
-
-
-		$http.get(window.location.origin + '/api/profile/' + $scope.currentUser.id)
-			.then(function (response) {
-				$scope.userActivities = response.data.activities;
-				console.log($scope.userActivities)
-			});
-
-		//Refresh feeds every one minute (to show updates on how long ago an activity occured)
-		setInterval(function () {
+		if ($scope.currentUser) {
 			$http.get(window.location.origin + '/api/home/' + $scope.currentUser.id)
 				.then(function (response) {
 					$scope.activities = response.data.activities;
+
+					$scope.activities.forEach(function (value) {
+						if (value.verb == "Comment") {
+
+
+							$http.get(window.location.origin + '/api/discussions/' + value.object.discussion)
+								.then(function (response2) {
+
+									value.object.discussion = response2.data;
+
+								})
+						}
+					})
+					console.log($scope.activities);
 				});
+		}
 
 
+		if ($scope.currentUser) {
 			$http.get(window.location.origin + '/api/profile/' + $scope.currentUser.id)
 				.then(function (response) {
 					$scope.userActivities = response.data.activities;
-				});
 
-		}, 60000);
+					$scope.userActivities.forEach(function (value) {
+						if (value.verb == "Comment") {
+
+							if (value.object.discussion) {
+								$http.get(window.location.origin + '/api/discussions/' + value.object.discussion)
+									.then(function (response2) {
+
+										value.object.discussion = response2.data;
+
+									})
+							}
+
+						}
+					})
+
+					console.log($scope.userActivities)
+				});
+		}
+
+		//Refresh feeds every one minute (to show updates on how long ago an activity occured)
+		if ($scope.currentUser) {
+			setInterval(function () {
+				$http.get(window.location.origin + '/api/home/' + $scope.currentUser.id)
+					.then(function (response) {
+						$scope.activities = response.data.activities;
+
+
+						$scope.activities.forEach(function (value) {
+							if (value.verb == "Comment") {
+
+								if (value.object.discussion) {
+									$http.get(window.location.origin + '/api/discussions/' + value.object.discussion)
+										.then(function (response2) {
+
+											value.object.discussion = response2.data;
+
+										})
+								}
+							}
+						})
+					});
+
+
+				$http.get(window.location.origin + '/api/profile/' + $scope.currentUser.id)
+					.then(function (response) {
+						$scope.userActivities = response.data.activities;
+
+						$scope.userActivities.forEach(function (value) {
+							if (value.verb == "Comment") {
+
+								if (value.object.discussion) {
+									$http.get(window.location.origin + '/api/discussions/' + value.object.discussion)
+										.then(function (response2) {
+
+											value.object.discussion = response2.data;
+
+										})
+								}
+
+							}
+						})
+					});
+
+			}, 60000);
+		}
 
 
 
@@ -434,37 +514,22 @@ angular.module('filmApp').controller('MoviesController',
 				} else
 					return activity.object.target.username;
 			} else if (activity.verb == "Watch" || activity.verb == "ReviewPost" || activity.verb == "Review") {
-				
 				return activity.object.movie;
+			} else if (activity.verb == "Comment") {
+				return activity.object.discussion.title;
+			} else if (activity.verb == "Post") {
+				return activity.object.title;
 			}
 		}
 
-		$scope.dateRecorded = function (activity) {
-			var date = new Date();
-
-			var activityDate = new Date(activity.object.created_at);
-
-			var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
-
-			if (timeDiff < 86400000 && timeDiff >= 3600000) {
-				var diffHours = Math.ceil(timeDiff / 3600000);
-				return diffHours + " hours ago";
-			} else if (timeDiff < 3600000 && timeDiff >= 60000) {
-				var diffMinutes = Math.ceil(timeDiff / 60000);
-				return diffMinutes + " minutes ago";
-			} else if (timeDiff < 60000) {
-				return "Just now";
-			} else {
-				var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-				return diffDays + " days ago";
-			}
-		}
 
 		$scope.emptyWatchListMsg = function (watchlist) {
+			if(watchlist){
 			if (watchlist.length == 0)
 				return true;
 
 			else return false;
+			}
 		}
 
 		$scope.partofRecent = false;
@@ -845,7 +910,9 @@ angular.module('filmApp').controller('MoviesController',
 			}
 		}
 
-		$scope.moreRecs();
+		if ($scope.currentUser) {
+			$scope.moreRecs();
+		}
 
 
 		$scope.infoChanged = false;
@@ -887,11 +954,13 @@ angular.module('filmApp').controller('MoviesController',
 			else return false;
 		}
 
+		/*
 		console.log($scope.following);
 		console.log($scope.followers2);
 		console.log($rootScope.searchResults);
 		console.log($rootScope.followers);
 		console.log($rootScope.targets);
+		*/
 
 		$scope.writeReview = function () {
 
@@ -901,22 +970,46 @@ angular.module('filmApp').controller('MoviesController',
 		$scope.activityVerb = function (verb) {
 			if (verb == "Review")
 				return "reviewed";
+
+			else if (verb == "Comment")
+				return "commented on";
+
 			else return verb.toLowerCase() + "ed"
 		}
 
 
-		
 
-		$scope.avatarUpdated = function(){
+
+		$scope.avatarUpdated = function () {
 			alert("Avatar updated.");
 
-			setTimeout(function(){
+			setTimeout(function () {
 				$http.get(window.location.origin + '/api/users/' + $scope.currentUser.id)
-				.then(function(response){
-					$scope.currentUser.avatar=response.data.avatar;
-			  
-				})
-			},800)
-		
+					.then(function (response) {
+						$scope.currentUser.avatar = response.data.avatar;
+
+					})
+			}, 800)
+
+		}
+
+		$scope.viewDiscussionPost = function (activity) {
+
+			if (activity.object.discussion)
+				$state.go('discussionDetail', {
+					id: activity.object.discussion._id
+				});
+
+			else
+				$state.go('discussionDetail', {
+					id: activity.object._id
+				});
+		}
+
+		$scope.viewReview = function (activity) {
+
+			$state.go('reviewDetail', {
+				id: activity.object._id
+			});
 		}
 	});

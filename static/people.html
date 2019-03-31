@@ -1,7 +1,16 @@
-<div class="container-fluid">
-   <div class="input-group" id="searchBar">
-      <input type="text" class="form-control" placeholder="Search Site Users..." ng-model="peopleSearchText"
-         ng-change="onSearchChange()">
+<h4 style="margin-top:3%;margin-left:4%;" ng-if="!currentUser"><a ui-sref="login">Log in</a> to view or follow other
+   users.</h4>
+
+<div class="container-fluid" ng-if="currentUser">
+   <div class="row" style="margin-top:2%">
+      <div class="col-3"></div>
+      <div class="col-6">
+         <div class="input-group" id="searchBar">
+            <input type="text" class="form-control" style="max-width:750px" placeholder="Search Site Users..."
+               ng-model="peopleSearchText" ng-change="onSearchChange()">
+         </div>
+      </div>
+      <div class="col-3"></div>
    </div>
    <h2 style="text-align: center;"></h2>
 
@@ -14,15 +23,6 @@
                <img class="card-img-top person2 cover" src={{'images/'+person.avatar}} alt="Profile Picture Not Found">
             </div>
             <button id={{person._id}} ng-click="follow(person)"></button>
-
-         </div>
-         <div class="card space person">
-            <div class="card-body" ui-sref="profile">
-               <h5 class="card-title">{{currentUser.username}}</h5>
-               <img class="card-img-top person2 cover" src={{'images/'+currentUser.avatar}}
-                  alt="Profile Picture Not Found">
-            </div>
-            <button ui-sref="profile" class="btn btn-secondary">View Your Profile</button>
 
          </div>
       </div>

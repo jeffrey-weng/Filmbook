@@ -1,2 +1,255 @@
+<div class="container">
 
-<h3>Discussion page coming soon!</h3>
+    <div class="row">
+        <div class="input-group searchSpace" id="searchBar">
+
+            <input type="text" class="form-control" placeholder="Filter discussions by keyword..."
+                ng-model="discussionSearchText" ng-change="searchDiscussions(discussionSearchText)">
+            <p class="space"> or </p>
+            <div class="dropdown" style="margin-right:50px;">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    sort by
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" ng-click="orderBy('-created_at')">Newest First</a>
+                    <a class="dropdown-item" ng-click="orderBy('created_at')">Oldest First</a>
+                    <a class="dropdown-item" ng-click="orderBy('user.username')">User Name</a>
+                    <a class="dropdown-item" ng-click="orderBy('-upVotes')">Number of Upvotes Desc.</a>
+                    <a class="dropdown-item" ng-click="orderBy('upVotes')">Number of Upvotes Asc.</a>
+                </div>
+            </div>
+            <button type="button" class="btn btn-success btn-sm space" data-toggle="modal"
+                data-target="#discussionModal" ng-click="makeDiscussion()" ng-if="currentUser">Start a new discussion</button>
+        </div>
+    </div>
+    <div class="col-12">
+        <ul class="list-group">
+            <li id="repeat" class="list-group-item"
+                ng-repeat="discussion in discussions | filter:discussionSearchText | orderBy:orderByCriteria"
+                ng-click="discussionPostDetails($event,discussion)">
+                <div class="row">
+                    <div class="col-4">
+                        <img src={{'images/'+discussion.user.avatar}} alt="No avatar found" class="reviewAvatar">
+                    </div>
+                    <div class="col-6">
+
+                        <h2 style="margin-bottom:-1%;">{{discussion.title}}</h2>
+                        <p style="margin-left:8%;">
+                            posted by
+                            <span class="activityLink"
+                                ng-click="showProfileDetails($event,discussion.user);">{{discussion.user.username}}</span>
+
+                            <small>{{discussionDate(discussion.created_at)}}</small> </p>
+
+
+                        <p>{{postPreview(discussion)}}</p>
+
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-info"
+                            ng-if="discussion.user.username==currentUser.username"
+                            ng-click="editDiscussion($event,discussion)">Edit</button>
+                        <button type="button" class="btn btn-danger"
+                            ng-if="discussion.user.username==currentUser.username"
+                            ng-click="deleteDiscussion($event,discussion)">Delete</button>
+
+                        <div class="upvote1" ng-if="currentUser">
+                            <i class="fas fa-arrow-circle-up upvote2" id={{discussion._id}}
+                                ng-click="upVote(discussion); $event.stopPropagation();"></i><br>
+                            <span style="margin-left:3.5px;">{{discussion.upVotes}}</span> <br>
+                            <i class="fas fa-arrow-circle-down upvote2" id={{discussion._id+'x'}}
+                                ng-click="downVote(discussion);  $event.stopPropagation();"></i>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog reviewModal" role="document">
+        <div class="modal-content reviewModal">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Edit Discussion</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="editForm" name="editForm" method="POST"
+                    action={{"/api/discussions/"+discussionId+"?_method=PUT"}} target="hiddenFrame"
+                    ng-submit="discussionEdited()">
+                    <input type="hidden" name="_METHOD" value="PUT">
+
+                    <div class="form-group">
+                        <label data-error="wrong" data-success="right" for="title2">Title:</label>
+
+                        <input type="text" id="title2" name="title" ng-model="discussionTitle" style="width:450px"
+                            value={{discussionTitle}} required>
+
+                    </div>
+                    <input type="hidden" name="user" ng-model="user2" value={{currentUser.id}}>
+
+                    <div class="form-group">
+                        <label data-error="wrong" data-success="right" for="written2">Description:</label>
+                        <textarea class="form-control" rows="15" cols="50" id="written2" name="description"
+                            aria-label="With textarea"
+                            ng-model="discussionDescription">{{discussionDescription}}</textarea>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-success" form="editForm" type="submit" value="Submit"
+                    ng-disabled="!isValidEdit()">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<iframe name="hiddenFrame" class="hide"></iframe>
+
+<div class="modal fade" id="discussionModal" tabindex="-1" role="dialog" aria-labelledby="discussionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog reviewModal" role="document">
+        <div class="modal-content reviewModal">
+            <div class="modal-header text-center">
+                <h4 class="modal-title w-100 font-weight-bold">Start a Discussion</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="discussionForm" name="discussionForm" method="POST" action="/api/discussions/"
+                    target="hiddenFrame" ng-submit="discussionSubmitted()">
+                    <div class="form-group">
+                        <label data-error="wrong" data-success="right" for="title">Title:</label>
+                        <input type="text" name="title" ng-model="title" id="title" style="width:430px" required>
+                    </div>
+
+                    <input type="hidden" name="user" ng-model="user2" value={{currentUser.id}}>
+                    <input type="number" name="upVotes" value="0" style="display:none;">
+
+                    <div class="form-group">
+                        <label data-error="wrong" data-success="right" for="written">Description:</label>
+                        <textarea class="form-control" rows="15" cols="50" id="written" name="description"
+                            aria-label="With textarea" ng-model="description"></textarea>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <input class="btn btn-success" form="discussionForm" type="submit" value="Submit"
+                    ng-disabled="!isValidDiscussion()">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="personDetailsModal" tabindex="-1" role="dialog" aria-labelledby="personDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg reviewModal" role="document">
+        <div class="modal-content reviewModal">
+            <div class="modal-header">
+                <h5 class="modal-title">{{username}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Favorite Movies:</strong> {{favMovies}}
+                            <br><br>
+                            <strong>Most Viewed Genre(s):</strong> {{favGenres}}
+                            <br><br>
+                            <strong>Watchlist:</strong> {{watchlist}}
+                            <br><br>
+                            <strong>Recently Seen:</strong> {{watched}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" ng-if="isFollowing(id)&& username!=currentUser.username"
+                    ng-click="follow(id)">Unfollow {{username}}</button>
+                <button type="button" class="btn btn-primary" ng-if="currentUser && !isFollowing(id) && username!=currentUser.username"
+                    ng-click="follow(id)">Follow {{username}}</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="movieDetailsModal" tabindex="-1" role="dialog" aria-labelledby="movieDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg reviewModal" role="document">
+        <div class="modal-content reviewModal">
+            <div class="modal-header">
+                <h5 class="modal-title">{{movieTitle}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
+                                alt="Movie Poster Not Found">
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Overview:</strong> {{movieDescription}}
+                            <br><br>
+                            <strong>Genre(s):</strong> {{movieDisplayGenres}}
+                            <br><br>
+                            <strong>Average Rating:</strong> {{movieRating}}/10
+                            <br><br>
+                            <strong>Release Date:</strong> {{movieDisplayDate}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()"
+                    ng-if="!partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)" data-dismiss="modal">Add
+                    to
+                    WatchList</button>
+                <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()"
+                    ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Remove From Watchlist</button>
+                <button type="button" class="btn btn-primary" ng-click="addToWatched()" ng-if="inWatchlist(movieTitle)"
+                    data-dismiss="modal">Add
+                    to Watched</button>
+                <button type="button" class="btn btn-success" ng-click="addToFavorites()"
+                    ng-if="!inFavorites(movieTitle) && inWatched(movieTitle)" data-dismiss="modal">Add to
+                    Favorites</button>
+                <button type="button" class="btn btn-danger" ng-if="inFavorites(movieTitle)"
+                    ng-click="removeFromFavorites()">Remove
+                    from Favorites</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

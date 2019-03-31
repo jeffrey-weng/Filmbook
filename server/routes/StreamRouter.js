@@ -19,7 +19,8 @@ discussions = require('../controllers/discussion.server.controller.js'),
 	reviews = require('../controllers/review.server.controller.js'),
 	users = require('../controllers/users.server.controller.js'),
 	follows = require('../controllers/follow.server.controller.js'),
-	watches = require('../controllers/watch.server.controller.js');
+	watches = require('../controllers/watch.server.controller.js'),
+	comments = require('../controllers/comment.server.controller.js');
 
 /*router and models*/
 var StreamRouter = express.Router(),
@@ -27,7 +28,8 @@ var StreamRouter = express.Router(),
 	DiscussionPost = models.DiscussionPost,
 	Review = models.Review,
 	Follow = models.Follow,
-	Watch = models.Watch;
+	Watch = models.Watch,
+	Comment = models.Comment;
 
 /*stream api stuff*/
 var FeedManager = stream_node.FeedManager;
@@ -273,6 +275,19 @@ StreamRouter.route('/users/usernames/:user').get(users.read);
 //Watch API
 StreamRouter.route('/watch/:user').get(watches.getAllWatched);
 StreamRouter.route('/watch').post(watches.create);
+
+//Comment API
+StreamRouter.route('/comments').get(comments.list).post(comments.create);
+
+StreamRouter.route('/comments/:commentId')
+	.get(comments.read)
+	.put(comments.update)
+	.delete(comments.delete);
+
+StreamRouter.route('/comments/discussions/:discussionId')
+	.get(comments.listByDiscussion);
+
+StreamRouter.param('commentId', comments.commentByID);
 
 //Avatar upload
 StreamRouter.route('/files/:userId').post(function (req, res) {

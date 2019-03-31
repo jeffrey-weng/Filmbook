@@ -10,16 +10,30 @@
 <body>
    <br>
    <div class="container-fluid">
-      <div class="input-group" id="searchBar">
+      <div class="row">
+         <div class="col-3"></div>
+         <div class="col-6">
+            <div class="input-group" id="searchBar">
 
-         <input type="text" class="form-control" placeholder="Search Movies by keyword, genre, or year"
-            ng-model="movieSearchText" ng-change="searchMovies(movieSearchText)">
-         <p class="space"> or browse by:</p>
-         <button type="button" class="btn btn-success space" ng-click="updateMovieDisplay(1)">Now playing in
-            theaters</button>
-         <button type="button" class="btn btn-danger space" ng-click="updateMovieDisplay(2)">Top Rated Movies</button>
-         <button type="button" class="btn btn-info space" ng-click="updateMovieDisplay(3)">Most Popular Movies
-            Today</button>
+               <input type="text" class="form-control" style="max-width:750px;"
+                  placeholder="Search Movies by keyword, genre, or year" ng-model="movieSearchText"
+                  ng-change="searchMovies(movieSearchText)">
+               <p class="space"> or</p>
+
+               <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     browse by
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                     <a class="dropdown-item" ng-click="updateMovieDisplay(1)">Now playing in theaters</a>
+                     <a class="dropdown-item" ng-click="updateMovieDisplay(2)">Top Rated Movies</a>
+                     <a class="dropdown-item" ng-click="updateMovieDisplay(3)">Most Popular Movies Today</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="col-3"></div>
       </div>
       <h2 style="text-align: center;">Search Results</h2>
    </div>
@@ -97,7 +111,8 @@
                </div>
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-primary" ng-click="addToWatchList()">Add to Watchlist</button>
+               <button type="button" class="btn btn-primary" ng-click="addToWatchList()" ng-if="currentUser">Add to
+                  Watchlist</button>
                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
          </div>

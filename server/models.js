@@ -110,18 +110,18 @@ var discussionPostSchema = new Schema({
         required: true,
         ref: 'User'
     },
-    title: {
-        type: String,
-        required: true
-    },
+    title: String,
     description: String,
     upVotes: Number,
-    comments: [String],
+    comments: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Comment'
+    },
     created_at: Date,
     updated_at: Date
 
 }, {
-    collection: 'DiscussionPost'
+    collection: 'Post'
 });
 
 discussionPostSchema.pre('save', function (next) {
@@ -135,15 +135,60 @@ discussionPostSchema.pre('save', function (next) {
 });
 
 discussionPostSchema.statics.pathsToPopulate = function () {
-    return ['user'];
+    return ['user','comments'];
 };
 
 discussionPostSchema.plugin(StreamMongoose.activity);
 
 
-var DiscussionPost = mongoose.model('DiscussionPost', discussionPostSchema);
+var DiscussionPost = mongoose.model('Post', discussionPostSchema);
 
 //------------------------------------------------------------------------
+
+var commentSchema = new Schema({
+
+    user: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
+    discussion:{
+        type: Schema.Types.ObjectId,
+        required:true,
+        ref:'Post'
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    created_at: Date,
+    updated_at: Date
+
+}, {
+    collection: 'Comment'
+});
+
+commentSchema.pre('save', function (next) {
+    var currentDate = new Date();
+    this.updated_at = currentDate;
+
+    if (!this.created_at)
+        this.created_at = currentDate;
+
+    next();
+});
+
+commentSchema.statics.pathsToPopulate = function () {
+    return ['user','discussion'];
+};
+
+commentSchema.plugin(StreamMongoose.activity);
+
+
+var Comment = mongoose.model('Comment', commentSchema);
+
+//------------------------------------------------------------------------
+
 
 var reviewSchema = new Schema({
 
@@ -288,5 +333,6 @@ module.exports = {
     DiscussionPost: DiscussionPost,
     Review: Review,
     Follow: Follow,
-    Watch: Watch
+    Watch: Watch,
+    Comment: Comment
 };

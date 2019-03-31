@@ -1,7 +1,7 @@
 angular.module('filmApp', [
-    'ui.router'
-])
-//Authentication-related user roles
+        'ui.router'
+    ])
+    //Authentication-related user roles
     .constant('USER_ROLES', {
         all: '*',
         admin: 'admin',
@@ -20,7 +20,7 @@ angular.module('filmApp', [
     })
 
     .config(['$urlRouterProvider', '$stateProvider', '$httpProvider', 'USER_ROLES',
-        function($urlRouterProvider, $stateProvider, $httpProvider, USER_ROLES) {
+        function ($urlRouterProvider, $stateProvider, $httpProvider, USER_ROLES) {
 
             $stateProvider
                 .state('landing', {
@@ -108,28 +108,44 @@ angular.module('filmApp', [
                     url: '/404',
                     templateUrl: '404.html',
                 })
-                .state('profile',{
+                .state('profile', {
                     url: '/profile',
                     templateUrl: 'profile.html',
                     controller: 'MoviesController',
-                    data:{
+                    data: {
                         authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .state('reviews',{
-                    url:'/reviews',
-                    templateUrl:'reviews.html',
-                    controller:'ReviewsController',
-                    data:{
-                        authorizedRoles:[USER_ROLES.all]
+                .state('reviews', {
+                    url: '/reviews',
+                    templateUrl: 'reviews.html',
+                    controller: 'ReviewsController',
+                    data: {
+                        authorizedRoles: [USER_ROLES.all]
                     }
                 })
-                .state('discussions',{
-                    url:'/discussions',
-                    templateUrl:'discussions.html',
-                    controller:'DiscussionsController',
-                    data:{
-                        authorizedRoles:[USER_ROLES.all]
+                .state('discussions', {
+                    url: '/discussions',
+                    templateUrl: 'discussions.html',
+                    controller: 'DiscussionsController',
+                    data: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
+                .state('discussionDetail', {
+                    url: '/discussions/:id',
+                    templateUrl: 'discussionDetail.html',
+                    controller: 'DiscussionDetailController',
+                    data: {
+                        authorizedRoles: [USER_ROLES.all]
+                    }
+                })
+                .state('reviewDetail', {
+                    url: '/reviews/:id',
+                    templateUrl: 'reviewDetail.html',
+                    controller: 'ReviewDetailController',
+                    data: {
+                        authorizedRoles: [USER_ROLES.all]
                     }
                 });
 
@@ -144,7 +160,8 @@ angular.module('filmApp', [
             ]);
             */
 
-        }])
+        }
+    ])
 
 
 /*

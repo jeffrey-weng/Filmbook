@@ -52,4 +52,8 @@
  .card-img-top:hover{
      cursor: pointer;
 }
+.feed{
+    height:150px;
+  overflow-y: scroll;
+}
  

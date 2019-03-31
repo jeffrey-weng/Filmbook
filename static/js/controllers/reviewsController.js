@@ -17,7 +17,7 @@ angular.module('filmApp')
     })
 
     .controller('ReviewsController',
-        function ($scope, $rootScope, $http) {
+        function ($scope, $rootScope, $http, $state) {
 
 
             $('#reviewModal').on('hidden.bs.modal', function (e) {
@@ -44,17 +44,18 @@ angular.module('filmApp')
                                         return movie.title == review.movie;
                                     })
 
+                                    if (document.getElementById(review._id)) {
 
-                                    document.getElementById(review._id).setAttribute("value", localStorage.getItem(review._id));
+                                        document.getElementById(review._id).setAttribute("value", localStorage.getItem(review._id));
 
-                                    if (document.getElementById(review._id).getAttribute("value") == "-1") {
+                                        if (document.getElementById(review._id).getAttribute("value") == "-1") {
 
-                                        document.getElementById(review._id + 'x').className += " opacity";
-                                    } else if (document.getElementById(review._id).getAttribute("value") == "1") {
+                                            document.getElementById(review._id + 'x').className += " opacity";
+                                        } else if (document.getElementById(review._id).getAttribute("value") == "1") {
 
-                                        document.getElementById(review._id).className += " opacity";
+                                            document.getElementById(review._id).className += " opacity";
+                                        }
                                     }
-
                                 })
 
                         })
@@ -125,7 +126,7 @@ angular.module('filmApp')
                         hour %= 12;
                 }
                 var minutes = d.getMinutes();
-                if(minutes<=9) minutes="0"+minutes;
+                if (minutes <= 9) minutes = "0" + minutes;
 
                 return month + "/" + day + "/" + year + " " + hour + ":" + minutes + " " + dayOrNight;
             }
@@ -192,7 +193,7 @@ angular.module('filmApp')
                 }
             }
 
-            $scope.editReview = function (review) {
+            $scope.editReview = function (event, review) {
 
                 $scope.reviewId = review._id;
                 $scope.reviewMovie = review.movie.title;
@@ -201,6 +202,10 @@ angular.module('filmApp')
                 $scope.reviewCreation = review.created_at;
 
                 $scope.review = review;
+
+                $('#editModal').modal('show');
+
+                event.stopPropagation();
             }
 
             $scope.reviewEdited = function () {
@@ -223,7 +228,7 @@ angular.module('filmApp')
 
             }
 
-            $scope.deleteReview = function (review) {
+            $scope.deleteReview = function (event, review) {
 
                 var pos = $scope.reviews.findIndex(function (value) {
                     return value.user.username == $scope.currentUser.username && value.movie.title == review.movie.title && value.created_at == review.created_at;
@@ -231,6 +236,8 @@ angular.module('filmApp')
                 $scope.reviews.splice(pos, 1);
 
                 $http.delete(window.location.origin + "/api/reviews/" + review._id);
+
+                event.stopPropagation();
 
             }
 
@@ -299,6 +306,214 @@ angular.module('filmApp')
                         console.log(response);
                     });
             }
+
+            $scope.reviewDetails = function (e, review) {
+                $state.go('reviewDetail', {
+                    id: review._id
+                });
+            }
+
+
+            $scope.showProfileDetails = function (event, person) {
+
+                $scope.id = person._id;
+                $scope.avatar = person.avatar;
+                $scope.username = person.username;
+
+                $scope.favMovies = "";
+
+                for (var i = 0; i < person.favoriteMovies.length; i++) {
+                    if ((i == person.favoriteMovies.length - 1))
+                        $scope.favMovies += person.favoriteMovies[i].title;
+                    else
+                        $scope.favMovies += person.favoriteMovies[i].title + ", ";
+                }
+
+                $scope.watched = "";
+
+                for (var i = 0; i < person.watched.length; i++) {
+                    if ((i == person.watched.length - 1))
+                        $scope.watched += person.watched[i].title;
+                    else
+                        $scope.watched += person.watched[i].title + ", ";
+                }
+
+                var temp = {};
+                for (var i = 0; i < person.watched.length; i++)
+                    for (var j = 0; j < person.watched[i].genre_ids.length; j++)
+                        if (!temp[person.watched[i].genre_ids[j]])
+                            temp[person.watched[i].genre_ids[j]] = 1;
+                        else
+                            temp[person.watched[i].genre_ids[j]] = temp[person.watched[i].genre_ids[j]] + 1;
+
+                var frequencies = [];
+                for (var key in temp) {
+                    frequencies.push(temp[key]); //holds the frequencies of genres watched
+                }
+                frequencies.sort();
+                frequencies.reverse();
+                //console.log(frequencies);
+                frequencies.splice(3, frequencies.length - 3); //holds top 3 frequencies
+                var top3 = [];
+
+                for (var key in temp) {
+                    if (frequencies.includes(temp[key])) {
+                        top3.push(key); //contains top 3 genre IDs
+
+                    }
+
+                }
+                $scope.favGenres = "";
+
+                var count = 0;
+                //console.log(frequencies);
+                //console.log(top3);
+
+                for (var i = 0; i < genres.length; i++) {
+                    if (top3.includes(genres[i].id.toString())) {
+                        if (count == 2) {
+                            $scope.favGenres += genres[i].name;
+                            break;
+                        } else
+                            $scope.favGenres += genres[i].name + ", ";
+                        count++;
+                    }
+                }
+
+                $scope.watchlist = "";
+
+                for (var i = 0; i < person.watchlist.length; i++) {
+                    if ((i == person.watchlist.length - 1))
+                        $scope.watchlist += person.watchlist[i].title;
+                    else
+                        $scope.watchlist += person.watchlist[i].title + ", ";
+                }
+
+                $('#personDetailsModal').modal('show');
+                event.stopPropagation();
+            }
+
+
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+
+            $scope.showMovieDetails = function (event, movie) {
+                var d = new Date(movie.release_date);
+                $scope.movieId = movie.id;
+                $scope.movieTitle = movie.title;
+                $scope.movieDescription = movie.overview;
+                $scope.moviePosterPath = movie.poster_path;
+                $scope.movieReleaseDate = movie.release_date;
+                $scope.movieRating = movie.vote_average;
+                $scope.movieGenres = movie.genre_ids;
+
+                $scope.movieDisplayDate = monthNames[d.getMonth()] + " " + d.getUTCDate() + ", " + d.getFullYear();
+                $scope.movieDisplayGenres = "";
+
+                for (var i = 0; i < movie.genre_ids.length; i++)
+                    for (var j = 0; j < genres.length; j++)
+                        if (movie.genre_ids[i] === genres[j].id)
+                            if (i === movie.genre_ids.length - 1)
+                                $scope.movieDisplayGenres += genres[j].name;
+                            else
+                                $scope.movieDisplayGenres += genres[j].name + ", ";
+
+                $('#movieDetailsModal').modal('show');
+                event.stopPropagation();
+            };
+
+
+            $('.dropdown-menu a').click(function () {
+                $('#dropdownMenuButton').text($(this).text());
+            });
+
+            $scope.reviewPreview = function (review) {
+
+                if (review.description.length > 50)
+                    return review.description.substring(0, 50) + "...";
+
+                else return review.description;
+            }
+
+            const genres = [{
+                    "id": 28,
+                    "name": "Action"
+                },
+                {
+                    "id": 12,
+                    "name": "Adventure"
+                },
+                {
+                    "id": 16,
+                    "name": "Animation"
+                },
+                {
+                    "id": 35,
+                    "name": "Comedy"
+                },
+                {
+                    "id": 80,
+                    "name": "Crime"
+                },
+                {
+                    "id": 99,
+                    "name": "Documentary"
+                },
+                {
+                    "id": 18,
+                    "name": "Drama"
+                },
+                {
+                    "id": 10751,
+                    "name": "Family"
+                },
+                {
+                    "id": 14,
+                    "name": "Fantasy"
+                },
+                {
+                    "id": 36,
+                    "name": "History"
+                },
+                {
+                    "id": 27,
+                    "name": "Horror"
+                },
+                {
+                    "id": 10402,
+                    "name": "Music"
+                },
+                {
+                    "id": 9648,
+                    "name": "Mystery"
+                },
+                {
+                    "id": 10749,
+                    "name": "Romance"
+                },
+                {
+                    "id": 878,
+                    "name": "Science Fiction"
+                },
+                {
+                    "id": 10770,
+                    "name": "TV Movie"
+                },
+                {
+                    "id": 53,
+                    "name": "Thriller"
+                },
+                {
+                    "id": 10752,
+                    "name": "War"
+                },
+                {
+                    "id": 37,
+                    "name": "Western"
+                }
+            ];
 
 
         });

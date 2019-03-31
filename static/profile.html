@@ -1,5 +1,8 @@
 <body>
-   <div class="container-fluid" style="overflow-x: hidden;" ng-cloak>
+  
+  <h3 style="margin-top:3%;margin-left:3%;" ng-if="!currentUser"><a ui-sref="login">Login</a> to see your profile page!</h3>
+
+   <div class="container-fluid" style="overflow-x: hidden;" ng-cloak ng-if="currentUser">
 
       <div class="row profileMargin">
          <div class="col-lg-10">

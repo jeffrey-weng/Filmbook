@@ -192,7 +192,7 @@
 
 .listScroll {
     max-height: 350px;
-    overflow-y: scroll;
+    overflow-y: auto;
 
 }
 
@@ -274,6 +274,26 @@
 
 .upvote2:hover {
     opacity: 1;
+}
+
+.inline{
+    display: inline;
+    vertical-align: top;
+}
+
+.upvote3{
+    position:absolute;
+    top:0;
+    right:0;
+}
+
+#repeat:hover{
+ border-color:black;
+border-style:solid;
+}
+
+.horizontal{
+    margin-left:5px;
 }
 
 
