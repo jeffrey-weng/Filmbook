@@ -296,10 +296,17 @@ angular.module('filmApp')
             }
 
             $scope.postPreview = function (discussion) {
-                if (discussion.description.length > 50)
-                    return discussion.description.substring(0, 50) + "...";
+                if (discussion.description.length > 150)
+                    return discussion.description.substring(0, 150) + "...";
 
                 else return discussion.description;
+            }
+
+            $scope.titlePreview = function (discussion) {
+                if (discussion.title.length > 42)
+                    return discussion.title.substring(0, 42) + "...";
+
+                else return discussion.title;
             }
 
 

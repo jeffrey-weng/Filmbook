@@ -55,9 +55,9 @@ angular.module('filmApp').controller('MoviesController',
 			});
 
 
-            $('.dropdown-menu a').click(function () {
-                $('#dropdownMenuButton').text($(this).text());
-            });
+		$('.dropdown-menu a').click(function () {
+			$('#dropdownMenuButton').text($(this).text());
+		});
 
 		$scope.movieType = 'movie in popular';
 		$scope.displayType = 2; //set default display to top rated movies
@@ -516,19 +516,26 @@ angular.module('filmApp').controller('MoviesController',
 			} else if (activity.verb == "Watch" || activity.verb == "ReviewPost" || activity.verb == "Review") {
 				return activity.object.movie;
 			} else if (activity.verb == "Comment") {
-				return activity.object.discussion.title;
+
+				if(activity.object.discussion.title.length>64)
+				return activity.object.discussion.title.substring(0,61)+"..";
+				else return activity.object.discussion.title;
+				
 			} else if (activity.verb == "Post") {
-				return activity.object.title;
+				if(activity.object.title.length>64)
+				return activity.object.title.substring(0,61)+"..";
+
+				else return activity.object.title;
 			}
 		}
 
 
 		$scope.emptyWatchListMsg = function (watchlist) {
-			if(watchlist){
-			if (watchlist.length == 0)
-				return true;
+			if (watchlist) {
+				if (watchlist.length == 0)
+					return true;
 
-			else return false;
+				else return false;
 			}
 		}
 
@@ -978,21 +985,6 @@ angular.module('filmApp').controller('MoviesController',
 		}
 
 
-
-
-		$scope.avatarUpdated = function () {
-			alert("Avatar updated.");
-
-			setTimeout(function () {
-				$http.get(window.location.origin + '/api/users/' + $scope.currentUser.id)
-					.then(function (response) {
-						$scope.currentUser.avatar = response.data.avatar;
-
-					})
-			}, 800)
-
-		}
-
 		$scope.viewDiscussionPost = function (activity) {
 
 			if (activity.object.discussion)
@@ -1012,4 +1004,69 @@ angular.module('filmApp').controller('MoviesController',
 				id: activity.object._id
 			});
 		}
+
+		$scope.imgurMagic = function () {
+
+			$scope.currentUser.avatar = $scope.imgurAvatarURL;
+			alert("Avatar updated.");
+
+			$http.put(window.location.origin + "/api/users/" + $scope.currentUser.id, {
+			
+					avatar: $scope.imgurAvatarURL
+				
+			})
+		}
+
+		$("document").ready(function () {
+
+			$('input[type=file]').on("change", function () {
+
+				var $files = $(this).get(0).files;
+
+				if ($files.length) {
+
+					// Reject big files
+					if ($files[0].size > $(this).data("max-size") * 1024) {
+						console.log("Please select a smaller file");
+						return false;
+					}
+
+					// Begin file upload
+					console.log("Uploading file to Imgur..");
+
+					// Replace ctrlq with your own API key
+					var apiUrl = 'https://api.imgur.com/3/image';
+					var apiKey = 'b1b195f932ac2ea';
+
+					var settings = {
+						async: true,
+						crossDomain: true,
+						processData: false,
+						contentType: false,
+						type: 'POST',
+						url: apiUrl,
+						headers: {
+							Authorization: 'Client-ID ' + apiKey,
+							Accept: 'application/json'
+						},
+						mimeType: 'multipart/form-data'
+					};
+
+					var formData = new FormData();
+					formData.append("image", $files[0]);
+					settings.data = formData;
+
+					// Response contains stringified JSON
+					// Image URL available at response.data.link
+					$.ajax(settings).done(function (response) {
+						console.log(JSON.parse(response).data.link);
+						$scope.imgurAvatarURL = JSON.parse(response).data.link;
+						console.log($scope.imgurAvatarURL);
+
+					});
+
+				}
+			});
+		});
+
 	});

@@ -100,14 +100,16 @@ angular.module('filmApp')
 
                 setTimeout(function () {
                     $scope.refreshComments();
-                    $('#written2').val('');
-                    $scope.newComment = undefined;
+                    $scope.newComment = "";
                 }, 700)
             }
 
+            $scope.newComment = "";
+            
             $scope.isValidComment = function () {
                 if (!$scope.currentUser) return false;
-                if (!$scope.newComment) return false;
+
+                if ($scope.newComment.length==0) return false;
                 else return true;
             }
 

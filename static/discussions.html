@@ -30,11 +30,11 @@
                 ng-click="discussionPostDetails($event,discussion)">
                 <div class="row">
                     <div class="col-4">
-                        <img src={{'images/'+discussion.user.avatar}} alt="No avatar found" class="reviewAvatar">
+                        <img src={{discussion.user.avatar}} alt="No avatar found" class="reviewAvatar">
                     </div>
                     <div class="col-6">
 
-                        <h2 style="margin-bottom:-1%;">{{discussion.title}}</h2>
+                        <h4 style="margin-bottom:-1%;">{{titlePreview(discussion)}}</h4>
                         <p style="margin-left:8%;">
                             posted by
                             <span class="activityLink"
@@ -176,7 +176,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6">
-                            <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                            <img src={{avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
                         </div>
                         <div class="col-md-6">
                             <strong>Favorite Movies:</strong> {{favMovies}}

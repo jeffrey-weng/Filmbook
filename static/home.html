@@ -70,13 +70,11 @@
 
                   <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target=""
                      ng-click="activityModal(activity)"
-                     ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}</span>
+                     ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}.</span>
 
 
                   <span id={{activity.id}} class="activityLink" ng-click="viewDiscussionPost(activity)"
-                     ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}</span>
-
-                  .
+                     ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}.</span>
 
                   <small>{{dateRecorded(activity)}}</small>
 
@@ -107,13 +105,11 @@
                               
                                 <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target=""
                                  ng-click="activityModal(activity)"
-                                 ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}</span>
+                                 ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}.</span>
             
             
                               <span id={{activity.id}} class="activityLink" ng-click="viewDiscussionPost(activity)"
-                                 ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}</span>
-            
-                              .
+                                 ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}.</span>
             
                               <small>{{dateRecorded(activity)}}</small>
             
@@ -204,7 +200,7 @@
             <div class="container-fluid">
                <div class="row">
                   <div class="col-md-6">
-                     <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                     <img src={{avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
                   </div>
                   <div class="col-md-6">
                      <strong>Favorite Movies:</strong> {{favMovies}}

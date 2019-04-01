@@ -431,8 +431,8 @@ angular.module('filmApp')
 
             $scope.reviewPreview = function (review) {
 
-                if (review.description.length > 50)
-                    return review.description.substring(0, 50) + "...";
+                if (review.description.length > 150)
+                    return review.description.substring(0, 150) + "...";
 
                 else return review.description;
             }
