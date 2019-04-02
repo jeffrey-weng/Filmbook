@@ -16,12 +16,19 @@ angular.module('filmApp')
     })
 
     .controller('DiscussionDetailController',
-        function ($scope, $rootScope, $http, $state, $stateParams) {
+        function ($scope, $rootScope, $http, $state, $stateParams, $interval) {
 
             $scope.refreshComments = function () {
                 $http.get(window.location.origin + "/api/discussions/" + $stateParams.id)
                     .then(function (response) {
                         $scope.discussion = response.data;
+
+                        $scope.dateRecorded($scope.discussion);
+
+                        $interval(function () {
+                            $scope.dateRecorded($scope.discussion)
+
+                        }, 10000);
 
                         $http.get(window.location.origin + "/api/users/" + $scope.discussion.user)
                             .then(function (response2) {
@@ -33,6 +40,8 @@ angular.module('filmApp')
 
                                         $scope.discussion.comments.forEach(function (value) {
 
+                                            $scope.dateRecorded(value);
+
                                             $http.get(window.location.origin + "/api/users/" + value.user)
                                                 .then(function (response4) {
 
@@ -40,6 +49,15 @@ angular.module('filmApp')
                                                 })
 
                                         })
+                                        $interval(function () {
+                                            $scope.discussion.comments.forEach(function (value) {
+                                                $scope.dateRecorded(value)
+
+                                            })
+
+
+                                        }, 10000);
+
                                         console.log("Discussion: " + $scope.discussion);
 
                                     })
@@ -49,25 +67,58 @@ angular.module('filmApp')
             $scope.refreshComments();
 
 
-            $scope.dateRecorded = function (date) {
-                var today = new Date();
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
 
-                var commentDate = new Date(date);
+            $scope.dateRecorded = function (review) {
+                var date = new Date();
+                var activityDate = new Date(review.created_at);
 
-                var timeDiff = Math.abs(today.getTime() - commentDate.getTime());
+                var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
 
                 if (timeDiff < 86400000 && timeDiff >= 3600000) {
-                    var diffHours = Math.ceil(timeDiff / 3600000);
-                    return diffHours + " hours ago";
+                    var diffHours = Math.floor(timeDiff / 3600000);
+                    if (diffHours == 1) review["elapsed"] = "1 hour ago";
+                    else review["elapsed"] = diffHours + " hours ago";
                 } else if (timeDiff < 3600000 && timeDiff >= 60000) {
-                    var diffMinutes = Math.ceil(timeDiff / 60000);
-                    return diffMinutes + " minutes ago";
+                    var diffMinutes = Math.floor(timeDiff / 60000);
+                    if (diffMinutes == 1) review["elapsed"] = "1 minute ago";
+                    else review["elapsed"] = diffMinutes + " minutes ago";
                 } else if (timeDiff < 60000) {
-                    return "Just now";
+                    review["elapsed"] = "Just now";
                 } else {
-                    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    return diffDays + " days ago";
+                    var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+                    if (diffDays == 1) review["elapsed"] = "1 day ago";
+                    else review["elapsed"] = diffDays + " days ago";
                 }
+            }
+
+            $scope.timeStamp = function (review) {
+
+                var activityDate = new Date(review.created_at);
+
+                var day = activityDate.getDay();
+
+                if (day == 0) day = "Sunday"
+                else if (day == 1) day = "Monday"
+                else if (day == 2) day = "Tuesday"
+                else if (day == 3) day = "Wednesday"
+                else if (day == 4) day = "Thursday"
+                else if (day == 5) day = "Friday"
+                else if (day == 6) day = "Saturday"
+
+                var month = monthNames[activityDate.getMonth()];
+
+                var date = activityDate.getDate();
+
+                var year = activityDate.getFullYear();
+
+                var time = activityDate.toLocaleTimeString();
+
+                return day + ", " + month + " " + date + ", " + year + " at " + time;
+
+
             }
 
 
@@ -105,11 +156,11 @@ angular.module('filmApp')
             }
 
             $scope.newComment = "";
-            
+
             $scope.isValidComment = function () {
                 if (!$scope.currentUser) return false;
 
-                if ($scope.newComment.length==0) return false;
+                if ($scope.newComment.length == 0) return false;
                 else return true;
             }
 

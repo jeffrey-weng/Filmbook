@@ -42,9 +42,12 @@
                      reviewed
 
                      <span class="activityLink"
-                        ng-click="showMovieDetails($event,review.movie)">{{review.movie.title}}</span>
-                     on
-                     {{reviewDate(review.created_at)}}. </p>
+                        ng-click="showMovieDetails($event,review.movie)">{{review.movie.title}}.</span>
+
+                     <small ng-model="review.elapsed"><abbr style="border-bottom: none !important;
+                           cursor: inherit !important;
+                           text-decoration: none !important;"
+                           title={{timeStamp(review)}}>{{review.elapsed}}</abbr></small> </p>
 
                   <div class="star-rating">
 
@@ -269,8 +272,9 @@
          <div class="modal-footer">
             <button type="button" class="btn btn-danger" ng-if="isFollowing(id)&& username!=currentUser.username"
                ng-click="follow(id)">Unfollow {{username}}</button>
-            <button type="button" class="btn btn-primary" ng-if="currentUser && !isFollowing(id) && username!=currentUser.username"
-               ng-click="follow(id)">Follow {{username}}</button>
+            <button type="button" class="btn btn-primary"
+               ng-if="currentUser && !isFollowing(id) && username!=currentUser.username" ng-click="follow(id)">Follow
+               {{username}}</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
          </div>
       </div>
@@ -310,7 +314,8 @@
          </div>
          <div class="modal-footer">
             <button type="button" class="btn btn-primary recent" ng-click="addToWatchList()"
-               ng-if="currentUser && !partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)" data-dismiss="modal">Add to
+               ng-if="currentUser && !partOfRecent && !inWatchlist(movieTitle) && !inWatched(movieTitle)"
+               data-dismiss="modal">Add to
                WatchList</button>
             <button type="button" class="btn btn-danger" ng-click="removeFromWatchList()"
                ng-if="inWatchlist(movieTitle)" data-dismiss="modal">Remove From Watchlist</button>

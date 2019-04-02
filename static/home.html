@@ -11,7 +11,8 @@
    <br><br>
 
    <!--Styling messes up when you use container-fluid instead of container-->
-   <h4 ng-if="!currentUser" style="margin-left:4%;"><a ui-sref="login">Log in</a> to access your home page, write reviews and discussions, follow others, post comments, and more!</h4>
+   <h4 ng-if="!currentUser" style="margin-left:4%;"><a ui-sref="login">Log in</a> to access your home page, write
+      reviews and discussions, follow others, post comments, and more!</h4>
    <div class="container" ng-if="currentUser">
       <div class="row">
          <h3>Update Your Watchlist:</h3>
@@ -60,71 +61,77 @@
 
       <div class="row">
          <div class="col-5">
-               <h3>Your Newsfeed</h3>
-         <ul class="list-group" style=" max-height:500px; width:110%; overflow-y: auto;">
-            <li class="list-group-item" ng-repeat="activity in activities" ng-if="activity.object.created_at">
-               <p ng-if="activity.object"><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal"
-                     data-target="#personDetailsModal"
-                     ng-click="activityModal(activity,'actor')">{{activity.actor.username}}</span>
-                  {{activityVerb(activity.verb)}}
+            <h3>Your Newsfeed</h3>
+            <ul class="list-group" style=" max-height:500px; width:110%; overflow-y: auto;">
+               <li class="list-group-item" ng-repeat="activity in activities" ng-if="activity.object.created_at">
+                  <p ng-if="activity.object"><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal"
+                        data-target="#personDetailsModal"
+                        ng-click="activityModal(activity,'actor')">{{activity.actor.username}}</span>
+                     {{activityVerb(activity.verb)}}
 
-                  <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target=""
-                     ng-click="activityModal(activity)"
-                     ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}.</span>
+                     <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target=""
+                        ng-click="activityModal(activity)"
+                        ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}.</span>
 
 
-                  <span id={{activity.id}} class="activityLink" ng-click="viewDiscussionPost(activity)"
-                     ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}.</span>
+                     <span id={{activity.id}} class="activityLink" ng-click="viewDiscussionPost(activity)"
+                        ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}.</span>
 
-                  <small>{{dateRecorded(activity)}}</small>
+                     <small ng-model="activity.elapsed"><abbr style="border-bottom: none !important;
+                     cursor: inherit !important;
+                     text-decoration: none !important;"
+                           title={{timeStamp(activity)}}>{{activity.elapsed}}</abbr></small>
 
-                  <span class="activityLink horizontal" ng-click="viewReview(activity)"
-                     ng-if="activity.verb=='Review'">Read review</span>
+                     <span class="activityLink horizontal" ng-click="viewReview(activity)"
+                        ng-if="activity.verb=='Review'">Read review</span>
 
-               </p>
+                  </p>
 
-            </li>
+               </li>
 
-         </ul>
-         <div ng-if="activities.length==0">
+            </ul>
+            <div ng-if="activities.length==0">
                <p class="msg">Your newsfeed is currently empty! Follow other users to fill up your feed!</p>
             </div>
-      
+
          </div>
 
          <div class="col-2"></div>
 
 
          <div class="col-5">
-      
-                     <h3>Your Recent Activity</h3>
-               
-                     <ul class="list-group" style=" max-height:500px; width:110%; overflow-y: auto;">
-                        <li class="list-group-item" ng-repeat="activity in userActivities" ng-if="activity.object.created_at">
-                           <p ng-if="activity.object">You {{activityVerb(activity.verb)}}
-                              
-                                <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target=""
-                                 ng-click="activityModal(activity)"
-                                 ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}.</span>
-            
-            
-                              <span id={{activity.id}} class="activityLink" ng-click="viewDiscussionPost(activity)"
-                                 ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}.</span>
-            
-                              <small>{{dateRecorded(activity)}}</small>
-            
-                              <span class="activityLink horizontal" ng-click="viewReview(activity)"
-                                 ng-if="activity.verb=='Review'">Read review</span>
-            
-                           </p>
-            
-                        </li>
-            
-                     </ul>
-                
-                  <div ng-if="userActivities.length==0">
-                     <p class="msg">No recent site activity.</p>
-                  </div>
+
+            <h3>Your Recent Activity</h3>
+
+            <ul class="list-group" style=" max-height:500px; width:110%; overflow-y: auto;">
+               <li class="list-group-item" ng-repeat="activity in userActivities" ng-if="activity.object.created_at">
+                  <p ng-if="activity.object">You {{activityVerb(activity.verb)}}
+
+                     <span id={{activity.id}} class="activityLink" data-toggle="modal" data-target=""
+                        ng-click="activityModal(activity)"
+                        ng-if="!activity.object.discussion && !activity.object.title">{{activityObject(activity)}}.</span>
+
+
+                     <span id={{activity.id}} class="activityLink" ng-click="viewDiscussionPost(activity)"
+                        ng-if="activity.object.discussion || activity.object.title">{{activityObject(activity)}}.</span>
+
+                     <small ng-model="activity.elapsed"><abbr style="border-bottom: none !important;
+                                    cursor: inherit !important;
+                                    text-decoration: none !important;"
+                           title={{timeStamp(activity)}}>{{activity.elapsed}}</abbr></small>
+
+                     <span class="activityLink horizontal" ng-click="viewReview(activity)"
+                        ng-if="activity.verb=='Review'">Read review</span>
+
+                  </p>
+
+               </li>
+
+            </ul>
+
+            <div ng-if="userActivities.length==0">
+               <p class="msg">No recent site activity.</p>
+            </div>
 
          </div>
       </div>

@@ -276,24 +276,24 @@
     opacity: 1;
 }
 
-.inline{
+.inline {
     display: inline;
     vertical-align: top;
 }
 
-.upvote3{
-    position:absolute;
-    top:0;
-    right:0;
+.upvote3 {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
-#repeat:hover{
- border-color:black;
-border-style:solid;
+#repeat:hover {
+    border-color: black;
+    border-style: solid;
 }
 
-.horizontal{
-    margin-left:5px;
+.horizontal {
+    margin-left: 5px;
 }
 
 

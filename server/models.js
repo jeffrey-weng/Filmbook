@@ -34,7 +34,7 @@ var userSchema = new Schema({
 
     avatar: {
         type: String,
-        default: 'default_avatar.jpg'
+        default: 'https://minervastrategies.com/wp-content/uploads/2016/03/default-avatar.jpg'
     }, //image url
 
     reviews: [{

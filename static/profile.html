@@ -72,7 +72,8 @@
 
             <form id="uploadbanner">
                <input id="fileupload" name="avatar" type="file" accept="image/*" />
-               <button type="button" class="btn btn-primary btn-sm" ng-click="imgurMagic()">Upload</button>
+               <button type="button" class="btn btn-primary btn-sm" id="uploadButton" ng-click="imgurMagic()"
+                  ng-disabled="noFileSelected()">Upload</button>
             </form>
 
             <br>

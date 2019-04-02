@@ -455,17 +455,47 @@ angular.module('filmApp')
                 var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
 
                 if (timeDiff < 86400000 && timeDiff >= 3600000) {
-                    var diffHours = Math.ceil(timeDiff / 3600000);
-                    return diffHours + " hours ago";
+                    var diffHours = Math.floor(timeDiff / 3600000);
+                    if (diffHours == 1) activity["elapsed"] = "1 hour ago";
+                    else activity["elapsed"] = diffHours + " hours ago";
                 } else if (timeDiff < 3600000 && timeDiff >= 60000) {
-                    var diffMinutes = Math.ceil(timeDiff / 60000);
-                    return diffMinutes + " minutes ago";
+                    var diffMinutes = Math.floor(timeDiff / 60000);
+                    if (diffMinutes == 1) activity["elapsed"] = "1 minute ago";
+                    else activity["elapsed"] = diffMinutes + " minutes ago";
                 } else if (timeDiff < 60000) {
-                    return "Just now";
+                    activity["elapsed"] = "Just now";
                 } else {
-                    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-                    return diffDays + " days ago";
+                    var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+                    if (diffDays == 1) activity["elapsed"] = "1 day ago";
+                    else activity["elapsed"] = diffDays + " days ago";
                 }
+            }
+
+            $scope.timeStamp = function (activity) {
+
+                var activityDate = new Date(activity.object.created_at);
+
+                var day = activityDate.getDay();
+
+                if (day == 0) day = "Sunday"
+                else if (day == 1) day = "Monday"
+                else if (day == 2) day = "Tuesday"
+                else if (day == 3) day = "Wednesday"
+                else if (day == 4) day = "Thursday"
+                else if (day == 5) day = "Friday"
+                else if (day == 6) day = "Saturday"
+
+                var month = monthNames[activityDate.getMonth()];
+
+                var date = activityDate.getDate();
+
+                var year = activityDate.getFullYear();
+
+                var time = activityDate.toLocaleTimeString();
+
+                return day + ", " + month + " " + date + ", " + year + " at " + time;
+
+
             }
 
         });

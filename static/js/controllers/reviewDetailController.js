@@ -1,12 +1,14 @@
 angular.module('filmApp')
 
     .controller('ReviewDetailController',
-        function ($scope, $rootScope, $http, $state, $stateParams) {
+        function ($scope, $rootScope, $http, $state, $stateParams, $interval) {
 
 
             $http.get(window.location.origin + "/api/reviews/" + $stateParams.id)
                 .then(function (response) {
                     $scope.review = response.data;
+
+                    $scope.dateRecorded($scope.review);
 
                     $http.get(window.location.origin + "/api/users/" + $scope.review.user)
                         .then(function (response2) {
@@ -16,6 +18,11 @@ angular.module('filmApp')
                             })
 
                         })
+
+                    $interval(function () {
+                        $scope.dateRecorded($scope.review)
+
+                    }, 10000);
                     console.log($scope.review);
 
                 })
@@ -79,31 +86,61 @@ angular.module('filmApp')
                     });
             }
 
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
 
-            $scope.reviewDate = function (date) {
-                var d = new Date(date);
 
-                var month = d.getMonth() + 1;
-                var day = d.getDate();
-                var year = d.getFullYear();
-                var hour = d.getHours();
-                var dayOrNight = "";
 
-                if (hour >= 0 && hour <= 11) {
-                    dayOrNight = "a.m";
-                    if (hour == 0)
-                        hour = 12;
+            $scope.dateRecorded = function (review) {
+                var date = new Date();
+                var activityDate = new Date(review.created_at);
+
+                var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
+
+                if (timeDiff < 86400000 && timeDiff >= 3600000) {
+                    var diffHours = Math.floor(timeDiff / 3600000);
+                    if (diffHours == 1) review["elapsed"] = "1 hour ago";
+                    else review["elapsed"] = diffHours + " hours ago";
+                } else if (timeDiff < 3600000 && timeDiff >= 60000) {
+                    var diffMinutes = Math.floor(timeDiff / 60000);
+                    if (diffMinutes == 1) review["elapsed"] = "1 minute ago";
+                    else review["elapsed"] = diffMinutes + " minutes ago";
+                } else if (timeDiff < 60000) {
+                    review["elapsed"] = "Just now";
                 } else {
-                    dayOrNight = "p.m";
-                    if (hour > 12)
-                        hour %= 12;
+                    var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+                    if (diffDays == 1) review["elapsed"] = "1 day ago";
+                    else review["elapsed"] = diffDays + " days ago";
                 }
-                var minutes = d.getMinutes();
-                if (minutes <= 9) minutes = "0" + minutes;
-
-                return month + "/" + day + "/" + year + " " + hour + ":" + minutes + " " + dayOrNight;
             }
 
+            $scope.timeStamp = function (review) {
+
+                var activityDate = new Date(review.created_at);
+
+                var day = activityDate.getDay();
+
+                if (day == 0) day = "Sunday"
+                else if (day == 1) day = "Monday"
+                else if (day == 2) day = "Tuesday"
+                else if (day == 3) day = "Wednesday"
+                else if (day == 4) day = "Thursday"
+                else if (day == 5) day = "Friday"
+                else if (day == 6) day = "Saturday"
+
+                var month = monthNames[activityDate.getMonth()];
+
+                var date = activityDate.getDate();
+
+                var year = activityDate.getFullYear();
+
+                var time = activityDate.toLocaleTimeString();
+
+                return day + ", " + month + " " + date + ", " + year + " at " + time;
+
+
+            }
 
 
 

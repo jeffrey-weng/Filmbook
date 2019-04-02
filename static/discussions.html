@@ -20,7 +20,8 @@
                 </div>
             </div>
             <button type="button" class="btn btn-success btn-sm space" data-toggle="modal"
-                data-target="#discussionModal" ng-click="makeDiscussion()" ng-if="currentUser">Start a new discussion</button>
+                data-target="#discussionModal" ng-click="makeDiscussion()" ng-if="currentUser">Start a new
+                discussion</button>
         </div>
     </div>
     <div class="col-12">
@@ -40,7 +41,10 @@
                             <span class="activityLink"
                                 ng-click="showProfileDetails($event,discussion.user);">{{discussion.user.username}}</span>
 
-                            <small>{{discussionDate(discussion.created_at)}}</small> </p>
+                            <small ng-model="discussion.elapsed"><abbr style="border-bottom: none !important;
+                                    cursor: inherit !important;
+                                    text-decoration: none !important;"
+                                    title={{timeStamp(discussion)}}>{{discussion.elapsed}}</abbr></small> </p>
 
 
                         <p>{{postPreview(discussion)}}</p>
@@ -193,7 +197,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" ng-if="isFollowing(id)&& username!=currentUser.username"
                     ng-click="follow(id)">Unfollow {{username}}</button>
-                <button type="button" class="btn btn-primary" ng-if="currentUser && !isFollowing(id) && username!=currentUser.username"
+                <button type="button" class="btn btn-primary"
+                    ng-if="currentUser && !isFollowing(id) && username!=currentUser.username"
                     ng-click="follow(id)">Follow {{username}}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>

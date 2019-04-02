@@ -1,5 +1,5 @@
 angular.module('filmApp').controller('MoviesController',
-	function ($scope, $rootScope, $http, $state) {
+	function ($scope, $rootScope, $http, $state, $interval) {
 
 
 		//populate currentUser's following
@@ -412,6 +412,9 @@ angular.module('filmApp').controller('MoviesController',
 					$scope.activities = response.data.activities;
 
 					$scope.activities.forEach(function (value) {
+
+						$scope.dateRecorded(value);
+
 						if (value.verb == "Comment") {
 
 
@@ -423,7 +426,20 @@ angular.module('filmApp').controller('MoviesController',
 								})
 						}
 					})
+
+
+					$interval(function () {
+						$scope.activities.forEach(function (value) {
+							$scope.dateRecorded(value)
+
+						})
+
+
+					}, 10000);
+
+
 					console.log($scope.activities);
+
 				});
 		}
 
@@ -434,6 +450,10 @@ angular.module('filmApp').controller('MoviesController',
 					$scope.userActivities = response.data.activities;
 
 					$scope.userActivities.forEach(function (value) {
+
+						$scope.dateRecorded(value);
+
+
 						if (value.verb == "Comment") {
 
 							if (value.object.discussion) {
@@ -448,60 +468,21 @@ angular.module('filmApp').controller('MoviesController',
 						}
 					})
 
+					$interval(function () {
+						$scope.userActivities.forEach(function (value) {
+							$scope.dateRecorded(value)
+
+						})
+
+
+					}, 10000);
+
+
 					console.log($scope.userActivities)
 				});
 		}
 
 		//Refresh feeds every one minute (to show updates on how long ago an activity occured)
-		if ($scope.currentUser) {
-			setInterval(function () {
-				$http.get(window.location.origin + '/api/home/' + $scope.currentUser.id)
-					.then(function (response) {
-						$scope.activities = response.data.activities;
-
-
-						$scope.activities.forEach(function (value) {
-							if (value.verb == "Comment") {
-
-								if (value.object.discussion) {
-									$http.get(window.location.origin + '/api/discussions/' + value.object.discussion)
-										.then(function (response2) {
-
-											value.object.discussion = response2.data;
-
-										})
-								}
-							}
-						})
-					});
-
-
-				$http.get(window.location.origin + '/api/profile/' + $scope.currentUser.id)
-					.then(function (response) {
-						$scope.userActivities = response.data.activities;
-
-						$scope.userActivities.forEach(function (value) {
-							if (value.verb == "Comment") {
-
-								if (value.object.discussion) {
-									$http.get(window.location.origin + '/api/discussions/' + value.object.discussion)
-										.then(function (response2) {
-
-											value.object.discussion = response2.data;
-
-										})
-								}
-
-							}
-						})
-					});
-
-			}, 60000);
-		}
-
-
-
-
 
 		$scope.activityObject = function (activity) {
 			if (activity.verb == "Follow") {
@@ -517,13 +498,13 @@ angular.module('filmApp').controller('MoviesController',
 				return activity.object.movie;
 			} else if (activity.verb == "Comment") {
 
-				if(activity.object.discussion.title.length>64)
-				return activity.object.discussion.title.substring(0,61)+"..";
+				if (activity.object.discussion.title && activity.object.discussion.title.length > 64)
+					return activity.object.discussion.title.substring(0, 61) + "..";
 				else return activity.object.discussion.title;
-				
+
 			} else if (activity.verb == "Post") {
-				if(activity.object.title.length>64)
-				return activity.object.title.substring(0,61)+"..";
+				if (activity.object.title && activity.object.title.length > 64)
+					return activity.object.title.substring(0, 61) + "..";
 
 				else return activity.object.title;
 			}
@@ -1011,16 +992,23 @@ angular.module('filmApp').controller('MoviesController',
 			alert("Avatar updated.");
 
 			$http.put(window.location.origin + "/api/users/" + $scope.currentUser.id, {
-			
-					avatar: $scope.imgurAvatarURL
-				
+
+				avatar: $scope.imgurAvatarURL
+
 			})
+		}
+
+		$scope.noFileSelected = function () {
+			if (document.getElementById("fileupload").files.length == 0)
+				return true;
+			else return false;
 		}
 
 		$("document").ready(function () {
 
 			$('input[type=file]').on("change", function () {
 
+				document.getElementById("uploadButton").disabled = true;
 				var $files = $(this).get(0).files;
 
 				if ($files.length) {
@@ -1062,6 +1050,7 @@ angular.module('filmApp').controller('MoviesController',
 						console.log(JSON.parse(response).data.link);
 						$scope.imgurAvatarURL = JSON.parse(response).data.link;
 						console.log($scope.imgurAvatarURL);
+						document.getElementById("uploadButton").disabled = false;
 
 					});
 

@@ -17,7 +17,7 @@ angular.module('filmApp')
     })
 
     .controller('ReviewsController',
-        function ($scope, $rootScope, $http, $state) {
+        function ($scope, $rootScope, $http, $state, $interval) {
 
 
             $('#reviewModal').on('hidden.bs.modal', function (e) {
@@ -36,6 +36,8 @@ angular.module('filmApp')
                     .then(function (response) {
                         $scope.reviews = response.data;
                         $scope.reviews.forEach(function (review) {
+
+                            $scope.dateRecorded(review);
 
                             $http.get(window.location.origin + "/api/users/" + review.user)
                                 .then(function (response2) {
@@ -59,6 +61,15 @@ angular.module('filmApp')
                                 })
 
                         })
+
+                        $interval(function () {
+                            $scope.reviews.forEach(function (value) {
+                                $scope.dateRecorded(value)
+
+                            })
+
+
+                        }, 10000);
                         console.log($scope.reviews);
                     })
 
@@ -435,6 +446,56 @@ angular.module('filmApp')
                     return review.description.substring(0, 150) + "...";
 
                 else return review.description;
+            }
+
+            $scope.dateRecorded = function (review) {
+                var date = new Date();
+                var activityDate = new Date(review.created_at);
+
+                var timeDiff = Math.abs(date.getTime() - activityDate.getTime());
+
+                if (timeDiff < 86400000 && timeDiff >= 3600000) {
+                    var diffHours = Math.floor(timeDiff / 3600000);
+                    if (diffHours == 1) review["elapsed"] = "1 hour ago";
+                    else review["elapsed"] = diffHours + " hours ago";
+                } else if (timeDiff < 3600000 && timeDiff >= 60000) {
+                    var diffMinutes = Math.floor(timeDiff / 60000);
+                    if (diffMinutes == 1) review["elapsed"] = "1 minute ago";
+                    else review["elapsed"] = diffMinutes + " minutes ago";
+                } else if (timeDiff < 60000) {
+                    review["elapsed"] = "Just now";
+                } else {
+                    var diffDays = Math.floor(timeDiff / (1000 * 3600 * 24));
+                    if (diffDays == 1) review["elapsed"] = "1 day ago";
+                    else review["elapsed"] = diffDays + " days ago";
+                }
+            }
+
+            $scope.timeStamp = function (review) {
+
+                var activityDate = new Date(review.created_at);
+
+                var day = activityDate.getDay();
+
+                if (day == 0) day = "Sunday"
+                else if (day == 1) day = "Monday"
+                else if (day == 2) day = "Tuesday"
+                else if (day == 3) day = "Wednesday"
+                else if (day == 4) day = "Thursday"
+                else if (day == 5) day = "Friday"
+                else if (day == 6) day = "Saturday"
+
+                var month = monthNames[activityDate.getMonth()];
+
+                var date = activityDate.getDate();
+
+                var year = activityDate.getFullYear();
+
+                var time = activityDate.toLocaleTimeString();
+
+                return day + ", " + month + " " + date + ", " + year + " at " + time;
+
+
             }
 
             const genres = [{
