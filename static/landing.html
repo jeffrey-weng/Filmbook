@@ -1,19 +1,87 @@
 <!DOCTYPE html>
+<head>
+    <style>
+        /* Header Parallax element*/
+        .paral {
+            min-height: 600px;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: 50% 50%;
+        }
+        /* Parallax paragraph */
+        .paral p {
+            font-size: 24px;
+            color:#f5f5f5;
+            text-align: center;
+            line-height: 60px;
+        }
+        /* Parallax Section header */
+        .paral h1 {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 60px;
+            text-align: center;
+            padding-top: 60px;
+            line-height: 100px;
+        }
+        /* Images for parallax section */
+        .paralsec {
+            background-image: url("images/movie-theater.jpg");
+        }
+        .paralsec1 {
+            background-image: url("images/camera.jpg");}
+        .paralsec2 {
+            background-image: url("images/matrix.jpg");
+        }
+
+        .jumbotron{margin-bottom: 0;}
+
+        .wn-footer {
+            padding: 1rem 0;
+            text-align: center;
+            color: white;
+            background-color: rgba(6, 16, 41, 0.81);
+            border-top: .05rem solid #e5e5e5;
+        }
+
+        .wn-footer a {
+            color: yellow;
+        }
+    </style>
+</head>
 
 <body>
-    <br><br>
-    <h1 style="text-align: center; font-weight: bold;" ng-if="!isAuthorized('editor')">Landing Page - About Multiplex:
-    </h1>
-    <br>
-    <p style="margin-left:30%;margin-right:30%;font-size:25px; text-align: center" ng-if="!isAuthorized('editor')">
-        Multiplex was made to serve as an online social hub for movie enthusiasts. As a user, you can browse, review,
-        and discuss movies, as well as connect with other
-        like-minded movie lovers by following them and receiving updates on their activities on the site!
-    </p> <br>
-    <h3 style="text-align: center" ng-if="isAuthorized('admin')"> Logged in as admin: {{currentUser.username}}</h3>
-    <h3 style="text-align: center" ng-if="isAuthorized('editor')"> Welcome to Multiplex, {{currentUser.username}}!</h3>
-    <h3 style="text-align: center" ng-if="!currentUser">You are not logged in! Head over to the <a
-            ui-sref="login">login</a> page or <a ui-sref="register">register</a>
-        if you don't already have an account!</h3>
+    <div class="jumbotron paral paralsec">
+        <h1 class="display-3"><b>Welcome to Multiplex</b></h1>
+        <p class="lead">Multiplex was made to serve as an online social hub for movie enthusiasts. As a user, you can browse, review,
+            and discuss movies, as well as connect with other
+            like-minded movie lovers by following them and receiving updates on their activities on the site!</p>
+        <p class="lead" ng-if="!currentUser">
+            <a class="btn btn-primary btn-lg btn-md" ui-sref="register" role="button">Register a new account</a>
+            <a class="btn btn-primary btn-lg btn-md" ui-sref="login" role="button">Login with an existing account</a>
+        </p>
+    </div>
+
+    <div class="jumbotron paral paralsec1">
+        <h1 class="display-3">Explore, Share, Discuss, and Review</h1>
+        <p class="lead">Search for movies you've seen or want to see, start building your watchlist, or review and discuss particular movies with other fans.</p>
+        <p class="lead">
+            <a class="btn btn-primary btn-lg btn-md" ui-sref="movies" role="button">Browse movies here</a>
+        </p>
+    </div>
+
+    <div class="jumbotron paral paralsec2">
+        <h1 class="display-3">An Interconnected Social Platform</h1>
+        <p class="lead">Enjoy an unprecedented social experience that is completely focused on connecting anyone and everyone
+        who enjoys movies, from the casual moviegoer to the dedicated film enthusiast.</p>
+    </div>
+
+    <!-- Add More Parallax Sections Here -->
+
+
+    <footer class="wn-footer">
+        <p>Andres Inguanzo  &  Jeffrey Weng</p>
+    </footer>
+
+
 
 </body>
