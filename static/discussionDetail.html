@@ -33,7 +33,7 @@
         <li class="list-group-item" ng-repeat="comment in discussion.comments | orderBy: created_at">
             <div class="row">
                 <div class="col-2">
-                    <img src={{comment.user.avatar}} alt="No avatar found" class="reviewAvatar">
+                    <img src={{comment.user.avatar}} alt="{{comment.user.username}}'s avatar" class="reviewAvatar">
                 </div>
                 <div class="col-8">
 
@@ -113,7 +113,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6">
-                            <img src={{avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                            <img src={{avatar}} class="card-img-top person2" alt="{{username}}'s avatar">
                         </div>
                         <div class="col-md-6">
                             <strong>Favorite Movies:</strong> {{favMovies}}

@@ -20,7 +20,7 @@
             <div class="card-body" ng-click="showProfileDetails(person)" data-toggle="modal"
                data-target="#personDetailsModal">
                <h5 class="card-title">{{person.username}}</h5>
-               <img class="card-img-top person2 cover" src={{person.avatar}} alt="Profile Picture Not Found">
+               <img class="card-img-top person2 cover" src={{person.avatar}} alt="{{person.username}}'s avatar">
             </div>
             <button id={{person._id}} ng-click="follow(person)"></button>
 
@@ -44,7 +44,7 @@
             <div class="container-fluid">
                <div class="row">
                   <div class="col-md-6">
-                     <img src={{avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                     <img src={{avatar}} class="card-img-top person2" alt="{{username}}'s avatar">
                   </div>
                   <div class="col-md-6">
                      <strong>Favorite Movies:</strong> {{favMovies}}

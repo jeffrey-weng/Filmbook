@@ -1,7 +1,7 @@
 <div class="container" style="margin-top:4%">
     <div class="row">
         <div class="col-4">
-            <img src={{review.user.avatar}} alt="No avatar found" class="reviewAvatar">
+            <img src={{review.user.avatar}} alt="{{review.user.username}}'s avatar" class="reviewAvatar">
         </div>
         <div class="col-6">
             <p style="margin-left:-3%;">
@@ -67,7 +67,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6">
-                            <img src={{avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                            <img src={{avatar}} class="card-img-top person2" alt="{{username}}'s avatar">
                         </div>
                         <div class="col-md-6">
                             <strong>Favorite Movies:</strong> {{favMovies}}
@@ -110,7 +110,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
-                                alt="Movie Poster Not Found">
+                                alt="Film poster for {{movieTitle}}">
                         </div>
                         <div class="col-md-6">
                             <strong>Overview:</strong> {{movieDescription}}

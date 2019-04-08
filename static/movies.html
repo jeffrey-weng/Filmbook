@@ -43,23 +43,23 @@
          <div class="card space" ng-repeat="movie in theater track by $index" ng-if="displayType==1" data-toggle="modal"
             data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
             <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
-               alt="Movie Poster Not Found">
+            alt="Film poster for {{movie.title}}">
          </div>
          <!-- can apply ng-repeat to card -->
          <div class="card space" ng-repeat="movie in rated track by $index" ng-if="displayType==2" data-toggle="modal"
             data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
             <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
-               alt="Movie Poster Not Found">
+            alt="Film poster for {{movie.title}}">
          </div>
          <div class="card space" ng-repeat="movie in popular track by $index" ng-if="displayType==3" data-toggle="modal"
             data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
             <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
-               alt="Movie Poster Not Found">
+            alt="Film poster for {{movie.title}}">
          </div>
          <div class="card space" ng-repeat="movie in searchResults track by $index" ng-if="displayType==4"
             data-toggle="modal" data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
             <img class="card-img-top" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
-               alt="Movie Poster Not Found">
+            alt="Film poster for {{movie.title}}">
          </div>
 
       </div>
@@ -96,7 +96,7 @@
                   <div class="row">
                      <div class="col-md-6">
                         <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
-                           alt="Movie Poster Not Found">
+                        alt="Film poster for {{movieTitle}}">
                      </div>
                      <div class="col-md-6">
                         <strong>Overview:</strong> {{movieDescription}}

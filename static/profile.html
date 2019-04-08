@@ -21,7 +21,7 @@
             </div>
             <div class="row">
                <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
-                  alt="Movie Poster Not Found" ng-repeat="movie in currentUser.watchlist" data-toggle="modal"
+                  alt="Film poster for {{movie.title}}" ng-repeat="movie in currentUser.watchlist" data-toggle="modal"
                   data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
 
             </div>
@@ -38,7 +38,7 @@
             </div>
             <div class="row">
                <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
-                  alt="Movie Poster Not Found" ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal"
+                  alt="Film poster for {{movie.title}}" ng-repeat="movie in currentUser.favoriteMovies" data-toggle="modal"
                   data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
             </div>
             <div class="row" ng-if="currentUser.favoriteMovies.length==0">
@@ -52,7 +52,7 @@
             </div>
             <div class="row">
                <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
-                  alt="Movie Poster Not Found" ng-repeat="movie in currentUser.watched" data-toggle="modal"
+                  alt="Film poster for {{movie.title}}" ng-repeat="movie in currentUser.watched" data-toggle="modal"
                   data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
             </div>
             <div class="row" ng-if="currentUser.watched.length==0">
@@ -67,7 +67,7 @@
 
             <h5 class="avatar-heading">Change your Avatar:</h5>
 
-            <img class="avatar avatar-heading" src={{currentUser.avatar}} alt="No avatar found" data-toggle="modal"
+            <img class="avatar avatar-heading" src={{currentUser.avatar}} alt="Your personal avatar" data-toggle="modal"
                data-target="#avatarModal">
 
             <form id="uploadbanner">
@@ -128,7 +128,7 @@
             <div class="container-fluid">
                <div class="row">
                   <div class="col-md-6">
-                     <img src={{'images/'+avatar}} class="card-img-top person2" alt="Profile Picture Not Found">
+                     <img src={{avatar}} class="card-img-top person2" alt="{{username}}'s avatar">
                   </div>
                   <div class="col-md-6">
                      <strong>Favorite Movies:</strong> {{favMovies}}
@@ -171,7 +171,7 @@
                <div class="row">
                   <div class="col-md-6">
                      <img src={{'https://image.tmdb.org/t/p/original/'+moviePosterPath}} class="img-responsive"
-                        alt="Movie Poster Not Found">
+                        alt="Film poster for {{movieTitle}}">
                   </div>
                   <div class="col-md-6">
                      <strong>Overview:</strong> {{movieDescription}}
