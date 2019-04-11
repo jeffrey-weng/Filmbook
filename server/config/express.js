@@ -17,6 +17,8 @@ module.exports.init = function() {
 
     var app = express();
 
+    app.use(morgan('dev'));
+
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 

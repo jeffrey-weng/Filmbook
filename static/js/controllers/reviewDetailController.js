@@ -117,6 +117,7 @@ angular.module('filmApp')
 
             $scope.timeStamp = function (review) {
 
+                if(!review) return;
                 var activityDate = new Date(review.created_at);
 
                 var day = activityDate.getDay();
