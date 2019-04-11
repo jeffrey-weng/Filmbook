@@ -3,10 +3,14 @@ angular.module('filmApp')
     .controller('AppController',
         function ($scope, $state, USER_ROLES, AuthService, $http, $rootScope) {
 
-            $scope.currentUser = null;
+            $scope.currentUser = AuthService.checkToken();
+
+            $rootScope.$on('TOKEN_USER_LOADED', function(event, data){
+                $scope.setCurrentUser(data.user);
+            });
+
             $scope.userRoles = USER_ROLES;
             $scope.isAuthorized = AuthService.isAuthorized;
-            $scope.authToken = null;
 
             //If any of these messages are set, a dismissible alert will show up under navbar
             $scope.successMessage = null;
@@ -25,6 +29,7 @@ angular.module('filmApp')
             $scope.setCurrentUser = function (user) {
                 $scope.currentUser = user;
             };
+
 
             const genres = [{
                     "id": 28,

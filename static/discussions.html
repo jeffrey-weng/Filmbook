@@ -5,7 +5,7 @@
 
             <input type="text" class="form-control" placeholder="Filter discussions by keyword..."
                 ng-model="discussionSearchText" ng-change="searchDiscussions(discussionSearchText)">
-            <p class="space"> or </p>
+            <p class="space" style="color:white;"> or </p>
             <div class="dropdown" style="margin-right:50px;">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,7 +30,8 @@
                 ng-repeat="discussion in discussions | filter:discussionSearchText | orderBy:orderByCriteria"
                 ng-click="discussionPostDetails($event,discussion)">
                 <div class="row">
-                    <div class="col-4">
+
+                    <div class="col-2">
                         <img src={{discussion.user.avatar}} alt="{{discussion.user.username}}'s avatar" class="reviewAvatar">
                     </div>
                     <div class="col-6">
@@ -50,7 +51,7 @@
                         <p>{{postPreview(discussion)}}</p>
 
                     </div>
-                    <div class="col-2">
+                    <div class="col-2 ml-auto" style="margin-right: 10px;">
                         <button type="button" class="btn btn-info"
                             ng-if="discussion.user.username==currentUser.username"
                             ng-click="editDiscussion($event,discussion)">Edit</button>

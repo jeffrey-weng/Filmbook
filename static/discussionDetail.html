@@ -1,33 +1,37 @@
 <div class="container" style="margin-top:3%">
-    <div class="row">
-        <div class="col-11">
+    <ul class="list-group">
+    <li class="list-group-item">
+    <div class="d-flex">
+        <div class="p-2">
             <h4>{{discussion.title}}</h4>
         </div>
-
-        <div class="col-1">
+        <div class="ml-auto p-2">
             <div ng-if="currentUser">
                 <i class="fas fa-arrow-circle-up upvote2" id={{discussion._id}}
-                    ng-click="upVote(discussion); $event.stopPropagation();"></i><br>
+                   ng-click="upVote(discussion); $event.stopPropagation();"></i><br>
                 <span style="margin-left:3.5px;">{{discussion.upVotes}}</span> <br>
                 <i class="fas fa-arrow-circle-down upvote2" id={{discussion._id+'x'}}
-                    ng-click="downVote(discussion);  $event.stopPropagation();"></i>
+                   ng-click="downVote(discussion);  $event.stopPropagation();"></i>
             </div>
         </div>
     </div>
-    <p style="margin-left:5%">posted by <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal"
-            ng-click="showProfileDetails(discussion.user)">{{discussion.user.username}}</span>
+        <div>
+            <p style="margin-left:5%;">posted by
+                <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal"
+                      ng-click="showProfileDetails(discussion.user)">
+                {{discussion.user.username}}</span>
 
-        <small ng-model="discussion.elapsed"><abbr style="border-bottom: none !important;
-                cursor: inherit !important;
-                text-decoration: none !important;"
-                title={{timeStamp(discussion)}}>{{discussion.elapsed}}</abbr></small>
-
-    </p>
-    <br><br>
-
-    <p>{{discussion.description}}</p>
+                <small ng-model="discussion.elapsed"><abbr style="border-bottom: none !important;
+                cursor: inherit !important; text-decoration: none !important;" title={{timeStamp(discussion)}}>
+                    {{discussion.elapsed}}</abbr></small>
+            </p>
+        </div>
     <br>
-    <p style="font-size:20px; margin-bottom:-2px"><strong>Comments</strong></p>
+    <p>{{discussion.description}}</p>
+    </li>
+    </ul>
+    <br>
+    <p style="font-size:20px; margin-bottom:-2px; color:white;"><strong>Comments</strong></p>
     <ul class="list-group">
 
         <li class="list-group-item" ng-repeat="comment in discussion.comments | orderBy: created_at">
@@ -83,7 +87,7 @@
 
     <iframe name="hiddenFrame" class="hide"></iframe>
 
-    <h3 ng-if="!currentUser"><a ui-sref="login">Log in</a> to post your own comment!</h3>
+    <h3 ng-if="!currentUser" style="color: white;"><a ui-sref="login">Log in</a> to post your own comment!</h3>
 
     <form id="commentForm" name="commentForm" method="POST" action="/api/comments/" target="hiddenFrame"
         ng-submit="commentPosted()" ng-if="currentUser">

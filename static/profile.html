@@ -1,23 +1,24 @@
 <body>
 
-   <h3 style="margin-top:3%;margin-left:3%;" ng-if="!currentUser"><a ui-sref="login">Login</a> to see your profile page!
+   <h3 style="margin-top:3%;margin-left:3%; color: white;" ng-if="!currentUser"><a ui-sref="login">Login</a> to see your profile page!
    </h3>
 
    <div class="container-fluid" style="overflow-x: hidden;" ng-cloak ng-if="currentUser">
 
       <div class="row profileMargin">
          <div class="col-lg-10">
+            <br>
             <div class="row">
-               <h3>Your Most Watched Genres:</h3>
+               <h3 style="color: white;">Your Most Watched Genres:</h3>
             </div>
             <div class="row">
-               <p class="msg">{{calculateFavGenres()}} </p>
+               <p class="msg" style="color:white;">{{calculateFavGenres()}} </p>
             </div>
             <div class="row">
                <br>
             </div>
             <div class="row">
-               <h3>Your Watchlist:</h3>
+               <h3 style="color: white;">Your Watchlist:</h3>
             </div>
             <div class="row">
                <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
@@ -26,15 +27,16 @@
 
             </div>
             <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
-               <p>Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies
+               <p style="color: white;">Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new movies
                   you
                   plan to watch!</p>
             </div>
             <div class="row">
                <br>
             </div>
+            <br>
             <div class="row">
-               <h3>Favorite Movies:</h3>
+               <h3 style="color: white;">Favorite Movies:</h3>
             </div>
             <div class="row">
                <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
@@ -42,13 +44,14 @@
                   data-target="#movieDetailsModal" ng-click="showMovieDetails(movie)">
             </div>
             <div class="row" ng-if="currentUser.favoriteMovies.length==0">
-               <p>None</p>
+               <p style="color: white;">None</p>
             </div>
             <div class="row">
                <br>
             </div>
+            <br>
             <div class="row">
-               <h3>Recently Seen:</h3>
+               <h3 style="color: white;">Recently Seen:</h3>
             </div>
             <div class="row">
                <img class="movieProfile" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
@@ -65,7 +68,7 @@
          </div>
          <div class="col-lg-2">
 
-            <h5 class="avatar-heading">Change your Avatar:</h5>
+            <h5 class="avatar-heading" style="color: white;">Change your Avatar:</h5>
 
             <img class="avatar avatar-heading" src={{currentUser.avatar}} alt="Your personal avatar" data-toggle="modal"
                data-target="#avatarModal">
@@ -80,8 +83,8 @@
             <button type="button" class="btn btn-light btn-sm editInfo" ng-click="resetEmail()" data-toggle="modal"
                data-target="#modalAccountForm">View or Edit Your Account Information</button>
             <br><br>
-            <h5>Following:</h5>
-            <p ng-if="following.length==0">You're not following anyone!</p>
+            <h5 style="color: white;">Following:</h5>
+            <p ng-if="following.length==0" style="color: white;">You're not following anyone!</p>
             <ul class="list-group listScroll">
                <li class="list-group-item d-flex justify-content-between align-items-center"
                   ng-repeat="person in following">
@@ -94,8 +97,8 @@
                </li>
             </ul>
             <br>
-            <h5>Followers:</h5>
-            <p ng-if="followers2.length==0">You have no followers!</p>
+            <h5 style="color: white;">Followers:</h5>
+            <p ng-if="followers2.length==0" style="color: white;">You have no followers!</p>
             <ul class="list-group listScroll">
                <li class="list-group-item d-flex justify-content-between align-items-center"
                   ng-repeat="person in followers2">

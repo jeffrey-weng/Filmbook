@@ -1,9 +1,12 @@
 <div class="container" style="margin-top:4%">
+    <ul class="list-group">
+    <li class="list-group-item">
     <div class="row">
-        <div class="col-4">
+
+        <div class="col-sm-auto">
             <img src={{review.user.avatar}} alt="{{review.user.username}}'s avatar" class="reviewAvatar">
         </div>
-        <div class="col-6">
+        <div class="col-8">
             <p style="margin-left:-3%;">
                 <span class="activityLink" data-toggle="modal" data-target="#personDetailsModal"
                     ng-click="showProfileDetails(review.user)">{{review.user.username}}</span>
@@ -18,21 +21,10 @@
                         title={{timeStamp(review)}}>{{review.elapsed}}</abbr></small> </p>
 
             <div class="star-rating">
-
                 <i class="active toy fa fa-star" ng-class="{yellow: review.rating==5}"></i>
-
-
                 <i class="active toy fa fa-star" ng-class="{yellow: review.rating>=4}"></i>
-
-
-
                 <i class="active toy fa fa-star" ng-class="{yellow: review.rating>=3}"></i>
-
-
                 <i class="active toy fa fa-star" ng-class="{yellow: review.rating>=2}"></i>
-
-
-
                 <i class=" active toy fa fa-star" ng-class="{yellow: review.rating>=1}"></i>
 
                 <p style="margin-right:15px;">Rating Given: </p>
@@ -42,7 +34,7 @@
             <p>{{review.description}}</p>
 
         </div>
-        <div class="col-2">
+        <div class="col-1">
             <div class="upvote3" ng-if="currentUser">
                 <i class="fas fa-arrow-circle-up upvote2" id={{review._id}} ng-click="upVote(review)"></i><br>
                 <span style="margin-left:3.5px;">{{review.upVotes}}</span> <br>
@@ -50,6 +42,8 @@
             </div>
         </div>
     </div>
+    </li>
+    </ul>
 
 </div>
 
