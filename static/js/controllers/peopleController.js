@@ -55,18 +55,14 @@ angular.module('filmApp')
                            $rootScope.targets.push(value.target);
                         })
 
-                        console.log($rootScope.targets.length);
-
-
+            
                         $rootScope.searchResults.forEach(function (value) {
                            $(document).ready(function () {
                               // your code
-                              if (x(value)) {
-                                 console.log("Exuected");
+                              if (x(value)) {                 
                                  document.getElementById(value._id).innerHTML = "Unfollow";
                                  document.getElementById(value._id).className = "btn btn-danger";
                               } else {
-                                 console.log("Exuected2");
                                  document.getElementById(value._id).innerHTML = "Follow";
                                  document.getElementById(value._id).className = "btn btn-primary";
                               }
