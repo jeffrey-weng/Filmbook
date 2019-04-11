@@ -6,10 +6,8 @@ angular.module('filmApp')
 
         $scope.login = function (credentials) {
             AuthService.login(credentials).then(function (user) {
-                console.log('Back in AuthService.login.then()');
                 $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 $scope.setCurrentUser(user); //{user: user.toAuthJSON()}
-                console.log('CurrentUser variable set.');
                 $state.go('home');
             }, function () {
                 $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
@@ -24,16 +22,11 @@ angular.module('filmApp')
         $scope.registerWarning = null;
         $scope.register = function() {
 
-            console.log('Entering RegisterController.register() with newUser data:');
-            console.log($scope.newUser);
-
             if($scope.newUser.password != $scope.newUser.password2){
                 $scope.registerWarning = 'Error: Passwords must match!';
             }
             else {
                 AuthService.register($scope.newUser).then(function (msg) {
-
-                    console.log('Returned from AuthService.register(), going to login page...');
 
                     $state.go('login');
                     $scope.successMessage = 'Registration successful! Msg: ' + msg;
@@ -46,7 +39,6 @@ angular.module('filmApp')
 
     .service('Session', function () {
         this.create = function (userToken, username, userRole) {
-            console.log('Creating Session...');
             this.token = userToken;
             this.username = username;
             this.role = userRole;
@@ -63,18 +55,14 @@ angular.module('filmApp')
 
         //Helper methods for getting/setting/deleting the JWT token in browser header
         function loadUserToken() {
-            console.log('Loading user token...');
             var token = $window.localStorage.getItem('auth_jwt');
             if(token) { return useUserToken(token);}
             else{return false;}
         }
 
         function saveUserToken(token, username, role) {
-            console.log('Inside saveUserToken');
             Session.create(token, username, role);
-            console.log('Session created. Saving to localStorage...');
             $window.localStorage.setItem('auth_jwt', token);
-            console.log('Saved to localStorage.');
         }
 
         function useUserToken(token) {
@@ -86,7 +74,6 @@ angular.module('filmApp')
             var currentDate = new Date(today);
             var currentTime = parseInt(currentDate.getTime() / 1000);
             var jsonJWT = JSON.parse($window.atob(base64));
-            console.log(jsonJWT);
 
             if(jsonJWT.exp <= currentTime){
                 deleteUserToken();
@@ -115,29 +102,22 @@ angular.module('filmApp')
                         else{ return res.data.info; }
                     }
                     console.log('Passport authenticated succesfully. Saving user token...');
-                    console.log(res);
 
                     saveUserToken(res.data.user.token, res.data.user.username, res.data.user.role);
                     loadUserToken();
 
-                    console.log('Login callback done. Returning res.data.user:');
-                    console.log(res.data.user);
                     return res.data.user;
                 });
         };
 
         authService.register = function (newUser) {
-            console.log('Inside authService.register()');
             return $http.post('/auth/register', newUser)
                 .then(function (res) {
-                    console.log('Response from POST /auth/register: ');
-                    console.log(res);
 
                     $rootScope.searchResults.push(res.data.user);
 
                     return res.data.user;
                 }, function(res){
-                    console.log(res);
                     return res;
                 });
         };
@@ -152,7 +132,6 @@ angular.module('filmApp')
 
         authService.checkToken = function(){
             var token = loadUserToken();
-            console.log(token.username);
             var user = $.param({username: token.username});
             if(token !== false) {
                 $http({
