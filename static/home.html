@@ -15,7 +15,7 @@
       reviews and discussions, follow others, post comments, and more!</h4>
    <div class="container" ng-if="currentUser">
       <div class="row">
-         <h3>Update Your Watchlist:</h3>
+         <h3 style="color: white;">Update Your Watchlist:</h3>
       </div>
       <div class="row">
          <img class="movieRec" src={{'https://image.tmdb.org/t/p/original/'+movie.poster_path}}
@@ -24,7 +24,7 @@
 
       </div>
       <div class="row" ng-if="emptyWatchListMsg(currentUser.watchlist)">
-         <p class="msg">Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new
+         <p class="msg" style="color: white;">Your watchlist is currently empty! Go to the <a ui-sref="movies">Movies</a> page to add new
             movies you
             plan to watch!</p>
       </div>
@@ -32,10 +32,11 @@
          <br>
          <br>
       </div>
+      <br>
       <div class="row">
-         <h3>Movies You Might Like:</h3>
+         <h3 style="color: white;">Movies You Might Like:</h3>
       </div>
-      <p class="msg" ng-if="noSuggestions()">Watch, favorite, or add to your Watchlist some <a
+      <p style="color: white;" class="msg" ng-if="noSuggestions()">Watch, favorite, or add to your Watchlist some <a
             ui-sref="movies">movies</a>
          to get
          customized recommendations!</p>
@@ -61,7 +62,7 @@
 
       <div class="row">
          <div class="col-5">
-            <h3>Your Newsfeed</h3>
+            <h3 style="color: white;">Your Newsfeed</h3>
             <ul class="list-group" style=" max-height:500px; width:110%; overflow-y: auto;">
                <li class="list-group-item" ng-repeat="activity in activities" ng-if="activity.object.created_at">
                   <p ng-if="activity.object"><span class="activityLink" id={{'actor'+activity.id}} data-toggle="modal"
@@ -91,7 +92,7 @@
 
             </ul>
             <div ng-if="activities.length==0">
-               <p class="msg">Your newsfeed is currently empty! Follow other users to fill up your feed!</p>
+               <p class="msg" style="color: white;">Your newsfeed is currently empty! Follow other users to fill up your feed!</p>
             </div>
 
          </div>
@@ -101,7 +102,7 @@
 
          <div class="col-5">
 
-            <h3>Your Recent Activity</h3>
+            <h3 style="color: white;">Your Recent Activity</h3>
 
             <ul class="list-group" style=" max-height:500px; width:110%; overflow-y: auto;">
                <li class="list-group-item" ng-repeat="activity in userActivities" ng-if="activity.object.created_at">
@@ -130,11 +131,12 @@
             </ul>
 
             <div ng-if="userActivities.length==0">
-               <p class="msg">No recent site activity.</p>
+               <p class="msg" style="color: white;">No recent site activity.</p>
             </div>
 
          </div>
       </div>
+      <br><br>
    </div>
 </body>
 

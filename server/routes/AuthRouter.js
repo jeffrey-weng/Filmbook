@@ -85,6 +85,18 @@ AuthRouter.post('/logout', function (req, res, next) {
     }
 });
 
+AuthRouter.post('/getUser', function(req, res, next) {
+    console.log('In getUser route:');
+    console.log(req.body.username);
+    User.findOne({username: req.body.username}, function(err, user){
+        console.log(user.username);
+        return res.json({
+            success: true,
+            user: user.toAuthJSON()
+        });
+    });
+});
+
 
 
 module.exports = AuthRouter;

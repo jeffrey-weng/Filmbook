@@ -5,7 +5,7 @@
 
          <input type="text" class="form-control" placeholder="Filter reviews by film name or username"
             ng-model="reviewSearchText" ng-change="searchReviews(reviewSearchText)">
-         <p class="space"> or </p>
+         <p class="space" style="color: white;"> or </p>
          <div class="dropdown" style="margin-right:50px;">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,7 +23,7 @@
             </div>
          </div>
          <button type="button" class="btn btn-success btn-sm space" data-toggle="modal" data-target="#reviewModal"
-            ng-click="makeReview()" ng-if="currentUser">Click here to write your own review</button>
+            ng-click="makeReview()" ng-if="currentUser">Create a new review</button>
       </div>
    </div>
    <div class="col-12">
@@ -32,7 +32,7 @@
             ng-repeat="review in reviews | myFilter:[reviewSearchText]| orderBy:orderByCriteria"
             ng-click="reviewDetails($event,review)">
             <div class="row">
-               <div class="col-4">
+               <div class="col-sm-auto">
                   <img src={{review.user.avatar}} alt="No avatar found" class="reviewAvatar">
                </div>
                <div class="col-6">
@@ -74,7 +74,7 @@
                   <p>{{reviewPreview(review)}}</p>
 
                </div>
-               <div class="col-2">
+               <div class="col-2 ml-auto" style="margin-right: 10px;">
                   <button type="button" class="btn btn-info" ng-if="review.user.username==currentUser.username"
                      ng-click="editReview($event,review)">Edit</button>
                   <button type="button" class="btn btn-danger" ng-if="review.user.username==currentUser.username"

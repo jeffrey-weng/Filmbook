@@ -10,9 +10,10 @@ angular.module('filmApp')
                 $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
                 $scope.setCurrentUser(user); //{user: user.toAuthJSON()}
                 console.log('CurrentUser variable set.');
-                $state.go('landing');
+                $state.go('home');
             }, function () {
                 $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
+                $state.go('login');
             });
         };
     })
@@ -58,13 +59,14 @@ angular.module('filmApp')
     })
 
 
-    .factory('AuthService', ['$http', '$window', 'Session', function ($http, $window, Session) {
+    .factory('AuthService', ['$rootScope', '$http', '$window', 'Session', function ($rootScope, $http, $window, Session) {
 
         //Helper methods for getting/setting/deleting the JWT token in browser header
         function loadUserToken() {
             console.log('Loading user token...');
             var token = $window.localStorage.getItem('auth_jwt');
-            if(token) { useUserToken(token); }
+            if(token) { return useUserToken(token);}
+            else{return false;}
         }
 
         function saveUserToken(token, username, role) {
@@ -77,14 +79,28 @@ angular.module('filmApp')
 
         function useUserToken(token) {
             console.log('Token found. Using token...');
-            //isAuthenticated = true;
-            //authToken = token;
-            $http.defaults.headers.common.Authorization = token;
+
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace('-', '+').replace('_', '/');
+            var today = new Date();
+            var currentDate = new Date(today);
+            var currentTime = parseInt(currentDate.getTime() / 1000);
+            var jsonJWT = JSON.parse($window.atob(base64));
+            console.log(jsonJWT);
+
+            if(jsonJWT.exp <= currentTime){
+                deleteUserToken();
+                console.log('Token expired.');
+                return false;
+            }
+            else {
+                console.log('Valid token.');
+                return jsonJWT;
+            }
         }
 
         function deleteUserToken() {
             Session.destroy();
-            $http.defaults.headers.common.Authorization = undefined;
             $window.localStorage.removeItem('auth_jwt');
         }
 
@@ -100,7 +116,7 @@ angular.module('filmApp')
                     }
                     console.log('Passport authenticated succesfully. Saving user token...');
                     console.log(res);
-                    //Session.create(res.data.id, res.data.user.id, res.data.user.role);
+
                     saveUserToken(res.data.user.token, res.data.user.username, res.data.user.role);
                     loadUserToken();
 
@@ -127,15 +143,37 @@ angular.module('filmApp')
         };
 
         authService.logout = function(user) {
+            deleteUserToken();
             return $http.post('/auth/logout', user)
                 .then(function(res) {
-                    deleteUserToken();
                     return res.json({success: true, message: 'Logged out successfully.'});
                 })
         };
 
+        authService.checkToken = function(){
+            var token = loadUserToken();
+            console.log(token.username);
+            var user = $.param({username: token.username});
+            if(token !== false) {
+                $http({
+                    method: 'post',
+                    url: '/auth/getUser',
+                    data: user,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                }).then(function (res) {
+                        $rootScope.$emit('TOKEN_USER_LOADED', {
+                            user: res.data.user
+                        });
+                        return res.data.user;
+                    });
+            }
+            else { return false; }
+        };
+
         authService.isAuthenticated = function () {
-            return !!Session.username;
+            if(loadUserToken() !== false){
+                return true;
+            }
         };
 
         //example usage: <ng-if="isAuthorized('admin')"> or <ng-if="isAuthorized('editor')">
@@ -143,17 +181,14 @@ angular.module('filmApp')
             if (!angular.isArray(authorizedRoles)) {
                 authorizedRoles = [authorizedRoles];
             }
-            return (authService.isAuthenticated() &&
-                authorizedRoles.indexOf(Session.role) !== -1);
+            return ((authService.isAuthenticated()!== false) &&
+                (authorizedRoles.indexOf(Session.role) !== -1));
         };
 
-
-        loadUserToken();
-
         return authService;
-    }]);
+    }])
 
-/*
+
     .factory('AuthInterceptor', function ($rootScope, $q,
                                           AUTH_EVENTS) {
         return {
@@ -189,4 +224,3 @@ angular.module('filmApp')
         };
     });
 
-*/
