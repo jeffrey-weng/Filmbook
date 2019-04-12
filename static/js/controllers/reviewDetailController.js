@@ -115,6 +115,68 @@ angular.module('filmApp')
                 }
             }
 
+            
+            $scope.follow = function (person) {
+
+                var x = function (person) {
+
+                    if (typeof person == "object") {
+
+                        if ($rootScope.targets.includes(person._id))
+                            return true;
+                        else return false;
+                    } else {
+                        if ($rootScope.targets.includes(person))
+                            return true;
+                        else return false;
+                    }
+                }
+
+                if (typeof person == "object") {
+                    if (x(person)) {
+                        var index = $rootScope.targets.indexOf(person._id);
+                        $rootScope.targets.splice(index, 1);
+
+                        $http.delete(window.location.origin + "/api/follow/" + $scope.currentUser.id, {
+                            data: {
+                                target: person._id
+                            },
+                            headers: {
+                                'Content-Type': 'application/json;charset=utf-8'
+                            }
+                        })
+                    } else {
+                        $rootScope.targets.push(person._id);
+
+                        $http.post(window.location.origin + "/api/follow/" + $scope.currentUser.id, {
+                            target: person._id
+                        })
+                    }
+                } else {
+                    if (x(person)) {
+                        var index = $rootScope.targets.indexOf(person);
+                        $rootScope.targets.splice(index, 1);
+
+                        $http.delete(window.location.origin + "/api/follow/" + $scope.currentUser.id, {
+                            data: {
+                                target: person
+                            },
+                            headers: {
+                                'Content-Type': 'application/json;charset=utf-8'
+                            }
+                        })
+
+                    } else {
+                        $rootScope.targets.push(person);
+
+                        $http.post(window.location.origin + "/api/follow/" + $scope.currentUser.id, {
+                            target: person
+                        })
+
+                    }
+                }
+            }
+
             $scope.timeStamp = function (review) {
 
                 if(!review) return;
