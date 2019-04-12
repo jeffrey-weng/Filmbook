@@ -78,7 +78,7 @@
                <div class="col-2 ml-auto" style="margin-right: 10px;">
                   <button type="button" class="btn btn-info" ng-if="review.user.username==currentUser.username"
                      ng-click="editReview($event,review)">Edit</button>
-                  <button type="button" class="btn btn-danger" ng-if="review.user.username==currentUser.username"
+                  <button type="button" class="btn btn-danger" ng-if="(review.user.username==currentUser.username)||(currentUser.role=='admin')"
                      ng-click="deleteReview($event,review)">Delete</button>
 
                   <div class="upvote1" ng-if="currentUser">
