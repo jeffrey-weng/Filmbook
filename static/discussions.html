@@ -56,7 +56,7 @@
                             ng-if="discussion.user.username==currentUser.username"
                             ng-click="editDiscussion($event,discussion)">Edit</button>
                         <button type="button" class="btn btn-danger"
-                            ng-if="discussion.user.username==currentUser.username"
+                            ng-if="(discussion.user.username==currentUser.username)||(currentUser.role=='admin')"
                             ng-click="deleteDiscussion($event,discussion)">Delete</button>
 
                         <div class="upvote1" ng-if="currentUser">
